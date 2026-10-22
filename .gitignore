@@ -24,3 +24,6 @@ exports/*.xlsx
 # Temporary scratch files
 scratch/
 tmp/
+
+# Local Netlify folder
+.netlify

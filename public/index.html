@@ -491,7 +491,7 @@ async function handleStudentLogin(e) {
       localStorage.setItem('studentToken', data.token);
       toast('✅ Login successful! Redirecting...', 'success');
       setTimeout(() => { window.location.href = 'student-dashboard.html'; }, 600);
-    } else { toast('❌ '+data.message, 'error'); btn.disabled=false; btn.textContent='🎓 Login to Student Portal'; }
+    } else { toast('❌ ' + (data.message || 'Server error, please try again.'), 'error'); btn.disabled=false; btn.textContent='🎓 Login to Student Portal'; }
   } catch { toast('❌ Unable to connect to server','error'); btn.disabled=false; btn.textContent='🎓 Login to Student Portal'; }
 }
 
@@ -582,7 +582,7 @@ async function handleStudentRegister(e) {
       localStorage.setItem('studentToken', data.token);
       toast('🎉 Registration Successful! Welcome!', 'success');
       setTimeout(() => { window.location.href = 'student-dashboard.html'; }, 600);
-    } else { toast('❌ '+data.message,'error'); btn.disabled=false; btn.textContent='✅ Complete Registration & Login'; generateCaptcha(); }
+    } else { toast('❌ ' + (data.message || 'Server error, please try again.'), 'error'); btn.disabled=false; btn.textContent='✅ Complete Registration & Login'; generateCaptcha(); }
   } catch { toast('❌ Unable to connect to server','error'); btn.disabled=false; btn.textContent='✅ Complete Registration & Login'; }
 }
 
@@ -605,7 +605,7 @@ async function handleTeacherLogin(e) {
       toast('✅ Teacher Login Successful!', 'success');
       setTimeout(() => { window.location.href = 'teacher-dashboard.html'; }, 600);
     } else {
-      toast('❌ ' + data.message, 'error');
+      toast('❌ ' + (data.message || 'Server error, please try again.'), 'error');
       btn.disabled = false;
       btn.textContent = '👨‍🏫 Login to Teacher Portal';
     }
@@ -630,7 +630,7 @@ async function handleAdminLogin(e) {
       sessionStorage.setItem('userRole', 'admin');
       toast('✅ Administrator Login Successful!', 'success');
       setTimeout(() => { window.location.href = 'admin.html'; }, 600);
-    } else { toast('❌ '+data.message,'error'); btn.disabled=false; btn.textContent='👑 Login as Administrator'; }
+    } else { toast('❌ ' + (data.message || 'Server error, please try again.'), 'error'); btn.disabled=false; btn.textContent='👑 Login as Administrator'; }
   } catch { toast('❌ Unable to connect to server','error'); btn.disabled=false; btn.textContent='👑 Login as Administrator'; }
 }
 
@@ -692,7 +692,7 @@ async function handleForgotVerify(e) {
       document.getElementById('fp-step1').style.display = 'none';
       document.getElementById('fp-step2').style.display = 'block';
     } else {
-      toast('❌ ' + data.message, 'error');
+      toast('❌ ' + (data.message || 'Server error, please try again.'), 'error');
       generateFpCaptcha();
       document.getElementById('fp-captcha-input').value = '';
       btn.disabled = false; btn.textContent = '✅ Verify Identity';
@@ -736,7 +736,7 @@ async function handleForgotReset(e) {
       closeForgotPassword();
       toggleStudentMode('login');
     } else {
-      toast('❌ ' + data.message, 'error');
+      toast('❌ ' + (data.message || 'Server error, please try again.'), 'error');
       btn.disabled = false; btn.textContent = '💾 Save New Password';
     }
   } catch {

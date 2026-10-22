@@ -1,5 +1,8 @@
 // Netlify Function entry point: wraps the Express app
 const serverless = require('serverless-http');
+
+// Persist data in Netlify Database instead of the temporary function filesystem
+process.env.EXAM_STORAGE = 'netlify-db';
 const app = require('../../server.js');
 
 const handler = serverless(app);

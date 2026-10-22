@@ -7,7 +7,9 @@ const os = require('os');
 
 // Vercel or Netlify Functions (AWS Lambda): filesystem is read-only except the tmp dir
 const IS_SERVERLESS = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
-const { startTunnel } = require('untun');
+// Netlify Function: data is persisted in Netlify Database (set by netlify/functions/api.js)
+const USE_DB = process.env.EXAM_STORAGE === 'netlify-db';
+const dbStore = USE_DB ? require('./services/dbStore') : null;
 const { generateExcel, generateExcelTemplate, parseExcelResults } = require('./services/excelService');
 const { sendResultsEmail } = require('./services/emailService');
 const { getChatbotResponse } = require('./services/chatbotService');
@@ -23,7 +25,7 @@ const DATA_DIR = IS_SERVERLESS
   ? path.join(os.tmpdir(), 'exam-server-data')
   : path.join(__dirname, 'data');
 
-if (IS_SERVERLESS) {
+if (IS_SERVERLESS && !USE_DB) {
   try {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -51,6 +53,7 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+if (USE_DB) app.use('/api', dbStore.middleware);
 
 // Global Crash Guard
 process.on('uncaughtException', (err) => {
@@ -62,6 +65,7 @@ process.on('unhandledRejection', (reason) => {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function readJSON(filePath, fallback) {
+  if (USE_DB) return dbStore.read(path.basename(filePath, '.json'), fallback);
   try {
     if (fs.existsSync(filePath)) {
       const raw = fs.readFileSync(filePath, 'utf8');
@@ -79,6 +83,7 @@ function readJSON(filePath, fallback) {
 }
 
 function writeJSON(filePath, data) {
+  if (USE_DB) return dbStore.write(path.basename(filePath, '.json'), data);
   try {
     const dir = path.dirname(filePath);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -1299,7 +1304,7 @@ app.get('/api/export/excel', verifyAdmin, async (req, res) => {
   }
 
   try {
-    const filePath = await generateExcel(results);
+    const filePath = await generateExcel(results, readJSON(STUDENTS_FILE, []));
     res.download(filePath, path.basename(filePath), err => {
       if (err) console.error('Excel download error:', err);
     });
@@ -1358,7 +1363,7 @@ app.post('/api/email/send', verifyAdmin, async (req, res) => {
     return res.status(404).json({ message: 'No results found to send' });
   }
   try {
-    const filePath = await generateExcel(results);
+    const filePath = await generateExcel(results, readJSON(STUDENTS_FILE, []));
     await sendResultsEmail(filePath, results.length);
     res.json({ success: true, message: `Email sent successfully to ${process.env.EMAIL_TO}!` });
   } catch (err) {
@@ -1406,6 +1411,8 @@ if (require.main === module && !IS_SERVERLESS) {
     console.log('================================================================');
 
     try {
+      // untun is ESM-only, so load it lazily (only needed for local runs)
+      const { startTunnel } = await import('untun');
       const tunnel = await startTunnel({ url: `http://127.0.0.1:${PORT}`, port: PORT });
       const cloudflareUrl = await tunnel.getURL();
       console.log('\n================================================================');

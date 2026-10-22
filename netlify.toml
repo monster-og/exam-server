@@ -5,6 +5,8 @@
 
 [functions]
   directory = "netlify/functions"
+  # esbuild resolves package "exports" subpaths (used by @netlify/database) that the default bundler cannot
+  node_bundler = "esbuild"
   included_files = ["data/**", "exports/*template*.xlsx"]
 
 [[redirects]]

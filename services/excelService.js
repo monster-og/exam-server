@@ -15,14 +15,19 @@ const STUDENTS_FILE = IS_SERVERLESS
   ? path.join(os.tmpdir(), 'exam-server-data', 'students.json')
   : path.join(__dirname, '..', 'data', 'students.json');
 
-function getStudentsMap() {
+function getStudentsMap(students) {
   try {
-    let filePath = STUDENTS_FILE;
-    if (!fs.existsSync(filePath)) {
-      filePath = path.join(__dirname, '..', 'data', 'students.json');
+    let list = Array.isArray(students) ? students : null;
+    if (!list) {
+      let filePath = STUDENTS_FILE;
+      if (!fs.existsSync(filePath)) {
+        filePath = path.join(__dirname, '..', 'data', 'students.json');
+      }
+      if (fs.existsSync(filePath)) {
+        list = JSON.parse(fs.readFileSync(filePath, 'utf8') || '[]');
+      }
     }
-    if (fs.existsSync(filePath)) {
-      const list = JSON.parse(fs.readFileSync(filePath, 'utf8') || '[]');
+    if (list) {
       const map = {};
       list.forEach(s => {
         const name = (s.name || '').trim().toLowerCase();
@@ -48,12 +53,12 @@ function getGrade(pct) {
   return 'F';
 }
 
-async function generateExcel(results) {
+async function generateExcel(results, students) {
   if (!fs.existsSync(EXPORTS_DIR)) {
     fs.mkdirSync(EXPORTS_DIR, { recursive: true });
   }
 
-  const studentsMap = getStudentsMap();
+  const studentsMap = getStudentsMap(students);
   const workbook = new ExcelJS.Workbook();
   workbook.creator = 'Oxford Convent School Admin Portal';
   workbook.created = new Date();

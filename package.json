@@ -12,8 +12,10 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@netlify/database": "^2.0.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
+    "drizzle-orm": "^1.0.0-beta.22",
     "exceljs": "^4.4.0",
     "express": "^5.2.1",
     "localtunnel": "^2.0.2",
@@ -21,5 +23,8 @@
     "nodemailer": "^9.0.3",
     "serverless-http": "^3.2.0",
     "untun": "^0.2.2"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^1.0.0-beta.22"
   }
 }
