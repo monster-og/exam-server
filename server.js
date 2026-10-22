@@ -484,15 +484,30 @@ app.get('/api/questions', (req, res) => {
   const keyLegacy = `${cls}_${subject}`;
   let entry = all[keyWithPT] || all[keyLegacy];
 
-  // Smart subject alias matching (e.g. Computer <-> Computer Studies <-> Information Technology)
+  // Smart subject alias matching (e.g. Mathematics, Science, SST, English, Hindi, Computer)
   if (!entry && subject) {
     const sLower = subject.toLowerCase();
     const candidateSubjects = [];
     if (sLower.includes('computer') || sLower.includes('it') || sLower.includes('information technology')) {
       candidateSubjects.push('Computer', 'Computer Studies', 'Computer Science', 'Information Technology');
+    } else if (sLower.includes('math')) {
+      candidateSubjects.push('Mathematics', 'Maths', 'Math');
+    } else if (sLower.includes('social') || sLower.includes('sst')) {
+      candidateSubjects.push('Social Science', 'SST', 'Social Studies');
+    } else if (sLower.includes('science')) {
+      candidateSubjects.push('Science', 'General Science');
+    } else if (sLower.includes('english')) {
+      candidateSubjects.push('English Language & Literature', 'English', 'English Core');
+    } else if (sLower.includes('hindi')) {
+      candidateSubjects.push('Hindi Course-A', 'Hindi', 'Hindi Course-B');
     }
+
+    const candidateETs = [et, 'Class Test', 'Mock Test', 'PT-1'];
     for (const altSub of candidateSubjects) {
-      if (all[`${cls}_${altSub}_${et}`]) { entry = all[`${cls}_${altSub}_${et}`]; break; }
+      for (const altET of candidateETs) {
+        if (all[`${cls}_${altSub}_${altET}`]) { entry = all[`${cls}_${altSub}_${altET}`]; break; }
+      }
+      if (entry) break;
       if (all[`${cls}_${altSub}`]) { entry = all[`${cls}_${altSub}`]; break; }
     }
   }
@@ -507,6 +522,181 @@ app.get('/api/questions', (req, res) => {
     year: entry.year || null,
     examType: entry.examType || et
   });
+});
+
+// ─── CBSE OFFICIAL DOWNLOADS & REPOSITORY ──────────────────────────────────────
+app.get('/api/cbse-materials', (req, res) => {
+  const materialsDir = path.join(__dirname, 'public', 'cbse-materials');
+  const items = [
+    {
+      subject: "Mathematics Standard (041)",
+      category: "Sample Question Paper (SQP)",
+      filename: "MathsStandard-SQP.pdf",
+      url: "/cbse-materials/MathsStandard-SQP.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/MathsStandard-SQP.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE Class 10 Standard Mathematics Sample Paper with Section A-E question breakdown."
+    },
+    {
+      subject: "Mathematics Standard (041)",
+      category: "Marking Scheme (MS)",
+      filename: "MathsStandard-MS.pdf",
+      url: "/cbse-materials/MathsStandard-MS.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/MathsStandard-MS.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE Step-by-Step Marking Scheme, exact steps, and rubrics."
+    },
+    {
+      subject: "Mathematics Basic (241)",
+      category: "Sample Question Paper (SQP)",
+      filename: "MathsBasic-SQP.pdf",
+      url: "/cbse-materials/MathsBasic-SQP.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/MathsBasic-SQP.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE Class 10 Basic Mathematics Sample Paper."
+    },
+    {
+      subject: "Mathematics Basic (241)",
+      category: "Marking Scheme (MS)",
+      filename: "MathsBasic-MS.pdf",
+      url: "/cbse-materials/MathsBasic-MS.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/MathsBasic-MS.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE Step-by-Step Marking Scheme for Basic Mathematics."
+    },
+    {
+      subject: "Science (086)",
+      category: "Sample Question Paper (SQP)",
+      filename: "Science-SQP.pdf",
+      url: "/cbse-materials/Science-SQP.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/Science-SQP.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE Class 10 Science Sample Paper covering Physics, Chemistry, and Biology."
+    },
+    {
+      subject: "Science (086)",
+      category: "Marking Scheme (MS)",
+      filename: "Science-MS.pdf",
+      url: "/cbse-materials/Science-MS.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/Science-MS.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE Science Step Marking, ray diagrams, chemical equations key."
+    },
+    {
+      subject: "Social Science (087)",
+      category: "Sample Question Paper (SQP)",
+      filename: "SocialScience-SQP.pdf",
+      url: "/cbse-materials/SocialScience-SQP.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/SocialScience-SQP.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE Class 10 Social Science Sample Paper covering History, Geography, Civics, and Economics."
+    },
+    {
+      subject: "Social Science (087)",
+      category: "Marking Scheme (MS)",
+      filename: "SocialScience-MS.pdf",
+      url: "/cbse-materials/SocialScience-MS.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/SocialScience-MS.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE Social Science Marking Scheme with key point evaluation."
+    },
+    {
+      subject: "English Language & Literature (184)",
+      category: "Sample Question Paper (SQP)",
+      filename: "EnglishL-SQP.pdf",
+      url: "/cbse-materials/EnglishL-SQP.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/EnglishL-SQP.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE English Reading, Grammar, Writing & Literature Sample Paper."
+    },
+    {
+      subject: "English Language & Literature (184)",
+      category: "Marking Scheme (MS)",
+      filename: "EnglishL-MS.pdf",
+      url: "/cbse-materials/EnglishL-MS.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/EnglishL-MS.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE English Marking Scheme with format scores & literature value points."
+    },
+    {
+      subject: "Hindi Course-A (002)",
+      category: "Sample Question Paper (SQP)",
+      filename: "HindiCourseA-SQP.pdf",
+      url: "/cbse-materials/HindiCourseA-SQP.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/HindiCourseA-SQP.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "आधिकारिक सीबीएसई कक्षा 10वीं हिंदी अ मॉडल प्रश्न पत्र।"
+    },
+    {
+      subject: "Hindi Course-A (002)",
+      category: "Marking Scheme (MS)",
+      filename: "HindiCourseA-MS.pdf",
+      url: "/cbse-materials/HindiCourseA-MS.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/HindiCourseA-MS.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "सीबीएसई हिंदी अ आधिकारिक अंकन योजना (Marking Scheme)।"
+    },
+    {
+      subject: "Computer Application (165) / IT (402)",
+      category: "Sample Question Paper (SQP)",
+      filename: "ComputerApplication-SQP.pdf",
+      url: "/cbse-materials/ComputerApplication-SQP.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/ComputerApplication-SQP.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE Computer Application / Information Technology Model Question Paper."
+    },
+    {
+      subject: "Computer Application (165) / IT (402)",
+      category: "Marking Scheme (MS)",
+      filename: "ComputerApplication-MS.pdf",
+      url: "/cbse-materials/ComputerApplication-MS.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/SQP/ClassX_2024_25/ComputerApplication-MS.pdf",
+      year: "2024-2025 (Latest 2026 Board Exam)",
+      description: "Official CBSE Computer Application Marking Scheme & Answer Key."
+    },
+    {
+      subject: "Mathematics (041)",
+      category: "Official Question Bank",
+      filename: "CBSE-Maths-QuestionBank.pdf",
+      url: "/cbse-materials/CBSE-Maths-QuestionBank.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/QuestionBank/ClassX/MathsX.pdf",
+      year: "CBSE Official Board Question Bank",
+      description: "Comprehensive CBSE Chapter-wise Question Bank with case studies & step solutions."
+    },
+    {
+      subject: "Science (086)",
+      category: "Official Question Bank",
+      filename: "CBSE-Science-QuestionBank.pdf",
+      url: "/cbse-materials/CBSE-Science-QuestionBank.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/QuestionBank/ClassX/ScienceX.pdf",
+      year: "CBSE Official Board Question Bank",
+      description: "Comprehensive CBSE Science Question Bank with Assertion-Reason and practicals."
+    },
+    {
+      subject: "English Language & Literature (184)",
+      category: "Official Question Bank",
+      filename: "CBSE-English-QuestionBank.pdf",
+      url: "/cbse-materials/CBSE-English-QuestionBank.pdf",
+      officialUrl: "https://cbseacademic.nic.in/web_material/QuestionBank/ClassX/EnglishX.pdf",
+      year: "CBSE Official Board Question Bank",
+      description: "Comprehensive CBSE English Question Bank with extract-based questions and writing tasks."
+    }
+  ];
+
+  // Enrich with local file status and size
+  const enriched = items.map(item => {
+    const filePath = path.join(materialsDir, item.filename);
+    const exists = fs.existsSync(filePath);
+    const size = exists ? fs.statSync(filePath).size : 0;
+    return {
+      ...item,
+      isAvailableLocally: exists,
+      sizeBytes: size,
+      sizeFormatted: size > 0 ? (size > 1048576 ? `${(size / 1048576).toFixed(1)} MB` : `${Math.round(size / 1024)} KB`) : "Online Link"
+    };
+  });
+
+  res.json({ success: true, count: enriched.length, materials: enriched });
 });
 
 // ─── CBSE SUBJECTS MASTER (CLASS 1 TO 12TH) ──────────────────────────────────

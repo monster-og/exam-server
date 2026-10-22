@@ -267,8 +267,26 @@
       font-size: 0.92rem;
       line-height: 1.6;
     }
-    .hub-point-item strong {
-      color: #facc15;
+    .cbse-filter-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cbse-filter-btn:hover {
+      border-color: #f87171;
+      color: #fff;
+    }
+    .cbse-filter-btn.active {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+      border-color: #f87171;
+      box-shadow: 0 2px 10px rgba(239, 68, 68, 0.35);
     }
 
     @media (max-width: 600px) {
@@ -454,6 +472,11 @@
         <span style="color:#60a5fa; font-weight:700;">📚 Notes &amp; Guides</span>
         <span class="pt-badge" style="background:rgba(59,130,246,0.2);color:#60a5fa;">Class 1-12</span>
       </button>
+      <button class="pt-nav-btn" id="pt-tab-CBSE-Downloads" onclick="switchStudentPT('CBSE Downloads')"
+        style="border-color:rgba(239,68,68,0.4); background:rgba(239,68,68,0.06);">
+        <span style="color:#f87171; font-weight:800;">📥 CBSE Sample Papers &amp; QB</span>
+        <span class="pt-badge" style="background:rgba(239,68,68,0.22);color:#fca5a5; font-weight:700;">Latest 2024-25</span>
+      </button>
       <button class="pt-nav-btn" id="pt-tab-Answer-Key" onclick="switchStudentPT('Answer Key')"
         style="border-color:rgba(16,185,129,0.35);">
         <span style="color:#34d399; font-weight:700;">🔑 Answer Key</span>
@@ -583,6 +606,49 @@
       </div>
     </div>
 
+    <!-- ═══════════ PANEL 4: CBSE OFFICIAL DOWNLOADS & QUESTION BANKS ═══════════ -->
+    <div id="panel-cbse-downloads" style="display:none;" class="animate-in">
+      <div class="pt-panel-banner" style="background: linear-gradient(145deg, rgba(69, 10, 10, 0.85), rgba(30, 15, 15, 0.85)); border-color: rgba(239, 68, 68, 0.4);">
+        <div>
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+            <span style="font-size:1.8rem;">📥</span>
+            <div>
+              <h2 style="font-size:1.45rem; font-weight:900; margin:0; color:#f87171;">CBSE Official Downloads &amp; Question Bank Repository</h2>
+              <span class="hub-badge" style="background:rgba(239, 68, 68, 0.2); color:#fca5a5; border:1px solid rgba(239, 68, 68, 0.4); margin-top:4px;">Session 2024-2025 (Latest 2026 Board Exam)</span>
+            </div>
+          </div>
+          <p class="text-muted" style="font-size:0.92rem; margin:4px 0 0; max-width:850px;">
+            Authentic official CBSE Academic Sample Question Papers (SQP), official step-by-step Marking Schemes (MS), and Class 10 Question Banks downloaded directly from CBSE Academic Portal. Click to view online or download directly to your device!
+          </p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <a href="exam.html?cls=Class+10&pt=Class+Test" class="btn btn-primary" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; font-weight:800; border:none; padding:12px 20px;">
+            ⚡ Start Online Mock Test →
+          </a>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; align-items:center;">
+        <span style="font-size:0.85rem; font-weight:700; color:var(--text-muted); margin-right:4px;">Filter Materials:</span>
+        <button class="cbse-filter-btn active" onclick="filterCbseMaterials('all', this)">🌐 All Materials (17)</button>
+        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Sample Question Paper (SQP)', this)">📄 Sample Papers (SQP)</button>
+        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Marking Scheme (MS)', this)">🔑 Marking Schemes (MS)</button>
+        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Official Question Bank', this)">📚 CBSE Question Banks</button>
+        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Mathematics', this)">📐 Mathematics</button>
+        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Science', this)">🔬 Science</button>
+        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Social Science', this)">🌍 Social Science</button>
+        <button class="cbse-filter-btn" onclick="filterCbseMaterials('English', this)">🔤 English</button>
+        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Hindi', this)">🇮🇳 Hindi</button>
+        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Computer', this)">💻 Computer / IT</button>
+      </div>
+
+      <!-- Materials Grid -->
+      <div class="hub-grid" id="cbse-downloads-grid" style="margin-top:18px;">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
     <!-- Answersheet Review Modal -->
     <div id="answersheet-modal" class="modal-overlay hidden"
       style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;">
@@ -646,6 +712,8 @@
           <button class="hub-sub-btn" id="bsm-tab-notes" onclick="switchBsmTab('notes')">📖 Chapter Notes &amp; Formulas</button>
           <button class="hub-sub-btn" id="bsm-tab-strategy" onclick="switchBsmTab('strategy')">🎯 Topper Strategy</button>
           <button class="hub-sub-btn" id="bsm-tab-paper" onclick="switchBsmTab('paper')">📝 Board Sample Paper &amp; Solutions</button>
+          <button class="hub-sub-btn" id="bsm-tab-official" onclick="switchBsmTab('official')">📁 Official CBSE PDFs &amp; QB</button>
+          <button class="hub-sub-btn" id="bsm-tab-mock" onclick="switchBsmTab('mock')">⚡ Take Online Mock Test</button>
         </div>
 
         <!-- Tab Content Area -->
@@ -956,12 +1024,13 @@
 
     function switchStudentPT(pt) {
       activeStudentPT = pt;
-      ['Class-Test', 'Board-Hub', 'Study-Notes', 'Answer-Key', 'all'].forEach(p => {
+      ['Class-Test', 'Board-Hub', 'Study-Notes', 'CBSE-Downloads', 'Answer-Key', 'all'].forEach(p => {
         const el = document.getElementById('pt-tab-' + p);
         if (el) {
           const isMatch = (pt === 'Class Test' && p === 'Class-Test') ||
             (pt === 'Board Hub' && p === 'Board-Hub') ||
             (pt === 'Study Notes' && p === 'Study-Notes') ||
+            (pt === 'CBSE Downloads' && p === 'CBSE-Downloads') ||
             (pt === 'Answer Key' && p === 'Answer-Key') ||
             (p === pt);
           if (isMatch) el.classList.add('active');
@@ -972,10 +1041,12 @@
       const panelResults = document.getElementById('panel-exam-results');
       const panelBoardHub = document.getElementById('panel-board-hub');
       const panelStudyNotes = document.getElementById('panel-study-notes');
+      const panelCbseDownloads = document.getElementById('panel-cbse-downloads');
 
       if (pt === 'Board Hub') {
         if (panelResults) panelResults.style.display = 'none';
         if (panelStudyNotes) panelStudyNotes.style.display = 'none';
+        if (panelCbseDownloads) panelCbseDownloads.style.display = 'none';
         if (panelBoardHub) panelBoardHub.style.display = 'block';
         loadBoardHub();
         return;
@@ -984,14 +1055,25 @@
       if (pt === 'Study Notes') {
         if (panelResults) panelResults.style.display = 'none';
         if (panelBoardHub) panelBoardHub.style.display = 'none';
+        if (panelCbseDownloads) panelCbseDownloads.style.display = 'none';
         if (panelStudyNotes) panelStudyNotes.style.display = 'block';
         loadStudyMaterials();
+        return;
+      }
+
+      if (pt === 'CBSE Downloads') {
+        if (panelResults) panelResults.style.display = 'none';
+        if (panelBoardHub) panelBoardHub.style.display = 'none';
+        if (panelStudyNotes) panelStudyNotes.style.display = 'none';
+        if (panelCbseDownloads) panelCbseDownloads.style.display = 'block';
+        loadCbseMaterials();
         return;
       }
 
       // Normal Exam Results Panel for Class Test / Answer Key / all
       if (panelBoardHub) panelBoardHub.style.display = 'none';
       if (panelStudyNotes) panelStudyNotes.style.display = 'none';
+      if (panelCbseDownloads) panelCbseDownloads.style.display = 'none';
       if (panelResults) panelResults.style.display = 'block';
 
       const titleEl = document.getElementById('pt-banner-title');
@@ -1090,15 +1172,23 @@
                 <span class="info-pill" style="font-size:0.75rem;">📖 ${notesCount} Revision Chapters</span>
                 <span class="info-pill" style="font-size:0.75rem;">📝 ${sampleQsCount} Solved Model Qs</span>
               </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+                ${s.officialPdfs?.sqp ? `<a href="${s.officialPdfs.sqp.localUrl}" download class="btn btn-sm" style="background:rgba(59,130,246,0.18); color:#60a5fa; border:1px solid rgba(59,130,246,0.35); font-size:0.75rem; padding:4px 8px; text-decoration:none;" title="Download Official SQP">📄 SQP (${s.officialPdfs.sqp.filesize})</a>` : ''}
+                ${s.officialPdfs?.ms ? `<a href="${s.officialPdfs.ms.localUrl}" download class="btn btn-sm" style="background:rgba(16,185,129,0.18); color:#34d399; border:1px solid rgba(16,185,129,0.35); font-size:0.75rem; padding:4px 8px; text-decoration:none;" title="Download Official Marking Scheme">🔑 MS (${s.officialPdfs.ms.filesize})</a>` : ''}
+                ${s.officialPdfs?.questionBank ? `<a href="${s.officialPdfs.questionBank.localUrl}" download class="btn btn-sm" style="background:rgba(234,179,8,0.18); color:#facc15; border:1px solid rgba(234,179,8,0.35); font-size:0.75rem; padding:4px 8px; text-decoration:none;" title="Download Official Question Bank">📚 QB (${s.officialPdfs.questionBank.filesize})</a>` : ''}
+              </div>
             </div>
 
             <div style="display:flex; gap:8px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
-              <button class="btn btn-primary btn-sm" style="flex:1; min-width:130px; font-weight:700;" onclick="openBoardSubjectModal('${s.id}', 'portion')">
-                📖 Open Study Guide
+              <button class="btn btn-primary btn-sm" style="flex:1; min-width:115px; font-weight:700;" onclick="openBoardSubjectModal('${s.id}', 'portion')">
+                📖 Study Guide
               </button>
-              <button class="btn btn-ghost btn-sm" style="font-weight:700; border:1px solid var(--border);" onclick="openBoardSubjectModal('${s.id}', 'paper')">
-                📝 Sample Paper
+              <button class="btn btn-ghost btn-sm" style="font-weight:700; border:1px solid var(--border);" onclick="openBoardSubjectModal('${s.id}', 'official')">
+                📁 Official PDFs
               </button>
+              <a href="exam.html?cls=Class+10&subject=${encodeURIComponent(s.name.split(' ')[0])}&pt=Class+Test" class="btn btn-sm" style="background:linear-gradient(135deg,#eab308,#f97316); color:#000; font-weight:800; border:none; text-decoration:none; display:inline-flex; align-items:center; gap:4px; padding:6px 12px;">
+                ⚡ Mock Test
+              </a>
             </div>
           </div>
         `;
@@ -1127,7 +1217,7 @@
 
     function switchBsmTab(tabName) {
       currentBsmTab = tabName;
-      ['portion', 'notes', 'strategy', 'paper'].forEach(t => {
+      ['portion', 'notes', 'strategy', 'paper', 'official', 'mock'].forEach(t => {
         const btn = document.getElementById('bsm-tab-' + t);
         if (btn) {
           if (t === tabName) btn.classList.add('active');
@@ -1251,6 +1341,153 @@
                   </div>
                 </div>
               `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (tabName === 'official') {
+        const pdfs = currentBsmSubject.officialPdfs || {};
+        const subjectName = currentBsmSubject.name;
+        const subShort = subjectName.split(' ')[0];
+
+        body.innerHTML = `
+          <div>
+            <div style="margin-bottom:16px; background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(249,115,22,0.12)); padding:14px 18px; border-radius:var(--radius-sm); border:1px solid rgba(239,68,68,0.3);">
+              <h3 style="font-size:1.15rem; font-weight:800; margin:0 0 4px 0; color:#f87171;">📁 Official CBSE Academic Downloads for ${subjectName}</h3>
+              <p class="text-muted" style="font-size:0.85rem; margin:0;">Session 2024-2025 (Latest 2026 Board Examination) • Authentic CBSE Academic repository files available for offline download and instant in-browser viewing.</p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+              ${pdfs.sqp ? `
+                <div style="background:var(--surface2); border:1px solid rgba(59,130,246,0.35); border-radius:var(--radius-sm); padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                      <span class="hub-badge" style="background:rgba(59,130,246,0.2); color:#60a5fa;">Sample Paper (SQP)</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${pdfs.sqp.filesize}</span>
+                    </div>
+                    <h4 style="font-size:1.05rem; font-weight:800; margin:0 0 8px 0; color:var(--text);">${pdfs.sqp.title}</h4>
+                    <p class="text-muted" style="font-size:0.84rem; line-height:1.5; margin-bottom:16px;">Official question paper blueprint with Section A through E, competency-based questions, and mark distributions.</p>
+                  </div>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <a href="${pdfs.sqp.localUrl}" download class="btn btn-primary btn-sm" style="flex:1; text-align:center; font-weight:700;">⬇️ Download PDF</a>
+                    <a href="${pdfs.sqp.localUrl}" target="_blank" class="btn btn-ghost btn-sm" style="border:1px solid var(--border); font-weight:700;">👁️ View Online</a>
+                  </div>
+                </div>
+              ` : ''}
+
+              ${pdfs.ms ? `
+                <div style="background:var(--surface2); border:1px solid rgba(16,185,129,0.35); border-radius:var(--radius-sm); padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                      <span class="hub-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">Marking Scheme (MS)</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${pdfs.ms.filesize}</span>
+                    </div>
+                    <h4 style="font-size:1.05rem; font-weight:800; margin:0 0 8px 0; color:var(--text);">${pdfs.ms.title}</h4>
+                    <p class="text-muted" style="font-size:0.84rem; line-height:1.5; margin-bottom:16px;">Step-by-step model solutions, value points, partial marks allocation, and answer keys straight from CBSE evaluators.</p>
+                  </div>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <a href="${pdfs.ms.localUrl}" download class="btn btn-success btn-sm" style="flex:1; text-align:center; font-weight:700; background:linear-gradient(135deg,#059669,#10b981);">⬇️ Download MS</a>
+                    <a href="${pdfs.ms.localUrl}" target="_blank" class="btn btn-ghost btn-sm" style="border:1px solid var(--border); font-weight:700;">👁️ View Online</a>
+                  </div>
+                </div>
+              ` : ''}
+
+              ${pdfs.basicSqp ? `
+                <div style="background:var(--surface2); border:1px solid rgba(99,102,241,0.35); border-radius:var(--radius-sm); padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                      <span class="hub-badge" style="background:rgba(99,102,241,0.2); color:#a5b4fc;">Basic Maths (SQP)</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${pdfs.basicSqp.filesize}</span>
+                    </div>
+                    <h4 style="font-size:1.05rem; font-weight:800; margin:0 0 8px 0; color:var(--text);">${pdfs.basicSqp.title}</h4>
+                    <p class="text-muted" style="font-size:0.84rem; line-height:1.5; margin-bottom:16px;">Official sample paper for CBSE Class 10 Basic Mathematics (Code 241).</p>
+                  </div>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <a href="${pdfs.basicSqp.localUrl}" download class="btn btn-primary btn-sm" style="flex:1; text-align:center; font-weight:700;">⬇️ Download PDF</a>
+                    <a href="${pdfs.basicSqp.localUrl}" target="_blank" class="btn btn-ghost btn-sm" style="border:1px solid var(--border); font-weight:700;">👁️ View</a>
+                  </div>
+                </div>
+              ` : ''}
+
+              ${pdfs.basicMs ? `
+                <div style="background:var(--surface2); border:1px solid rgba(16,185,129,0.35); border-radius:var(--radius-sm); padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                      <span class="hub-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">Basic Maths (MS)</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${pdfs.basicMs.filesize}</span>
+                    </div>
+                    <h4 style="font-size:1.05rem; font-weight:800; margin:0 0 8px 0; color:var(--text);">${pdfs.basicMs.title}</h4>
+                    <p class="text-muted" style="font-size:0.84rem; line-height:1.5; margin-bottom:16px;">Official step-by-step solutions for Basic Mathematics (Code 241).</p>
+                  </div>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <a href="${pdfs.basicMs.localUrl}" download class="btn btn-success btn-sm" style="flex:1; text-align:center; font-weight:700; background:linear-gradient(135deg,#059669,#10b981);">⬇️ Download MS</a>
+                    <a href="${pdfs.basicMs.localUrl}" target="_blank" class="btn btn-ghost btn-sm" style="border:1px solid var(--border); font-weight:700;">👁️ View</a>
+                  </div>
+                </div>
+              ` : ''}
+
+              ${pdfs.questionBank ? `
+                <div style="background:var(--surface2); border:1px solid rgba(234,179,8,0.4); border-radius:var(--radius-sm); padding:18px; display:flex; flex-direction:column; justify-content:space-between; grid-column:1/-1;">
+                  <div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                      <span class="hub-badge" style="background:rgba(234,179,8,0.2); color:#facc15;">📚 Official CBSE Board Question Bank</span>
+                      <span style="font-size:0.8rem; font-weight:700; color:#facc15;">${pdfs.questionBank.filesize}</span>
+                    </div>
+                    <h4 style="font-size:1.15rem; font-weight:900; margin:0 0 8px 0; color:#facc15;">${pdfs.questionBank.title}</h4>
+                    <p class="text-muted" style="font-size:0.88rem; line-height:1.6; margin-bottom:16px;">
+                      Full official publication by CBSE containing hundreds of competency-based questions, case-study questions, objective questions, and chapter-wise detailed marking solutions.
+                    </p>
+                  </div>
+                  <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <a href="${pdfs.questionBank.localUrl}" download class="btn btn-primary" style="background:linear-gradient(135deg,#eab308,#f97316); color:#000; font-weight:800; border:none; padding:10px 18px;">
+                      ⬇️ Download Complete Question Bank (${pdfs.questionBank.filesize})
+                    </a>
+                    <a href="${pdfs.questionBank.localUrl}" target="_blank" class="btn btn-ghost" style="border:1px solid var(--border); font-weight:700; padding:10px 16px;">
+                      👁️ Open in New Tab
+                    </a>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+
+            <div style="margin-top:20px; text-align:center; padding:16px; background:var(--surface2); border-radius:var(--radius-sm); border:1px dashed var(--border);">
+              <p class="text-muted" style="font-size:0.85rem; margin:0 0 10px 0;">Want to test your preparation under real exam conditions?</p>
+              <a href="exam.html?cls=Class+10&subject=${encodeURIComponent(subShort)}&pt=Class+Test" class="btn btn-primary" style="background:linear-gradient(135deg,#6366f1,#8b5cf6); font-weight:800; padding:10px 22px;">
+                🚀 Take Online Interactive Mock Test for ${subjectName} →
+              </a>
+            </div>
+          </div>
+        `;
+      } else if (tabName === 'mock') {
+        const subjectName = currentBsmSubject.name;
+        const subShort = subjectName.split(' ')[0];
+
+        body.innerHTML = `
+          <div>
+            <div style="background:linear-gradient(135deg,rgba(99,102,241,0.18),rgba(168,85,247,0.18)); border:1px solid rgba(99,102,241,0.4); border-radius:var(--radius-sm); padding:24px; text-align:center; margin-bottom:20px;">
+              <div style="font-size:3rem; margin-bottom:10px;">⚡</div>
+              <h3 style="font-size:1.4rem; font-weight:900; margin:0 0 8px 0; color:var(--text);">Class 10th ${subjectName} Interactive Mock Test</h3>
+              <p class="text-muted" style="max-width:650px; margin:0 auto 18px; font-size:0.92rem; line-height:1.6;">
+                15 authentic CBSE Board questions (MCQs &amp; Assertion-Reasoning) testing core conceptual understanding, application, and formula accuracy.
+              </p>
+              <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:22px;">
+                <span class="info-pill" style="font-size:0.85rem; font-weight:700;">⏱️ Duration: 30 Minutes</span>
+                <span class="info-pill" style="font-size:0.85rem; font-weight:700;">📊 Total Questions: 15 MCQs</span>
+                <span class="info-pill" style="font-size:0.85rem; font-weight:700;">🎯 Immediate AI Evaluation &amp; Report</span>
+                <span class="info-pill" style="font-size:0.85rem; font-weight:700;">🔑 Full Step-by-Step Explanations</span>
+              </div>
+              <a href="exam.html?cls=Class+10&subject=${encodeURIComponent(subShort)}&pt=Class+Test" class="btn btn-primary btn-lg" style="background:linear-gradient(135deg,#eab308,#f97316); color:#000; font-weight:900; border:none; padding:14px 32px; font-size:1.05rem; box-shadow:0 6px 20px rgba(234,179,8,0.35);">
+                🚀 Start Interactive Mock Test Now →
+              </a>
+            </div>
+
+            <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px;">
+              <h4 style="font-size:1rem; font-weight:800; margin:0 0 10px 0; color:#34d399;">💡 Exam Instructions &amp; Scoring System</h4>
+              <ul style="margin:0; padding-left:20px; font-size:0.88rem; line-height:1.7; color:var(--text-muted);">
+                <li>Each correct answer awards <strong>1 Mark</strong>. No negative marking for incorrect attempts.</li>
+                <li>You can freely navigate between questions and review or change your answers before final submission.</li>
+                <li>Timer counts down continuously. If time expires, your answers are automatically submitted.</li>
+                <li>Upon submission, your comprehensive evaluation scorecard, percentage, CBSE grade (A1-E), and detailed answer solutions are instantly presented!</li>
+              </ul>
             </div>
           </div>
         `;
@@ -1486,6 +1723,116 @@
         printWindow.focus();
         printWindow.print();
       }, 400);
+    }
+
+    // ─── CBSE OFFICIAL DOWNLOADS & REPOSITORY ────────────────────────────────
+    let cachedCbseMaterials = [];
+    let currentCbseFilter = 'all';
+
+    async function loadCbseMaterials() {
+      const grid = document.getElementById('cbse-downloads-grid');
+      if (!grid) return;
+      if (cachedCbseMaterials.length > 0) {
+        renderCbseMaterials(cachedCbseMaterials, currentCbseFilter);
+        return;
+      }
+
+      grid.innerHTML = '<div class="spinner" style="margin:40px auto;"></div>';
+      try {
+        const res = await fetch('/api/cbse-materials');
+        const data = await res.json();
+        if (data.success && data.materials) {
+          cachedCbseMaterials = data.materials;
+          renderCbseMaterials(cachedCbseMaterials, currentCbseFilter);
+        } else {
+          grid.innerHTML = '<p class="text-danger text-center" style="padding:20px;">Could not load CBSE materials repository.</p>';
+        }
+      } catch (err) {
+        grid.innerHTML = '<p class="text-danger text-center" style="padding:20px;">Failed to connect to CBSE materials service.</p>';
+      }
+    }
+
+    function filterCbseMaterials(category, btnEl) {
+      currentCbseFilter = category;
+      document.querySelectorAll('.cbse-filter-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderCbseMaterials(cachedCbseMaterials, currentCbseFilter);
+    }
+
+    function renderCbseMaterials(materials, filter) {
+      const grid = document.getElementById('cbse-downloads-grid');
+      if (!grid) return;
+
+      let list = [...materials];
+      if (filter && filter !== 'all') {
+        const fLower = filter.toLowerCase();
+        list = list.filter(m => 
+          m.category.toLowerCase().includes(fLower) || 
+          m.subject.toLowerCase().includes(fLower)
+        );
+      }
+
+      if (list.length === 0) {
+        grid.innerHTML = '<p class="text-muted text-center" style="padding:30px; grid-column:1/-1;">No materials found for the selected category filter.</p>';
+        return;
+      }
+
+      const categoryColors = {
+        'Sample Question Paper (SQP)': { bg: 'rgba(59,130,246,0.18)', color: '#60a5fa', border: 'rgba(59,130,246,0.35)', icon: '📄' },
+        'Marking Scheme (MS)': { bg: 'rgba(16,185,129,0.18)', color: '#34d399', border: 'rgba(16,185,129,0.35)', icon: '🔑' },
+        'Official Question Bank': { bg: 'rgba(234,179,8,0.18)', color: '#facc15', border: 'rgba(234,179,8,0.35)', icon: '📚' }
+      };
+
+      grid.innerHTML = list.map(item => {
+        const catStyle = categoryColors[item.category] || { bg: 'rgba(168,85,247,0.18)', color: '#c084fc', border: 'rgba(168,85,247,0.35)', icon: '📑' };
+        const subName = item.subject.split(' ')[0];
+
+        return `
+          <div class="hub-card animate-in">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                <span class="hub-badge" style="background:${catStyle.bg}; color:${catStyle.color}; border:1px solid ${catStyle.border}; font-size:0.75rem;">
+                  ${catStyle.icon} ${item.category}
+                </span>
+                <span class="info-pill" style="font-size:0.75rem; font-weight:800; background:rgba(255,255,255,0.08);">
+                  💾 ${item.sizeFormatted}
+                </span>
+              </div>
+
+              <h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0; color:var(--text); line-height:1.4;">
+                ${item.subject}
+              </h3>
+              <p class="text-muted" style="font-size:0.83rem; margin:0 0 14px 0; line-height:1.5;">
+                ${item.description}
+              </p>
+
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
+                <span class="info-pill" style="font-size:0.72rem;">📅 ${item.year}</span>
+                <span class="info-pill" style="font-size:0.72rem; color:#34d399;">✓ Official CBSE Academic</span>
+              </div>
+            </div>
+
+            <div>
+              <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+                <a href="${item.url}" download="${item.filename}" class="btn btn-primary btn-sm" style="flex:1; text-align:center; font-weight:700;" title="Download PDF to device">
+                  ⬇️ Download PDF
+                </a>
+                <a href="${item.url}" target="_blank" class="btn btn-ghost btn-sm" style="border:1px solid var(--border); font-weight:700;" title="View PDF directly in browser">
+                  👁️ View Online
+                </a>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px; font-size:0.78rem;">
+                <a href="${item.officialUrl}" target="_blank" style="color:var(--text-muted); text-decoration:none;" title="Official CBSE Academic Mirror Link">
+                  🌐 CBSE Portal Mirror
+                </a>
+                <a href="exam.html?cls=Class+10&subject=${encodeURIComponent(subName)}&pt=Class+Test" style="color:#facc15; font-weight:800; text-decoration:none;" title="Start mock test for this subject">
+                  ⚡ Take Mock Test →
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     let studentExamResults = [];
