@@ -14,6 +14,7 @@ const { generateExcel, generateExcelTemplate, parseExcelResults } = require('./s
 const { sendResultsEmail } = require('./services/emailService');
 const { getChatbotResponse } = require('./services/chatbotService');
 const { gradeOneWordAnswer } = require('./services/aiGradingService');
+const { getClass10BoardHub, getStudyMaterials, CLASS_10_BOARD_HUB, CLASSWISE_STUDY_MATERIALS } = require('./services/studyMaterialService');
 const multer = require('multer');
 const uploadExcel = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
@@ -965,6 +966,31 @@ app.post('/api/chatbot', async (req, res) => {
     console.error('Chatbot error:', e.message);
     res.json({ reply: "Sorry, I am unable to answer right now. Please try again shortly!" });
   }
+});
+
+// ─── STUDY MATERIALS & CLASS 10 BOARD HUB API ────────────────────────────────
+app.get('/api/study-materials', (req, res) => {
+  const { cls, subject } = req.query;
+  const materials = getStudyMaterials(cls, subject);
+  res.json({ success: true, cls: cls || 'Class 10', materials });
+});
+
+app.get('/api/board-hub/class-10', (req, res) => {
+  const { subject } = req.query;
+  if (subject) {
+    const subData = getClass10BoardHub(subject.toLowerCase().replace(/\s+/g, '_'));
+    return res.json({ success: true, data: subData });
+  }
+  res.json({ success: true, hub: CLASS_10_BOARD_HUB });
+});
+
+app.get('/api/board-hub/class-10/:subjectId', (req, res) => {
+  const { subjectId } = req.params;
+  const subData = getClass10BoardHub(subjectId);
+  if (!subData) {
+    return res.status(404).json({ success: false, message: 'Subject not found in Class 10 Board Hub' });
+  }
+  res.json({ success: true, subject: subData });
 });
 
 // ─── RESULTS ─────────────────────────────────────────────────────────────────
