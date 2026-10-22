@@ -7,7 +7,6 @@ const os = require('os');
 
 // Vercel or Netlify Functions (AWS Lambda): filesystem is read-only except the tmp dir
 const IS_SERVERLESS = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
-const { startTunnel } = require('untun');
 const { generateExcel, generateExcelTemplate, parseExcelResults } = require('./services/excelService');
 const { sendResultsEmail } = require('./services/emailService');
 const { getChatbotResponse } = require('./services/chatbotService');
@@ -1406,6 +1405,8 @@ if (require.main === module && !IS_SERVERLESS) {
     console.log('================================================================');
 
     try {
+      // untun is ESM-only, so load it lazily (and only for local runs) instead of require()
+      const { startTunnel } = await import('untun');
       const tunnel = await startTunnel({ url: `http://127.0.0.1:${PORT}`, port: PORT });
       const cloudflareUrl = await tunnel.getURL();
       console.log('\n================================================================');
