@@ -1,17 +1,50 @@
 /**
- * Oxford Convent School AI Study Tutor & Doubt Assistant Service
+ * Oxford Convent School AI Study Assistant & Doubt Helper Service
  * Provides educational explanations for Class 1 to 12th school subjects.
  */
 
+function formatNanduResponse(text) {
+  if (!text) return text;
+
+  // 1. Replace any variation of "Nandu Sir" or "Sir Nandu" with "Tumhari dost Nandu"
+  let cleaned = text
+    .replace(/\b(?:Aapka|Apka)\s+Nandu\s+Sir\b/gi, 'Tumhari dost Nandu')
+    .replace(/\bNandu\s+Sir\b/gi, 'Tumhari dost Nandu')
+    .replace(/\bSir\s+Nandu\b/gi, 'Tumhari dost Nandu')
+    .replace(/\bNandu\s+sirji\b/gi, 'Tumhari dost Nandu');
+
+  // 2. Remove redundant trailing self-signatures before appending our standardized one
+  cleaned = cleaned
+    .replace(/\n*[-—–]*\s*(?:Regards|Warm regards|Best wishes|Yours truly|Yours|Aapki|Aapka)?\s*Tumhari dost Nandu\s*[!.]*\s*$/i, '')
+    .trim();
+
+  // 3. Ensure the closing sign-off "Tumhari dost Nandu is always available for you" is present at the end
+  const signoffRegex = /Tumhari\s+dost\s+Nandu\s+is\s+(?:always\s+)?available/i;
+  if (!signoffRegex.test(cleaned)) {
+    cleaned = cleaned + '\n\n— *Tumhari dost Nandu is always available for you!* 💕✨';
+  }
+
+  return cleaned;
+}
+
 async function getChatbotResponse(userMessage, studentClass = '', subject = '', history = []) {
   const msg = (userMessage || '').trim();
-  if (!msg) return "Hello! I am your AI Study Tutor. Ask me any doubt from your subjects (Maths, Science, Social Studies, English, Computer, etc.)!";
+  if (!msg) {
+    return "Hello! Main hoon **Tumhari dost Nandu**. Mujhse apne kisi bhi subject ka doubt poocho, main samjha dungi!\n\n— *Tumhari dost Nandu is always available for you!* 💕✨";
+  }
 
   const geminiKey = process.env.GEMINI_API_KEY;
 
   // 1. Try Gemini API if key is available
   if (geminiKey) {
-    const candidateModels = ['gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.6-flash'];
+    const candidateModels = [
+      'gemini-2.0-flash',
+      'gemini-1.5-flash',
+      'gemini-2.5-flash',
+      'gemini-3.5-flash',
+      'gemini-3.5-flash-lite',
+      'gemini-3.6-flash'
+    ];
     for (const modelName of candidateModels) {
       try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${geminiKey}`, {
@@ -20,10 +53,15 @@ async function getChatbotResponse(userMessage, studentClass = '', subject = '', 
           body: JSON.stringify({
             systemInstruction: {
               parts: [{
-                text: `You are "Ai Nandu Tutor" (Nandu), the friendly, encouraging, and highly knowledgeable academic tutor created specially by The Boss for all students of OXFORD CONVENT SCHOOL SASARAM.
+                text: `You are "Tumhari dost Nandu" (Nandu), a caring, friendly, cheerful, and highly knowledgeable study companion and best friend created specially by The Boss for all students of OXFORD CONVENT SCHOOL SASARAM.
 You assist school students from Class 1 to 12th across all subjects (Science, Maths, Social Science, English, Hindi, Computer, Commerce, Arts, etc.).
-Explain concepts step-by-step with clear examples, formulas, bullet points, and simple English or easy Hinglish/Hindi when appropriate.
-Always be warm, encouraging, polite, and student-friendly. Keep answers well structured and accurate.`
+
+CRITICAL RULES ABOUT YOUR IDENTITY AND SIGN-OFF:
+1. You are a FRIEND and COMPANION ("Tumhari dost Nandu"). NEVER refer to yourself as "Sir", "Nandu Sir", "Sirji", "Teacher", or "Madam". NEVER use the word "Sir" for yourself under any circumstances.
+2. In every response, speak warmly, supportively, and cheerfully like a helpful best friend (using friendly English, easy Hindi, or Hinglish).
+3. At the very end of EVERY answer, conclude with the exact warm signature:
+   "— Tumhari dost Nandu is always available for you! 💕✨"
+4. Explain concepts step-by-step with clear examples, formulas, and bullet points. Keep answers well structured, accurate, and easy to understand.`
               }]
             },
             contents: [
@@ -42,7 +80,7 @@ Always be warm, encouraging, polite, and student-friendly. Keep answers well str
         if (response.ok) {
           const data = await response.json();
           const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (aiText) return aiText;
+          if (aiText) return formatNanduResponse(aiText);
         } else {
           const errData = await response.json().catch(() => ({}));
           console.warn(`Gemini model ${modelName} returned status ${response.status}:`, errData?.error?.message || response.statusText);
@@ -54,7 +92,7 @@ Always be warm, encouraging, polite, and student-friendly. Keep answers well str
   }
 
   // 2. Intelligent Built-in Educational Knowledge Engine
-  return generateKnowledgeEngineResponse(msg, studentClass);
+  return formatNanduResponse(generateKnowledgeEngineResponse(msg, studentClass));
 }
 
 function generateKnowledgeEngineResponse(query, studentClass) {
@@ -62,7 +100,7 @@ function generateKnowledgeEngineResponse(query, studentClass) {
 
   // Greeting
   if (/^(hi|hello|hey|namaste|pranam|good morning|good evening|good afternoon)/.test(q)) {
-    return `👋 **Namaste & Hello!** I am your **Oxford AI Study Assistant**.\n\nHow can I help you today with your studies?\n- 📐 **Mathematics & Formulas (Class 1 to 12th)**\n- 🔬 **Science (Physics, Chemistry, Biology)**\n- 💻 **Computer Science & Coding**\n- 📊 **Commerce, Accounts & Economics**\n- 🏛️ **Social Science, History, Civics & Geography**\n- 📝 **Exam preparation & revision tips**\n\nAsk me any question or concept!`;
+    return `👋 **Namaste & Hello!** Main hoon **Tumhari dost Nandu**! 💕\n\nMain humesha tumhari study me help ke liye available hoon. Aaj hum kya padhenge?\n- 📐 **Mathematics & Formulas (Class 1 to 12th)**\n- 🔬 **Science (Physics, Chemistry, Biology)**\n- 💻 **Computer Science & Coding**\n- 📊 **Commerce, Accounts & Economics**\n- 🏛️ **Social Science, History, Civics & Geography**\n- 📝 **Exam preparation & revision tips**\n\nApna koi bhi sawal ya topic poocho!`;
   }
 
   // Mathematics
@@ -137,7 +175,7 @@ function generateKnowledgeEngineResponse(query, studentClass) {
   }
 
   // General fallback tutor response
-  return `🎓 **Ai Nandu Tutor:**\n\nRegarding **"${query}"**:\n\n- To understand this topic thoroughly, break it down into core definitions, key formulas, and practical examples.\n- Review your textbook and class notes for detailed syllabus coverage.\n- If you have a specific formula, mathematical problem, programming query, or science question, type the exact question and I will solve and explain it step-by-step! ✨`;
+  return `🌸 **Tumhari dost Nandu:**\n\nRegarding **"${query}"**:\n\n- Is topic ko achhi tarah samajhne ke liye definitions, key formulas aur practical examples ko samjhein.\n- Apni textbook aur class notes se syllabus review karein.\n- Agar tumhare paas koi specific formula, mathematical problem, programming query, ya science question hai, toh exact question likho aur main step-by-step explain kar dungi! ✨`;
 }
 
 module.exports = { getChatbotResponse };

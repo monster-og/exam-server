@@ -713,18 +713,18 @@ function toast(msg, type='info') {
 <div id="chatbot-fab" class="chatbot-hidden">
   <div id="chatbot-box" class="chatbot-hidden">
     <div id="chatbot-header">
-      🤖 Ai Nandu Tutor
+      🌸 Tumhari dost Nandu
       <button id="chatbot-close" onclick="toggleChat()">✕</button>
     </div>
     <div id="chatbot-messages">
-      <div class="cb-msg bot">👋 <b>My name is Nandu. My boss created me specially for you all. You can ask me any questions or clear up any doubts you might have.</b> 📚✨</div>
+      <div class="cb-msg bot">👋 <b>Main hoon tumhari dost Nandu! My boss created me specially for you all. Koi bhi study doubt ya question ho, bejhijhak poocho. Tumhari dost Nandu is always available for you!</b> 📚💕✨</div>
     </div>
     <div id="chatbot-input-row">
       <textarea id="chatbot-input" placeholder="Apna doubt likho…" rows="1" onkeydown="cbKeyDown(event)"></textarea>
       <button id="chatbot-send" onclick="sendChatMessage()">➤</button>
     </div>
   </div>
-  <button id="chatbot-toggle-btn" onclick="toggleChat()">🤖 Ask Tutor</button>
+  <button id="chatbot-toggle-btn" onclick="toggleChat()">🌸 Tumhari dost Nandu</button>
 </div>
 
 <script>
@@ -803,7 +803,7 @@ function toast(msg, type='info') {
     var div = document.createElement('div');
     div.className = 'cb-msg ' + sender + (isTyping ? ' typing' : '');
     if (id) div.id = id;
-    div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+    div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/\n/g, '<br>');
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
   }
