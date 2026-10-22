@@ -19,6 +19,7 @@
     "localtunnel": "^2.0.2",
     "multer": "^2.2.0",
     "nodemailer": "^9.0.3",
+    "serverless-http": "^3.2.0",
     "untun": "^0.2.2"
   }
 }

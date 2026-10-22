@@ -4,11 +4,14 @@ const fs = require('fs');
 
 const os = require('os');
 
-const EXPORTS_DIR = process.env.VERCEL
+// Vercel or Netlify Functions (AWS Lambda): filesystem is read-only except the tmp dir
+const IS_SERVERLESS = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+
+const EXPORTS_DIR = IS_SERVERLESS
   ? path.join(os.tmpdir(), 'exports')
   : path.join(__dirname, '..', 'exports');
 
-const STUDENTS_FILE = process.env.VERCEL
+const STUDENTS_FILE = IS_SERVERLESS
   ? path.join(os.tmpdir(), 'exam-server-data', 'students.json')
   : path.join(__dirname, '..', 'data', 'students.json');
 

@@ -4,6 +4,9 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+
+// Vercel or Netlify Functions (AWS Lambda): filesystem is read-only except the tmp dir
+const IS_SERVERLESS = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
 const { startTunnel } = require('untun');
 const { generateExcel, generateExcelTemplate, parseExcelResults } = require('./services/excelService');
 const { sendResultsEmail } = require('./services/emailService');
@@ -16,11 +19,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Data file paths
-const DATA_DIR = process.env.VERCEL
+const DATA_DIR = IS_SERVERLESS
   ? path.join(os.tmpdir(), 'exam-server-data')
   : path.join(__dirname, 'data');
 
-if (process.env.VERCEL) {
+if (IS_SERVERLESS) {
   try {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -1378,7 +1381,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // ─── START (High-Capacity Multi-Computer & Zero-Password Cloudflare Tunnel) ───
-if (require.main === module && !process.env.VERCEL) {
+if (require.main === module && !IS_SERVERLESS) {
   const server = app.listen(PORT, '0.0.0.0', async () => {
     const localIps = getLocalIpAddresses();
     
