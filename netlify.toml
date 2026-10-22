@@ -1,0 +1,20 @@
+[build]
+  # No build step: static pages are served from public/, the API runs as a function
+  command = "echo 'No build step required'"
+  publish = "public"
+
+[functions]
+  directory = "netlify/functions"
+  included_files = ["data/**", "exports/*template*.xlsx"]
+
+[[redirects]]
+  from = "/api"
+  to = "/.netlify/functions/api"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
