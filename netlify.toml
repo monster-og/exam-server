@@ -20,3 +20,28 @@
   to = "/.netlify/functions/api/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/teacher-dashboard"
+  to = "/teacher-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/student-dashboard"
+  to = "/student-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/exam"
+  to = "/exam.html"
+  status = 200
+
+[[redirects]]
+  from = "/check-result"
+  to = "/check-result.html"
+  status = 200

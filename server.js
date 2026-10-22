@@ -65,7 +65,10 @@ process.on('unhandledRejection', (reason) => {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function readJSON(filePath, fallback) {
-  if (USE_DB) return dbStore.read(path.basename(filePath, '.json'), fallback);
+  if (USE_DB && dbStore && dbStore.isReady()) {
+    const val = dbStore.read(path.basename(filePath, '.json'), null);
+    if (val !== null && val !== undefined) return val;
+  }
   try {
     if (fs.existsSync(filePath)) {
       const raw = fs.readFileSync(filePath, 'utf8');
@@ -83,7 +86,9 @@ function readJSON(filePath, fallback) {
 }
 
 function writeJSON(filePath, data) {
-  if (USE_DB) return dbStore.write(path.basename(filePath, '.json'), data);
+  if (USE_DB && dbStore && dbStore.isReady()) {
+    dbStore.write(path.basename(filePath, '.json'), data);
+  }
   try {
     const dir = path.dirname(filePath);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });

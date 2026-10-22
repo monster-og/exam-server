@@ -19,8 +19,17 @@ const SEED_DIR = [path.join(__dirname, '..', 'data'), path.join(process.cwd(), '
   .find(d => fs.existsSync(path.join(d, 'students.json'))) || path.join(__dirname, '..', 'data');
 
 let db = null;
+function hasDbConfig() {
+  return !!(process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL);
+}
+
 function getDb() {
-  if (!db) db = getDatabase();
+  if (!db) {
+    if (!hasDbConfig()) {
+      throw new Error('No database connection string configured in environment');
+    }
+    db = getDatabase();
+  }
   return db;
 }
 
@@ -30,6 +39,10 @@ let seeded = false;
 let writeQueue = Promise.resolve();
 let pendingWrites = 0;
 let lastWriteError = null;
+
+function isReady() {
+  return seeded && hasDbConfig() && !lastWriteError;
+}
 
 // Key-order independent JSON, so unchanged records are never rewritten
 function stableStringify(value) {
@@ -64,9 +77,33 @@ function makeRow(value) {
   return { json: JSON.stringify(value === undefined ? null : value), hash: stableStringify(value) };
 }
 
+async function ensureTables(client) {
+  await client.query(`
+    CREATE TABLE IF NOT EXISTS records (
+      collection text NOT NULL,
+      key text NOT NULL,
+      data jsonb NOT NULL,
+      seq bigserial NOT NULL,
+      updated_at timestamp with time zone DEFAULT now() NOT NULL,
+      PRIMARY KEY (collection, key)
+    );
+    CREATE TABLE IF NOT EXISTS seeded_collections (
+      name text PRIMARY KEY,
+      seeded_at timestamp with time zone DEFAULT now() NOT NULL
+    );
+  `);
+}
+
 async function ensureSeeded() {
   if (seeded) return;
   const pool = getDb().pool;
+  const initClient = await pool.connect();
+  try {
+    await ensureTables(initClient);
+  } finally {
+    initClient.release();
+  }
+
   for (const name of Object.keys(COLLECTIONS)) {
     const client = await pool.connect();
     try {
@@ -177,6 +214,10 @@ function write(name, data) {
 
 // Express middleware: load fresh data before the route, flush writes before responding
 function middleware(req, res, next) {
+  if (!hasDbConfig()) {
+    // Database connection string not configured in Netlify yet, fallback gracefully to file storage!
+    return next();
+  }
   refresh().then(() => {
     const originalSend = res.send.bind(res);
     res.send = function (body) {
@@ -188,14 +229,15 @@ function middleware(req, res, next) {
           return originalSend(JSON.stringify({ success: false, message: 'Could not save data, please try again.' }));
         }
         originalSend(body);
-      });
+      }).catch(() => originalSend(body));
       return res;
     };
     next();
   }).catch(err => {
-    console.error('dbStore refresh error:', err.message);
-    res.status(503).json({ success: false, message: 'Database is not available right now, please try again.' });
+    console.warn('dbStore warning (falling back to file storage):', err.message);
+    // Graceful fallback to file storage instead of 503 error!
+    next();
   });
 }
 
-module.exports = { middleware, read, write };
+module.exports = { middleware, read, write, isReady, hasDbConfig };
