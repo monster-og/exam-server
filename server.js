@@ -16,10 +16,32 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Data file paths
-const QUESTIONS_FILE = path.join(__dirname, 'data', 'questions.json');
-const RESULTS_FILE   = path.join(__dirname, 'data', 'results.json');
-const STUDENTS_FILE  = path.join(__dirname, 'data', 'students.json');
-const TEACHERS_FILE  = path.join(__dirname, 'data', 'teachers.json');
+const DATA_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'exam-server-data')
+  : path.join(__dirname, 'data');
+
+if (process.env.VERCEL) {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    const seedDir = path.join(__dirname, 'data');
+    ['questions.json', 'results.json', 'students.json', 'teachers.json'].forEach(f => {
+      const src = path.join(seedDir, f);
+      const dst = path.join(DATA_DIR, f);
+      if (!fs.existsSync(dst) && fs.existsSync(src)) {
+        fs.copyFileSync(src, dst);
+      }
+    });
+  } catch (e) {
+    console.warn('Vercel tmp data setup warning:', e.message);
+  }
+}
+
+const QUESTIONS_FILE = path.join(DATA_DIR, 'questions.json');
+const RESULTS_FILE   = path.join(DATA_DIR, 'results.json');
+const STUDENTS_FILE  = path.join(DATA_DIR, 'students.json');
+const TEACHERS_FILE  = path.join(DATA_DIR, 'teachers.json');
 
 // High concurrency middleware & headers for 50+ LAN and WAN Internet users
 app.use(cors());
@@ -38,15 +60,29 @@ process.on('unhandledRejection', (reason) => {
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 function readJSON(filePath, fallback) {
   try {
-    const raw = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(raw);
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, 'utf8');
+      return JSON.parse(raw);
+    }
+    const seedPath = path.join(__dirname, 'data', path.basename(filePath));
+    if (fs.existsSync(seedPath)) {
+      const raw = fs.readFileSync(seedPath, 'utf8');
+      return JSON.parse(raw);
+    }
+    return fallback;
   } catch {
     return fallback;
   }
 }
 
 function writeJSON(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+  try {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+  } catch (e) {
+    console.error('writeJSON error:', e.message);
+  }
 }
 
 function getLocalIpAddresses() {
@@ -1328,44 +1364,61 @@ app.post('/api/email/send', verifyAdmin, async (req, res) => {
   }
 });
 
-// ─── START (High-Capacity Multi-Computer & Zero-Password Cloudflare Tunnel) ───
-const server = app.listen(PORT, '0.0.0.0', async () => {
-  const localIps = getLocalIpAddresses();
-  
-  let publicIp = 'N/A';
-  try {
-    const ipRes = await fetch('https://api.ipify.org?format=json');
-    const ipData = await ipRes.json();
-    publicIp = ipData.ip || 'N/A';
-  } catch (e) {}
-
-  console.log('\n================================================================');
-  console.log('🏫  OXFORD CONVENT SCHOOL SASARAM — ONLINE EXAM SERVER');
-  console.log('================================================================');
-  console.log(`🌐  Local (Main PC)           : http://localhost:${PORT}`);
-  localIps.forEach(ip => {
-    console.log(`📡  School Wi-Fi / LAN IP     : http://${ip}:${PORT}`);
+// Health Check & Root API
+app.get('/api', (req, res) => {
+  res.json({
+    status: 'ok',
+    school: 'Oxford Convent School Sasaram',
+    server: 'Online Examination Server',
+    time: new Date().toISOString()
   });
-  console.log(`🌍  Direct Public IP Access   : http://${publicIp}:${PORT}`);
-  console.log('----------------------------------------------------------------');
-  console.log('👨‍🏫  Teacher Password          : ' + (process.env.TEACHER_PASSWORD || 'Teacher@2011') + ' (or teacher123)');
-  console.log('👑  Admin Password            : ' + (process.env.ADMIN_PASSWORD || 'Principal@2011') + ' (or admin123)');
-  console.log('================================================================');
-
-  try {
-    const tunnel = await startTunnel({ url: `http://127.0.0.1:${PORT}`, port: PORT });
-    const cloudflareUrl = await tunnel.getURL();
-    console.log('\n================================================================');
-    console.log('🚀  WORLDWIDE DIRECT ACCESS (ANY MOBILE DATA / HOME / NO PASSWORD)');
-    console.log('================================================================');
-    console.log(`🔗  Direct Link : ${cloudflareUrl}`);
-    console.log('👉  Share this link with ANY student or teacher on any network!');
-    console.log('================================================================\n');
-  } catch (err) {
-    console.log('ℹ️  Tunnel active over local network & public IP: ' + err.message);
-  }
+});
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() });
 });
 
-server.maxConnections = 2000;
-server.keepAliveTimeout = 65000;
-server.headersTimeout = 66000;
+// ─── START (High-Capacity Multi-Computer & Zero-Password Cloudflare Tunnel) ───
+if (require.main === module && !process.env.VERCEL) {
+  const server = app.listen(PORT, '0.0.0.0', async () => {
+    const localIps = getLocalIpAddresses();
+    
+    let publicIp = 'N/A';
+    try {
+      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipRes.json();
+      publicIp = ipData.ip || 'N/A';
+    } catch (e) {}
+
+    console.log('\n================================================================');
+    console.log('🏫  OXFORD CONVENT SCHOOL SASARAM — ONLINE EXAM SERVER');
+    console.log('================================================================');
+    console.log(`🌐  Local (Main PC)           : http://localhost:${PORT}`);
+    localIps.forEach(ip => {
+      console.log(`📡  School Wi-Fi / LAN IP     : http://${ip}:${PORT}`);
+    });
+    console.log(`🌍  Direct Public IP Access   : http://${publicIp}:${PORT}`);
+    console.log('----------------------------------------------------------------');
+    console.log('👨‍🏫  Teacher Password          : ' + (process.env.TEACHER_PASSWORD || 'Teacher@2011') + ' (or teacher123)');
+    console.log('👑  Admin Password            : ' + (process.env.ADMIN_PASSWORD || 'Principal@2011') + ' (or admin123)');
+    console.log('================================================================');
+
+    try {
+      const tunnel = await startTunnel({ url: `http://127.0.0.1:${PORT}`, port: PORT });
+      const cloudflareUrl = await tunnel.getURL();
+      console.log('\n================================================================');
+      console.log('🚀  WORLDWIDE DIRECT ACCESS (ANY MOBILE DATA / HOME / NO PASSWORD)');
+      console.log('================================================================');
+      console.log(`🔗  Direct Link : ${cloudflareUrl}`);
+      console.log('👉  Share this link with ANY student or teacher on any network!');
+      console.log('================================================================\n');
+    } catch (err) {
+      console.log('ℹ️  Tunnel active over local network & public IP: ' + err.message);
+    }
+  });
+
+  server.maxConnections = 2000;
+  server.keepAliveTimeout = 65000;
+  server.headersTimeout = 66000;
+}
+
+module.exports = app;

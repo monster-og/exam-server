@@ -2,13 +2,24 @@ const ExcelJS = require('exceljs');
 const path = require('path');
 const fs = require('fs');
 
-const EXPORTS_DIR = path.join(__dirname, '..', 'exports');
-const STUDENTS_FILE = path.join(__dirname, '..', 'data', 'students.json');
+const os = require('os');
+
+const EXPORTS_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'exports')
+  : path.join(__dirname, '..', 'exports');
+
+const STUDENTS_FILE = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'exam-server-data', 'students.json')
+  : path.join(__dirname, '..', 'data', 'students.json');
 
 function getStudentsMap() {
   try {
-    if (fs.existsSync(STUDENTS_FILE)) {
-      const list = JSON.parse(fs.readFileSync(STUDENTS_FILE, 'utf8') || '[]');
+    let filePath = STUDENTS_FILE;
+    if (!fs.existsSync(filePath)) {
+      filePath = path.join(__dirname, '..', 'data', 'students.json');
+    }
+    if (fs.existsSync(filePath)) {
+      const list = JSON.parse(fs.readFileSync(filePath, 'utf8') || '[]');
       const map = {};
       list.forEach(s => {
         const name = (s.name || '').trim().toLowerCase();
