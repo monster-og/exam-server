@@ -1,0 +1,18 @@
+[
+  {
+    "id": "tch_1788285670958_bcd9",
+    "name": "Ramesh Kumar",
+    "mobile": "9876543210",
+    "email": "ramesh@gmail.com",
+    "password": "teacherpass123",
+    "registeredAt": "2026-09-01T18:01:10.958Z"
+  },
+  {
+    "id": "tch_1788285729997_coos",
+    "name": "Prince Kumar",
+    "mobile": "7557760465",
+    "email": "expertprince01@gmail.com",
+    "password": "149821",
+    "registeredAt": "2026-09-01T18:02:09.997Z"
+  }
+]

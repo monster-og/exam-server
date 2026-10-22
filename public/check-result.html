@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Show Result — Oxford Convent School, Sasaram</title>
+  <meta name="description" content="Check student online exam results after teacher evaluation">
+  <link rel="stylesheet" href="style.css">
+  <script src="html2pdf.bundle.min.js"></script>
+  <style>
+    .result-search-box {
+      max-width: 620px;
+      margin: 0 auto 30px;
+    }
+    .result-card-display {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 20px;
+      animation: fadeInUp 0.4s ease both;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .status-published {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #4ade80;
+    }
+    .status-pending {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+  </style>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<nav class="navbar">
+  <a href="/" class="logo">🏫 Exam Portal</a>
+  <div class="nav-links">
+    <a href="student-dashboard.html">Dashboard</a>
+    <a href="exam.html">Take Exam</a>
+    <a href="check-result.html" class="active">Show Result</a>
+    <a href="/" style="color:var(--text-muted);">Switch Account</a>
+  </div>
+</nav>
+
+<main class="container" style="padding-top: 50px; padding-bottom: 60px;">
+  <div class="text-center mb-6">
+    <div class="hero-badge">🎯 Verified Result Portal</div>
+    <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 10px;">My Published Result</h1>
+    <p class="text-muted">View only your own verified test scores, grades, and teacher evaluation</p>
+  </div>
+
+  <div class="card result-search-box">
+    <form id="result-search-form" onsubmit="checkResult(event)">
+      <div class="grid grid-3 gap-3 mb-3">
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Student Full Name</label>
+          <input type="text" id="srch-name" class="form-control" placeholder="Logging in..." required autocomplete="name" readonly style="background:var(--surface2);opacity:0.9;font-weight:700;color:var(--accent);">
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">🔒 Filled from profile.</p>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">🎯 Periodic Test</label>
+          <select id="srch-pt" class="form-control" style="font-weight:700;color:var(--accent);">
+            <option value="all">🌐 All Tests (PT &amp; Class Test)</option>
+            <option value="PT-1">⭐ Periodic Test - 1 (PT-1)</option>
+            <option value="PT-2">⭐ Periodic Test - 2 (PT-2)</option>
+            <option value="PT-3">⭐ Periodic Test - 3 (PT-3)</option>
+            <option value="PT-4">⭐ Periodic Test - 4 (PT-4)</option>
+            <option value="Class Test">📝 Class Test (Instant AI Graded)</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">📅 Academic Year / Session</label>
+          <select id="srch-year" class="form-control">
+            <option value="all">🌐 All Years &amp; Sessions</option>
+            <option value="2026-2027">2026-2027 (Year 2026)</option>
+            <option value="2025-2026">2025-2026 (Year 2025)</option>
+            <option value="2024-2025">2024-2025 (Year 2024)</option>
+            <option value="2023-2024">2023-2024 (Year 2023)</option>
+          </select>
+        </div>
+      </div>
+      <input type="hidden" id="srch-wing" value="school">
+      <div class="grid grid-2 gap-3 mb-4">
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">🎓 Class (Locked to Your Profile)</label>
+          <select id="srch-class" class="form-control" required onchange="loadSubjectsForClass()" style="background:var(--surface2);opacity:0.9;font-weight:700;color:var(--accent);pointer-events:none;">
+            <!-- Populated dynamically -->
+          </select>
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">🔒 You can only view results for your own class.</p>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Subject (Optional)</label>
+          <select id="srch-subject" class="form-control">
+            <option value="">All Subjects</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-full btn-lg" id="search-btn">
+        🔍 Search Published Result
+      </button>
+    </form>
+  </div>
+
+  <!-- Results Output Container -->
+  <div id="results-output" style="max-width: 680px; margin: 0 auto;"></div>
+
+  <!-- Evaluated Answersheet Modal -->
+  <div id="pub-answersheet-modal" class="modal-overlay hidden" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;">
+    <div class="card animate-in" style="max-width:680px;width:100%;max-height:90vh;overflow-y:auto;position:relative;">
+      <div class="flex justify-between items-center mb-3 pb-2" style="border-bottom:1px solid var(--border);">
+        <div>
+          <h2 style="font-size:1.3rem;font-weight:800;margin:0;">📝 Evaluated Answersheet &amp; Solution</h2>
+          <p class="text-muted" style="font-size:0.82rem;margin:2px 0 0 0;" id="pub-ans-subtitle">Official Examination Record</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="closePublicAnswersheet()">✕ Close</button>
+      </div>
+
+      <div id="pub-ans-body"></div>
+    </div>
+  </div>
+
+  <!-- A4 Official Result Marksheet Modal (with Print / PDF Download) -->
+  <div id="pub-a4-modal" class="modal-overlay hidden" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;">
+    <div style="max-width:220mm;width:100%;max-height:95vh;overflow-y:auto;position:relative;display:flex;flex-direction:column;align-items:center;">
+      
+      <!-- Action Bar -->
+      <div style="width:210mm;max-width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;background:var(--surface2);padding:10px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+        <span style="font-weight:700;font-size:1rem;color:var(--text);">📄 Official A4 Student Report Card</span>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="downloadPubA4PDF()" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);font-weight:700;">⬇️ Download PDF</button>
+          <button class="btn btn-success btn-sm" onclick="printPubA4Sheet()" style="background:linear-gradient(135deg,#059669,#10b981);font-weight:700;">🖨️ Print Marksheet</button>
+          <button class="btn btn-ghost btn-sm" onclick="closePubA4Modal()">✕ Close</button>
+        </div>
+      </div>
+
+      <!-- Printable A4 Sheet -->
+      <div id="printable-a4-sheet" class="a4-marksheet-container"></div>
+    </div>
+  </div>
+</main>
+
+<script>
+const COURSE_GROUPS = {
+  school: [
+    { label: "🏫 Primary & High School (Class 1 to 10)", options: ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"] },
+    { label: "🔬 Senior Secondary (Class 11 & 12)", options: ["Class 11", "11th Science", "11th Commerce", "11th Arts", "Class 12", "12th Science", "12th Commerce", "12th Arts"] }
+  ]
+};
+
+function updateSrchCourseDropdown(selectedValue = '') {
+  const wing = document.getElementById('srch-wing')?.value || 'school';
+  const target = document.getElementById('srch-class');
+  if (!target) return;
+  const groups = COURSE_GROUPS[wing] || COURSE_GROUPS.school;
+  
+  let html = '<option value="">-- Select Class (1 to 12th) --</option>';
+  groups.forEach(g => {
+    html += `<optgroup label="${g.label}">`;
+    g.options.forEach(opt => {
+      const isSel = (opt === selectedValue) ? 'selected' : '';
+      html += `<option value="${opt}" ${isSel}>${opt}</option>`;
+    });
+    html += `</optgroup>`;
+  });
+  target.innerHTML = html;
+}
+
+window.addEventListener('load', async () => {
+  updateSrchCourseDropdown();
+  const token = localStorage.getItem('studentToken');
+
+  // ── LOGIN MANDATORY: student login nahi hai to homepage bhejo ──
+  if (!token) {
+    toast('⚠️ Pehle login karein apna result dekhne ke liye', 'error');
+    setTimeout(() => { window.location.href = '/'; }, 1500);
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/students/me', {
+      headers: { 'x-student-token': token }
+    });
+    const data = await res.json();
+    if (!data.success) {
+      // Token invalid/expired
+      localStorage.removeItem('studentToken');
+      window.location.href = '/';
+      return;
+    }
+    if (data.success && data.student) {
+      // ── LOCK: naam aur class sirf apna, change nahi ho sakta ──
+      const nameEl = document.getElementById('srch-name');
+      nameEl.value = data.student.name;
+      nameEl.setAttribute('readonly', 'true'); // double lock
+
+      const stdCls = data.student.class;
+      const wingSel = document.getElementById('srch-wing');
+      if (wingSel) {
+        wingSel.value = 'school';
+        updateSrchCourseDropdown(stdCls);
+      }
+
+      // Class dropdown lock: value fix karo, dobara change na ho
+      const classEl = document.getElementById('srch-class');
+      if (classEl) {
+        classEl.value = stdCls;
+        // Agar custom class hai jo list mein nahi (purana data) to directly add karo
+        if (!classEl.value) {
+          const opt = document.createElement('option');
+          opt.value = stdCls;
+          opt.textContent = stdCls;
+          opt.selected = true;
+          classEl.appendChild(opt);
+        }
+      }
+
+      loadSubjectsForClass();
+    }
+  } catch(e) {
+    toast('❌ Profile load error. Please login again.', 'error');
+    setTimeout(() => { window.location.href = '/'; }, 2000);
+  }
+});
+
+async function loadSubjectsForClass() {
+  const cls = document.getElementById('srch-class').value;
+  const subSelect = document.getElementById('srch-subject');
+  subSelect.innerHTML = '<option value="">All Subjects</option>';
+  if (!cls) return;
+  try {
+    const res = await fetch('/api/subjects');
+    const data = await res.json();
+    const subs = data[cls] || [];
+    subs.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s;
+      opt.textContent = s;
+      subSelect.appendChild(opt);
+    });
+  } catch (e) {}
+}
+
+async function checkResult(e) {
+  e.preventDefault();
+  const name = document.getElementById('srch-name').value.trim();
+  const year = document.getElementById('srch-year')?.value || 'all';
+  const pt = document.getElementById('srch-pt')?.value || 'all';
+  const cls = document.getElementById('srch-class').value;
+  const subject = document.getElementById('srch-subject').value;
+  const output = document.getElementById('results-output');
+  const btn = document.getElementById('search-btn');
+
+  if (!name || !cls) {
+    toast('⚠️ Please provide both student name and class', 'info');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Checking...';
+  output.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    let url = `/api/results/check?name=${encodeURIComponent(name)}&cls=${encodeURIComponent(cls)}`;
+    if (subject) url += `&subject=${encodeURIComponent(subject)}`;
+    if (year && year !== 'all') url += `&year=${encodeURIComponent(year)}`;
+    if (pt && pt !== 'all') url += `&examType=${encodeURIComponent(pt)}`;
+    
+    const token = localStorage.getItem('studentToken');
+    const res = await fetch(url, {
+      headers: token ? { 'x-student-token': token } : {}
+    });
+    const data = await res.json();
+
+    if (!data.found) {
+      output.innerHTML = `
+        <div class="card text-center animate-in" style="padding: 40px 20px;">
+          <div style="font-size: 3rem; margin-bottom: 12px;">📭</div>
+          <h3 style="font-size: 1.3rem; margin-bottom: 8px;">No Record Found</h3>
+          <p class="text-muted">No examination record found for "${name}" in Class ${cls}${pt !== 'all' ? ` (${pt})` : ''}${year !== 'all' ? ` (Year: ${year})` : ''}. Please check your test selection and try again.</p>
+        </div>
+      `;
+    } else if (!data.unlocked) {
+      output.innerHTML = `
+        <div class="card text-center animate-in" style="padding: 40px 20px; border-color: rgba(245, 158, 11, 0.4);">
+          <div style="font-size: 3.5rem; margin-bottom: 12px;">⏳</div>
+          <div class="status-badge status-pending mb-4">Pending Evaluation</div>
+          <h3 style="font-size: 1.3rem; margin-bottom: 8px;">Result Under Evaluation</h3>
+          <p class="text-muted" style="max-width: 480px; margin: 0 auto; line-height: 1.6;">
+            Your exam has been submitted successfully, but **the Teacher or Admin has not published the results yet**.<br>
+            Please check back once the evaluation is unlocked by your teacher.
+          </p>
+        </div>
+      `;
+    } else {
+      publicSearchResults = data.results || [];
+      output.innerHTML = `
+        <div class="text-center mb-4">
+          <div class="status-badge status-published">✅ Result Officially Published</div>
+        </div>
+      ` + data.results.map(r => {
+        const pct = r.total > 0 ? Math.round((r.score / r.total) * 100) : 0;
+        const grade = getGrade(pct);
+        const dt = new Date(r.submittedAt).toLocaleDateString('en-IN');
+        const sessionLabel = r.session || r.year || '2025-2026';
+        const examBadge = `<span style="background:rgba(234,179,8,0.15);color:#f59e0b;border:1px solid rgba(234,179,8,0.3);padding:2px 8px;border-radius:4px;font-size:0.78rem;font-weight:800;">${r.examType || 'PT-1'}</span>`;
+        return `
+          <div class="result-card-display">
+            <div class="flex justify-between items-center mb-4" style="border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+              <div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+                  <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text); margin:0;">${r.studentName}</h3>
+                  ${examBadge}
+                  <span style="background:rgba(99,102,241,0.12);color:var(--accent);padding:2px 8px;border-radius:4px;font-size:0.78rem;font-weight:700;">${sessionLabel}</span>
+                </div>
+                <p class="text-muted" style="font-size: 0.88rem;">Class ${r.class} • ${r.subject}</p>
+              </div>
+              <div style="text-align: right;">
+                <span class="grade ${grade === 'A+' ? 'grade-Aplus' : 'grade-' + grade}">${grade}</span>
+                <p style="font-size: 0.75rem; color: var(--text-dim); margin-top: 4px;">${dt}</p>
+              </div>
+            </div>
+
+            <div class="grid grid-3 gap-3 text-center mb-4">
+              <div style="background: var(--surface2); padding: 14px; border-radius: var(--radius-sm);">
+                <div style="font-size: 1.6rem; font-weight: 800; color: var(--primary-light);">${r.score} / ${r.total}</div>
+                <div class="text-muted" style="font-size: 0.8rem;">Marks Obtained</div>
+              </div>
+              <div style="background: var(--surface2); padding: 14px; border-radius: var(--radius-sm);">
+                <div style="font-size: 1.6rem; font-weight: 800; color: var(--accent);">${pct}%</div>
+                <div class="text-muted" style="font-size: 0.8rem;">Percentage</div>
+              </div>
+              <div style="background: var(--surface2); padding: 14px; border-radius: var(--radius-sm);">
+                <div style="font-size: 1.6rem; font-weight: 800; color: ${pct >= 40 ? '#4ade80' : '#ef4444'};">
+                  ${pct >= 40 ? 'PASS' : 'FAIL'}
+                </div>
+                <div class="text-muted" style="font-size: 0.8rem;">Status</div>
+              </div>
+            </div>
+
+            <div class="text-center mt-3 pt-3" style="border-top: 1px solid var(--border); display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+              <button class="btn btn-primary" onclick="openPublicAnswersheet('${r.id}')">
+                👁️ View Solution
+              </button>
+              <button class="btn btn-success" onclick="openPubA4Result('${r.id}')">
+                ${(r.examType === 'Class Test' || r.examType === 'CT') ? '📄 Subject Marksheet (Class Test)' : '📄 Official Marksheet (All Subjects)'}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+  } catch (err) {
+    output.innerHTML = '<div class="card text-center"><p class="text-muted">An error occurred while loading results.</p></div>';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🔍 Search Published Result';
+}
+
+let publicSearchResults = [];
+
+function openPublicAnswersheet(id) {
+  const r = publicSearchResults.find(x => x.id === id);
+  if (!r) return;
+
+  const pct = r.total > 0 ? Math.round((r.score / r.total) * 100) : 0;
+  const grade = getGrade(pct);
+  const dt = new Date(r.submittedAt).toLocaleString('en-IN');
+
+  document.getElementById('pub-ans-subtitle').textContent = `${r.studentName} • Class ${r.class} • ${r.subject} • Submitted: ${dt}`;
+
+  let html = `
+    <div class="grid grid-3 gap-3 text-center mb-4">
+      <div style="background:var(--surface2); padding:12px; border-radius:var(--radius-sm);">
+        <div style="font-size:1.6rem; font-weight:800; color:var(--primary-light);">${r.score} / ${r.total}</div>
+        <div class="text-muted" style="font-size:0.8rem;">Total Marks</div>
+      </div>
+      <div style="background:var(--surface2); padding:12px; border-radius:var(--radius-sm);">
+        <div style="font-size:1.6rem; font-weight:800; color:var(--accent);">${pct}%</div>
+        <div class="text-muted" style="font-size:0.8rem;">Percentage</div>
+      </div>
+      <div style="background:var(--surface2); padding:12px; border-radius:var(--radius-sm);">
+        <div style="font-size:1.6rem; font-weight:800;">${grade}</div>
+        <div class="text-muted" style="font-size:0.8rem;">Grade</div>
+      </div>
+    </div>
+    <div style="max-height:420px; overflow-y:auto; padding-right:4px;">
+  `;
+
+  if (r.answers && r.answers.length > 0) {
+    r.answers.forEach((a, i) => {
+      if (a.type === 'owa') {
+        const studentAns = a.userAnswer || '<em style="color:var(--text-muted)">Not Answered</em>';
+        const marksAwarded = a.owaMarksAwarded !== undefined ? a.owaMarksAwarded : (a.isCorrect ? a.marks : 0);
+        const maxMarks = a.marks || 2;
+        const isPassed = marksAwarded > 0;
+        const expectedAns = a.correctAnswer || a.expectedAnswer || '';
+
+        html += `
+          <div style="background:var(--surface2); border-left:4px solid ${isPassed ? 'var(--success)' : '#c084fc'}; padding:14px; border-radius:4px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+              <span style="font-weight:700; font-size:0.95rem;">Q${i + 1}: ${a.qText}</span>
+              <span style="background:rgba(168,85,247,0.15); color:#c084fc; border:1px solid rgba(168,85,247,0.3); padding:2px 8px; border-radius:50px; font-size:0.75rem; font-weight:700;">One Word Answer</span>
+            </div>
+            <div style="font-size:0.88rem; margin:8px 0; line-height:1.6;">
+              <div>Student's Answer: <strong style="color:#c084fc; font-size:0.95rem;">${studentAns}</strong> ${isPassed ? '✅' : '❌'}</div>
+              ${expectedAns ? `<div style="margin-top:6px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:6px; padding:6px 12px;">
+                💡 <span style="color:#10b981; font-weight:700;">Expected / Correct Solution:</span> <strong style="color:#10b981; font-size:1rem; font-weight:800;">${expectedAns}</strong>
+              </div>` : ''}
+              ${a.aiReason ? `<div style="margin-top:6px; font-size:0.84rem; color:#cbd5e1; background:rgba(255,255,255,0.05); border-radius:6px; padding:6px 12px;">
+                🤖 <strong>AI Evaluation:</strong> ${a.aiReason}
+              </div>` : ''}
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:8px; margin-top:8px;">
+              <span style="font-size:0.8rem; color:${isPassed ? 'var(--success)' : 'var(--text-muted)'};">${isPassed ? '✅ Correct' : '❌ Incorrect / Evaluated'}</span>
+              <span style="font-weight:800; font-size:0.92rem; color:${isPassed ? 'var(--success)' : 'var(--text-muted)'};">
+                Marks: ${marksAwarded} / ${maxMarks}
+              </span>
+            </div>
+          </div>
+        `;
+      } else {
+        const isCorrect = a.isCorrect || (a.type === 'tf'
+          ? String(a.userAnswer) === String(a.correctAnswer)
+          : String(a.userAnswer) === String(a.correctAnswer));
+
+        const userDisp = a.type === 'tf' 
+          ? (a.userAnswer || 'Not Answered') 
+          : (a.options?.[a.userAnswer] || (a.userAnswer !== undefined ? `Option ${a.userAnswer + 1}` : 'Not Answered'));
+
+        const corrDisp = a.type === 'tf' 
+          ? a.correctAnswer 
+          : (a.options?.[a.correctAnswer] || a.correctAnswer);
+
+        const marksVal = isCorrect ? (a.marks || 1) : 0;
+        const maxMarks = a.marks || 1;
+
+        html += `
+          <div style="background:var(--surface2); border-left:4px solid ${isCorrect ? 'var(--success)' : 'var(--danger)'}; padding:14px; border-radius:4px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+              <span style="font-weight:700; font-size:0.95rem;">Q${i + 1}: ${a.qText}</span>
+              <span class="question-type-badge ${a.type === 'mcq' ? 'badge-mcq' : 'badge-tf'}" style="font-size:0.75rem;">${a.type === 'mcq' ? 'MCQ' : 'True/False'}</span>
+            </div>
+            <div style="font-size:0.88rem; margin:8px 0; line-height:1.5;">
+              <div>Student's Answer: <strong style="color:${isCorrect ? 'var(--success)' : 'var(--danger)'};">${userDisp}</strong> ${isCorrect ? '✅' : '❌'}</div>
+              ${!isCorrect ? `<div style="margin-top:4px;">Correct Answer: <strong style="color:var(--success);">${corrDisp}</strong></div>` : ''}
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:8px; margin-top:8px;">
+              <span style="font-size:0.8rem; color:${isCorrect ? 'var(--success)' : 'var(--danger)'};">${isCorrect ? '✅ Correct' : '❌ Incorrect'}</span>
+              <span style="font-weight:800; font-size:0.92rem; color:${isCorrect ? 'var(--success)' : 'var(--danger)'};">
+                Marks: ${marksVal} / ${maxMarks}
+              </span>
+            </div>
+          </div>
+        `;
+      }
+    });
+  } else {
+    html += `<p class="text-muted text-center" style="padding:20px;">No detailed questions recorded for this test.</p>`;
+  }
+
+  html += '</div>';
+  document.getElementById('pub-ans-body').innerHTML = html;
+  document.getElementById('pub-answersheet-modal').classList.remove('hidden');
+}
+
+function closePublicAnswersheet() {
+  document.getElementById('pub-answersheet-modal').classList.add('hidden');
+}
+
+async function openPubA4Result(id) {
+  const r = publicSearchResults.find(x => x.id === id);
+  if (!r) return;
+
+  const modal = document.getElementById('pub-a4-modal');
+  const sheet = document.getElementById('printable-a4-sheet');
+  sheet.innerHTML = '<div class="spinner" style="margin:40px auto;"></div>';
+  modal.classList.remove('hidden');
+
+  try {
+    const params = new URLSearchParams({
+      name: r.studentName,
+      cls: r.class,
+      session: r.session || r.year || '',
+      examType: r.examType || 'PT-1'
+    });
+    if (r.subject && (r.examType === 'Class Test' || r.examType === 'CT')) {
+      params.append('subject', r.subject);
+    }
+
+    const res = await fetch(`/api/students/cumulative-marksheet?${params.toString()}`);
+    const data = await res.json();
+    if (!data.success || !data.marksheet) {
+      sheet.innerHTML = `<p class="text-danger" style="padding:20px; text-align:center;">Failed to load marksheet: ${data.message || 'Unknown error'}</p>`;
+      return;
+    }
+    sheet.innerHTML = generatePubA4MarksheetHTML(data.marksheet, r);
+  } catch (e) {
+    sheet.innerHTML = '<p class="text-danger" style="padding:20px; text-align:center;">Error loading marksheet.</p>';
+  }
+}
+
+function closePubA4Modal() {
+  document.getElementById('pub-a4-modal').classList.add('hidden');
+}
+
+function downloadPubA4PDF() {
+  const element = document.getElementById('printable-a4-sheet');
+  if (!element || !element.innerHTML.trim()) {
+    toast('⚠️ Marksheet load ho rahi hai, kripya thoda wait karein', 'error');
+    return;
+  }
+  toast('⏳ Generating Marksheet PDF download...', 'info');
+  const opt = {
+    margin:       [6, 6, 6, 6],
+    filename:     'Marksheet_Oxford_Convent_School.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, logging: false },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  if (window.html2pdf) {
+    html2pdf().set(opt).from(element).save().then(() => {
+      toast('✅ Marksheet PDF downloaded successfully!', 'success');
+    }).catch(err => {
+      console.error(err);
+      printPubA4Sheet();
+    });
+  } else {
+    printPubA4Sheet();
+  }
+}
+
+function printPubA4Sheet() {
+  const sheet = document.getElementById('printable-a4-sheet');
+  if (!sheet || !sheet.innerHTML.trim()) {
+    toast('⚠️ Marksheet load ho rahi hai, kripya thoda wait karein', 'error');
+    return;
+  }
+  const printContent = sheet.innerHTML;
+
+  let printFrame = document.getElementById('print-helper-iframe-pub');
+  if (printFrame) printFrame.remove();
+
+  printFrame = document.createElement('iframe');
+  printFrame.id = 'print-helper-iframe-pub';
+  printFrame.style.position = 'fixed';
+  printFrame.style.right = '0';
+  printFrame.style.bottom = '0';
+  printFrame.style.width = '0';
+  printFrame.style.height = '0';
+  printFrame.style.border = '0';
+  document.body.appendChild(printFrame);
+
+  const doc = printFrame.contentWindow.document;
+  doc.open();
+  doc.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Official Student Marksheet — Oxford Convent School</title>
+      <link rel="stylesheet" href="style.css">
+      <style>
+        body { background: #fff !important; color: #0f172a !important; padding: 10px; margin: 0; font-family: 'Inter', system-ui, sans-serif; }
+        .a4-marksheet-container { width: 100% !important; max-width: 210mm !important; margin: 0 auto !important; box-shadow: none !important; border: none !important; }
+        @page { size: A4; margin: 8mm; }
+        @media print {
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="a4-marksheet-container">${printContent}</div>
+    </body>
+    </html>
+  `);
+  doc.close();
+
+  setTimeout(() => {
+    try {
+      printFrame.contentWindow.focus();
+      printFrame.contentWindow.print();
+    } catch (e) {
+      window.print();
+    }
+  }, 450);
+}
+
+function generatePubA4MarksheetHTML(m, rFallback) {
+  const std = m.student;
+  const totals = m.totals;
+  const isPass = totals.status === 'PASSED';
+  const photoSrc = std.photo || rFallback?.photo;
+  const photoHtml = photoSrc 
+    ? `<img src="${photoSrc}" alt="Student Photo">`
+    : `<div style="font-size:2.4rem; color:#94a3b8;">👤</div>`;
+
+  const isSingle = !!m.isSingleSubject;
+  const reportTitle = isSingle
+    ? `OFFICIAL CLASS TEST SCORECARD — ${m.subject ? m.subject.toUpperCase() : 'SUBJECT EVALUATION'}`
+    : `OFFICIAL STUDENT EXAMINATION MARKS CARD — ${m.examTypeLabel || 'PERIODIC TEST'} (ALL SUBJECTS)`;
+
+  const examTypeLabel = isSingle
+    ? `Class Test Assessment (Instant AI Graded)`
+    : `${m.examTypeLabel || 'Periodic Test Assessment'} (CBSE Pattern)`;
+
+  const totalSubsLabel = isSingle
+    ? `1 Subject (${m.subject || 'Class Test'})`
+    : `${m.subjects.length} Subjects Listed`;
+
+  const officialRemark = isSingle
+    ? (isPass 
+      ? `Student demonstrated good subject understanding in this Class Test (${m.subject || ''}). Assessment evaluated successfully.`
+      : `Needs revision in this subject (${m.subject || ''}). Please consult subject teacher.`)
+    : (isPass 
+      ? 'The student has demonstrated satisfactory subject knowledge across all papers and successfully passed the examination.' 
+      : (totals.status === 'COMPARTMENT' ? 'Eligible for Compartmental Examination in failed subject.' : 'Needs improvement in subject concepts. Please consult subject teachers.'));
+
+  return `
+    <div class="a4-marksheet-border">
+      <div class="a4-watermark">OXFORD CONVENT</div>
+
+      <!-- Header Section -->
+      <div class="a4-marksheet-header">
+        <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:4px;">
+          <span style="font-size:2rem;">🏫</span>
+          <h1 class="a4-school-name">OXFORD CONVENT SCHOOL SASARAM</h1>
+        </div>
+        <div class="a4-school-sub">Affiliated / Recognized Online Examination Board • Sasaram, Rohtas (Bihar)</div>
+        <div class="a4-report-title">${reportTitle}</div>
+      </div>
+
+      <!-- Student & Exam Details Section -->
+      <div class="a4-student-details-grid">
+        <table class="a4-info-table">
+          <tr>
+            <td class="label">Student Full Name:</td>
+            <td class="value" style="font-size:11pt; color:#1e3a8a;"><strong>${std.name}</strong></td>
+            <td class="label">Roll Number:</td>
+            <td class="value" style="font-size:11pt; color:#1e3a8a;"><strong>${std.rollNumber || rFallback?.rollNumber || '-'}</strong></td>
+          </tr>
+          <tr>
+            <td class="label">Father's Name:</td>
+            <td class="value">${std.fatherName || rFallback?.fatherName || '-'}</td>
+            <td class="label">Class / Grade:</td>
+            <td class="value"><strong>Class ${std.class} ${(std.section && std.section !== '-') ? '(Section ' + std.section + ')' : (rFallback?.section ? '(Section ' + rFallback.section + ')' : '')}</strong></td>
+          </tr>
+          <tr>
+            <td class="label">Academic Session:</td>
+            <td class="value"><strong>${m.session}</strong></td>
+            <td class="label">Examination Type:</td>
+            <td class="value" style="color:#0f172a;"><strong>${examTypeLabel}</strong></td>
+          </tr>
+          <tr>
+            <td class="label">Exam Date:</td>
+            <td class="value"><strong style="color:#1e3a8a;">${m.examDate ? new Date(m.examDate).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : (m.submittedAt ? new Date(m.submittedAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }))}</strong></td>
+            <td class="label">Reg. / Exam ID:</td>
+            <td class="value"><strong>${std.id ? std.id.slice(-8).toUpperCase() : 'OCS-REG'}</strong></td>
+          </tr>
+        </table>
+
+        <!-- Passport Size Photo Box -->
+        <div class="a4-passport-box">
+          ${photoHtml}
+        </div>
+      </div>
+
+      <!-- Performance Summary Boxes -->
+      <div class="a4-summary-grid">
+        <div class="a4-summary-box">
+          <div class="a4-summary-val">${totals.securedMarks} / ${totals.maxMarks}</div>
+          <div class="a4-summary-lbl">Total Marks Obtained</div>
+        </div>
+        <div class="a4-summary-box">
+          <div class="a4-summary-val">${totals.percentage}%</div>
+          <div class="a4-summary-lbl">Overall Percentage</div>
+        </div>
+        <div class="a4-summary-box">
+          <div class="a4-summary-val">${totals.grade}</div>
+          <div class="a4-summary-lbl">Overall CBSE Grade</div>
+        </div>
+        <div class="a4-summary-box" style="background:${isPass ? '#f0fdf4' : '#fef2f2'}; border-color:${isPass ? '#86efac' : '#fca5a5'};">
+          <div class="a4-summary-val" style="color:${isPass ? '#16a34a' : '#dc2626'};">${totals.status}</div>
+          <div class="a4-summary-lbl">Final Result Status</div>
+        </div>
+      </div>
+
+      <!-- Subjects Score Table -->
+      <table class="a4-marks-table">
+        <thead>
+          <tr>
+            <th style="width:7%; text-align:center;">S.N.</th>
+            <th style="width:38%;">Subject Paper</th>
+            <th style="width:14%; text-align:center;">Maximum Marks</th>
+            <th style="width:13%; text-align:center;">Pass Marks (33%)</th>
+            <th style="width:14%; text-align:center;">Marks Secured</th>
+            <th style="width:14%; text-align:center;">Grade / Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${m.subjects.map(s => {
+            const securedDisplay = s.status === 'NOT_APPEARED' 
+              ? '<span style="color:#94a3b8; font-size:8.5pt;">Not Appeared</span>'
+              : (s.status === 'UNDER_EVALUATION'
+                ? '<span style="color:#d97706; font-size:8.5pt;">Under Evaluation</span>'
+                : `<strong style="color:${s.status==='PASS'?'#1e3a8a':'#dc2626'}; font-size:10.5pt;">${s.securedMarks}</strong>`);
+            
+            const statusBadge = s.status === 'PASS'
+              ? `<span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:3px; font-weight:700; font-size:8pt;">PASS (${s.grade})</span>`
+              : (s.status === 'FAIL'
+                ? `<span style="background:#fee2e2; color:#b91c1c; padding:2px 6px; border-radius:3px; font-weight:700; font-size:8pt;">FAIL (${s.grade})</span>`
+                : (s.status === 'UNDER_EVALUATION'
+                  ? `<span style="background:#fef3c7; color:#92400e; padding:2px 6px; border-radius:3px; font-weight:600; font-size:8pt;">Evaluating</span>`
+                  : `<span style="color:#94a3b8; font-size:8pt;">--</span>`));
+
+            return `
+              <tr>
+                <td style="text-align:center;">${s.sn}</td>
+                <td><strong>${s.subject}</strong></td>
+                <td style="text-align:center;">${s.maxMarks}</td>
+                <td style="text-align:center;">${s.passMarks}</td>
+                <td style="text-align:center;">${securedDisplay}</td>
+                <td style="text-align:center;">${statusBadge}</td>
+              </tr>
+            `;
+          }).join('')}
+          <tr style="background:#f8fafc; font-weight:800; border-top:2px solid #1e3a8a;">
+            <td colspan="2" style="text-align:right; font-size:10pt;">GRAND TOTAL:</td>
+            <td style="text-align:center; font-size:10pt;">${totals.maxMarks}</td>
+            <td style="text-align:center; font-size:10pt;">${totals.passMarks}</td>
+            <td style="text-align:center; color:#1e3a8a; font-size:11pt;">${totals.securedMarks}</td>
+            <td style="text-align:center; font-size:9.5pt; color:${totals.status==='PASSED'?'#16a34a':'#dc2626'};">${totals.status} (${totals.percentage}%)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Evaluation Remarks & Verification -->
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:10px 14px; margin-bottom:24px; font-size:9pt; color:#334155;">
+        <strong>Official Remark:</strong> ${officialRemark}
+        <br><span style="font-size:8pt; color:#64748b;">Verification ID: <strong>${m.verificationId}</strong> • Certified by Oxford Convent School Examination Cell.</span>
+      </div>
+
+      <!-- Official Signatures -->
+      <div class="a4-signatures-row">
+        <div class="a4-sign-box">
+          <div class="a4-sign-line"></div>
+          <div class="a4-sign-title">Class / Subject Teacher</div>
+        </div>
+        <div class="a4-sign-box">
+          <div style="font-size:1.6rem; color:#1e3a8a; margin-bottom:2px;">📜</div>
+          <div class="a4-sign-line"></div>
+          <div class="a4-sign-title">Controller of Exams</div>
+        </div>
+        <div class="a4-sign-box">
+          <div style="font-family:'Segoe Script', 'Brush Script MT', cursive; font-size:13pt; color:#1e3a8a; font-weight:700; margin-bottom:2px;">Dr. Priti Singh</div>
+          <div class="a4-sign-line"></div>
+          <div class="a4-sign-title"><strong style="color:#0f172a; font-size:8.5pt;">Dr. Priti Singh</strong><br><span style="font-size:7.5pt; color:#64748b;">Principal &amp; Head of Institution</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function getGrade(pct) {
+  if (pct >= 90) return 'A+';
+  if (pct >= 80) return 'A';
+  if (pct >= 70) return 'B';
+  if (pct >= 60) return 'C';
+  if (pct >= 40) return 'D';
+  return 'F';
+}
+
+function toast(msg, type = 'info') {
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.innerHTML = msg;
+  c.appendChild(el);
+  setTimeout(() => { el.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => el.remove(), 300); }, 3500);
+}
+</script>
+</body>
+</html>

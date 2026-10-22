@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login &amp; Registration — Oxford Convent School, Sasaram</title>
+  <meta name="description" content="Student, Teacher, and Admin Authentication Gateway">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 20px;
+    }
+    .auth-card {
+      background: linear-gradient(145deg, rgba(28, 24, 66, 0.78), rgba(13, 12, 28, 0.88));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-top: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.75),
+        0 0 35px rgba(99, 102, 241, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .auth-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: var(--surface2);
+      padding: 5px;
+      border-radius: var(--radius-sm);
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 10px 6px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .auth-tab.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 15px rgba(79,70,229,0.4);
+    }
+    .sub-switch-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+    .sub-tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding-bottom: 4px;
+      transition: all 0.2s;
+    }
+    .sub-tab-btn.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+    }
+    .captcha-box {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .captcha-code-display {
+      background: linear-gradient(135deg, #1e1b4b, #312e81);
+      border: 1px dashed var(--primary-light);
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 5px;
+      color: #38bdf8;
+      user-select: none;
+      text-decoration: line-through;
+    }
+    @keyframes titleShimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.5)); transform: translateY(0); }
+      50% { filter: drop-shadow(0 0 30px rgba(6, 182, 212, 0.8)); transform: translateY(-3px); }
+    }
+    .grand-school-badge {
+      display: inline-block;
+      padding: 6px 20px;
+      background: rgba(99, 102, 241, 0.18);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 50px;
+      color: #38bdf8;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+    }
+    .grand-school-name {
+      font-size: 2.9rem;
+      font-weight: 900;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 25%, #38bdf8 50%, #c084fc 75%, #ffffff 100%);
+      background-size: 250% 250%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: titleShimmer 6s ease infinite, pulseGlow 4s ease-in-out infinite;
+      margin-bottom: 8px;
+      line-height: 1.15;
+      text-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+    }
+  </style>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<main class="auth-container">
+  <div class="text-center mb-4 animate-in">
+    <div class="grand-school-badge">🏛️ Premier Educational Institute Sasaram</div>
+    <div class="grand-school-name">OXFORD CONVENT SCHOOL SASARAM</div>
+    <p class="text-muted" style="font-size: 1.05rem; letter-spacing: 0.5px;">⭐ Online Examination & Digital Academic Portal</p>
+  </div>
+
+  <div class="auth-card animate-in" style="animation-delay: 0.1s;">
+    <!-- Main Role Switcher -->
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" id="tab-btn-student" onclick="switchMainRole('student')">
+        🎓 Student
+      </button>
+      <button type="button" class="auth-tab" id="tab-btn-teacher" onclick="switchMainRole('teacher')">
+        👨‍🏫 Teacher
+      </button>
+      <button type="button" class="auth-tab" id="tab-btn-admin" onclick="switchMainRole('admin')">
+        👑 Admin
+      </button>
+    </div>
+
+    <!-- 1. STUDENT SECTION -->
+    <div id="section-student">
+      <div class="sub-switch-tabs">
+        <button type="button" class="sub-tab-btn active" id="btn-show-login" onclick="toggleStudentMode('login')">
+          Student Login
+        </button>
+        <button type="button" class="sub-tab-btn" id="btn-show-register" onclick="toggleStudentMode('register')">
+          New Registration
+        </button>
+      </div>
+
+      <!-- Student Login Form -->
+      <form id="form-student-login" onsubmit="handleStudentLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Registered Email ID</label>
+          <input type="email" id="std-login-email" class="form-control" placeholder="e.g. nandu@gmail.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="std-login-pass" class="form-control" placeholder="Enter your password..." required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary w-full btn-lg" id="btn-std-login">
+          🎓 Login to Student Portal
+        </button>
+        <div class="text-center mt-3">
+          <a href="javascript:void(0)" onclick="openForgotPassword()" style="color: var(--text-muted); font-size: 0.85rem; font-weight: 600; text-decoration: underline;">🔑 Forgot Password?</a>
+        </div>
+        <p class="text-center text-muted mt-2" style="font-size: 0.85rem;">
+          Don't have an account? <a href="javascript:void(0)" onclick="toggleStudentMode('register')" style="color: var(--accent); font-weight:700;">Register Here</a>
+        </p>
+      </form>
+
+      <!-- Student Registration Form -->
+      <form id="form-student-register" class="hidden" onsubmit="handleStudentRegister(event)">
+        <div class="grid grid-2 gap-3 mb-2">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="reg-name" class="form-control" placeholder="Enter student full name..." required>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Father's Name</label>
+            <input type="text" id="reg-father" class="form-control" placeholder="Enter father's name...">
+          </div>
+        </div>
+
+        <input type="hidden" id="reg-wing" value="school">
+
+        <div class="grid grid-3 gap-3 mb-2" style="display:grid; grid-template-columns: 2fr 1fr 1.2fr; gap:10px; margin-bottom:10px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Select Class (1 to 12th) *</label>
+            <select id="reg-class" class="form-control" required>
+              <!-- Populated dynamically (Class 1 to 12th) -->
+            </select>
+          </div>
+          <div class="form-group" id="reg-section-group" style="margin-bottom:0;">
+            <label class="form-label">Section</label>
+            <select id="reg-section" class="form-control">
+              <option value="">None</option>
+              <option value="A">Sec A</option>
+              <option value="B">Sec B</option>
+              <option value="C">Sec C</option>
+              <option value="D">Sec D</option>
+              <option value="E">Sec E</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Roll Number *</label>
+            <input type="text" id="reg-roll" class="form-control" placeholder="e.g. 15, 24" required>
+          </div>
+        </div>
+
+        <div class="grid grid-2 gap-3 mb-2">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Mobile Number</label>
+            <input type="tel" id="reg-mobile" class="form-control" placeholder="10-digit mobile" required pattern="[0-9]{10}">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Email ID</label>
+            <input type="email" id="reg-email" class="form-control" placeholder="e.g. student@gmail.com" required>
+          </div>
+        </div>
+
+        <div class="form-group mb-2">
+          <label class="form-label" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+            <span>📷 Student Passport Size Photo</span>
+            <span style="background:rgba(16,185,129,0.18); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 8px; border-radius:12px; font-weight:600; font-size:0.75rem;">🟢 OPTIONAL (ऐच्छिक - फोटो जरूरी नहीं है)</span>
+          </label>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div id="reg-photo-preview-wrap" style="width:70px; height:85px; border-radius:6px; border:2px dashed var(--border); background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+              <span id="reg-photo-placeholder" style="font-size:1.8rem; opacity:0.6;">👤</span>
+              <img id="reg-photo-preview" src="" alt="Passport Photo" style="display:none; width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div style="flex:1;">
+              <input type="file" id="reg-photo" class="form-control" accept="image/*" onchange="previewStudentPhoto(event)" style="padding:8px 12px; font-size:0.85rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                <p style="font-size:0.75rem; color:var(--text-muted); margin:0;">Photo upload karna bilkul aichhik (optional) hai. Bina photo ke bhi registration final ho jayega.</p>
+                <button type="button" id="btn-remove-reg-photo" onclick="clearRegPhoto()" style="display:none; background:transparent; border:1px solid #ef4444; color:#ef4444; border-radius:4px; padding:2px 6px; font-size:0.72rem; cursor:pointer;">❌ Remove Photo</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Create Password</label>
+          <input type="password" id="reg-password" class="form-control" placeholder="Create your login password..." required minlength="4">
+        </div>
+
+        <!-- Captcha Verification -->
+        <div class="form-group">
+          <label class="form-label">Security Captcha Verification</label>
+          <div class="captcha-box">
+            <div class="captcha-code-display" id="captcha-display">AB12C</div>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="generateCaptcha()" title="Refresh Captcha">🔄</button>
+          </div>
+          <input type="text" id="reg-captcha-input" class="form-control" placeholder="Enter the 5 characters above..." required autocomplete="off">
+        </div>
+
+        <button type="submit" class="btn btn-success w-full btn-lg" id="btn-std-reg">
+          ✅ Complete Registration & Login
+        </button>
+        <p class="text-center text-muted mt-4" style="font-size: 0.85rem;">
+          Already registered? <a href="javascript:void(0)" onclick="toggleStudentMode('login')" style="color: var(--accent); font-weight:700;">Login Here</a>
+        </p>
+      </form>
+    </div>
+
+    <!-- 2. TEACHER SECTION -->
+    <div id="section-teacher" class="hidden">
+      <div class="text-center mb-4">
+        <div style="font-size: 2.5rem; margin-bottom: 6px;">👨‍🏫</div>
+        <h3 style="font-size: 1.25rem; font-weight: 700;">Teacher Portal Login</h3>
+        <p class="text-muted" style="font-size: 0.88rem;">Enter teacher password to manage question sets &amp; evaluations</p>
+      </div>
+
+      <!-- Teacher Password-Only Login Form -->
+      <form id="form-teacher-login" onsubmit="handleTeacherLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Teacher Password</label>
+          <input type="password" id="tch-login-pass" class="form-control" placeholder="Enter teacher password..." required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary w-full btn-lg" id="btn-tch-login-submit">
+          👨‍🏫 Login to Teacher Portal
+        </button>
+      </form>
+    </div>
+
+    <!-- 3. ADMIN SECTION -->
+    <div id="section-admin" class="hidden">
+      <div class="text-center mb-4">
+        <div style="font-size: 2.5rem; margin-bottom: 6px;">👑</div>
+        <h3 style="font-size: 1.25rem; font-weight: 700;">Administrator Portal</h3>
+        <p class="text-muted" style="font-size: 0.88rem;">Complete administrative controls, Excel reports &amp; emails</p>
+      </div>
+      <form onsubmit="handleAdminLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Admin Password</label>
+          <input type="password" id="admin-password" class="form-control" placeholder="Enter admin password..." required>
+        </div>
+        <button type="submit" class="btn btn-primary w-full btn-lg" id="btn-admin-login">
+          👑 Login as Administrator
+        </button>
+        <div style="margin-top: 14px; text-align: center; font-size: 0.8rem; color: var(--text-dim);">
+          <code></code>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<!-- ═══════════════ FORGOT PASSWORD MODAL ═══════════════ -->
+<div id="forgot-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.80); backdrop-filter:blur(8px); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:32px 28px; width:100%; max-width:440px; box-shadow:var(--shadow-lg); position:relative; max-height:90vh; overflow-y:auto;">
+    
+    <!-- Close Button -->
+    <button onclick="closeForgotPassword()" style="position:absolute; top:14px; right:14px; background:none; border:none; color:var(--text-muted); font-size:1.3rem; cursor:pointer; line-height:1;">✕</button>
+
+    <!-- Step 1: Verify Identity -->
+    <div id="fp-step1">
+      <div class="text-center mb-4">
+        <div style="font-size:2.5rem; margin-bottom:8px;">🔑</div>
+        <h2 style="font-size:1.3rem; font-weight:800; margin:0 0 6px;">Forgot Password?</h2>
+        <p class="text-muted" style="font-size:0.88rem;">Apna registered Email ID aur Mobile Number daalein. Phir naya password set kar sakte hain.</p>
+      </div>
+
+      <form id="fp-verify-form" onsubmit="handleForgotVerify(event)">
+        <div class="form-group">
+          <label class="form-label">📧 Registered Email ID</label>
+          <input type="email" id="fp-email" class="form-control" placeholder="e.g. rahul@gmail.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">📱 Registered Mobile Number</label>
+          <input type="tel" id="fp-mobile" class="form-control" placeholder="10-digit mobile number" required pattern="[0-9]{10}" maxlength="10">
+        </div>
+
+        <!-- CAPTCHA -->
+        <div class="form-group">
+          <label class="form-label">🔒 Security Captcha</label>
+          <div class="captcha-box">
+            <div class="captcha-code-display" id="fp-captcha-display">AB12C</div>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="generateFpCaptcha()" title="Refresh Captcha">🔄</button>
+          </div>
+          <input type="text" id="fp-captcha-input" class="form-control" placeholder="Upar likhe 5 characters enter karein..." required autocomplete="off" maxlength="5">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full btn-lg" id="btn-fp-verify">
+          ✅ Verify Identity
+        </button>
+      </form>
+    </div>
+
+    <!-- Step 2: Set New Password (shown after verification) -->
+    <div id="fp-step2" style="display:none;">
+      <div class="text-center mb-4">
+        <div style="font-size:2.5rem; margin-bottom:8px;">🔓</div>
+        <h2 style="font-size:1.3rem; font-weight:800; margin:0 0 6px;">Identity Verified!</h2>
+        <p class="text-muted" style="font-size:0.88rem;" id="fp-verified-name">Ab naya password set karein.</p>
+      </div>
+
+      <form id="fp-reset-form" onsubmit="handleForgotReset(event)">
+        <div class="form-group">
+          <label class="form-label">🔑 New Password</label>
+          <input type="password" id="fp-new-pass" class="form-control" placeholder="Naya password likho (min 4 characters)..." required minlength="4">
+        </div>
+        <div class="form-group">
+          <label class="form-label">🔑 Confirm New Password</label>
+          <input type="password" id="fp-confirm-pass" class="form-control" placeholder="Password dobara likho..." required minlength="4">
+        </div>
+        <button type="submit" class="btn btn-success w-full btn-lg" id="btn-fp-reset">
+          💾 Save New Password
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let currentCaptcha = '';
+
+function generateCaptcha() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 5; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+  currentCaptcha = code;
+  document.getElementById('captcha-display').textContent = code;
+}
+
+const COURSE_GROUPS = {
+  school: [
+    { label: "🏫 Primary & High School (Class 1 to 10)", options: ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"] },
+    { label: "🔬 Senior Secondary (Class 11 & 12)", options: ["Class 11", "11th Science", "11th Commerce", "11th Arts", "Class 12", "12th Science", "12th Commerce", "12th Arts"] }
+  ]
+};
+
+function updateCourseDropdown(wingSelectId, targetSelectId, selectedValue = '') {
+  const target = document.getElementById(targetSelectId);
+  if (!target) return;
+  const groups = COURSE_GROUPS.school;
+  
+  let html = '<option value="">-- Select Class (1 to 12th) --</option>';
+  groups.forEach(g => {
+    html += `<optgroup label="${g.label}">`;
+    g.options.forEach(opt => {
+      const isSel = (opt === selectedValue) ? 'selected' : '';
+      html += `<option value="${opt}" ${isSel}>${opt}</option>`;
+    });
+    html += `</optgroup>`;
+  });
+  target.innerHTML = html;
+}
+
+function updateRegWingChange() {
+  updateCourseDropdown('reg-wing', 'reg-class');
+}
+
+window.addEventListener('load', () => {
+  generateCaptcha();
+  updateRegWingChange();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('logged_out')) {
+    localStorage.removeItem('studentToken');
+    sessionStorage.removeItem('studentProfile');
+    sessionStorage.removeItem('adminToken');
+    sessionStorage.removeItem('userRole');
+  } else {
+    // Auto redirect if already logged in
+    const studentToken = localStorage.getItem('studentToken');
+    if (studentToken) { window.location.href = 'student-dashboard.html'; return; }
+
+    const adminToken = sessionStorage.getItem('adminToken');
+    const userRole   = sessionStorage.getItem('userRole');
+    if (adminToken && userRole === 'admin') { window.location.href = 'admin.html'; return; }
+    if (adminToken && userRole === 'teacher') { window.location.href = 'teacher-dashboard.html'; return; }
+  }
+
+  const role = urlParams.get('role');
+  if (role === 'teacher' || role === 'admin') switchMainRole(role);
+});
+
+function switchMainRole(role) {
+  ['student','teacher','admin'].forEach(r => {
+    document.getElementById('tab-btn-'+r).classList.toggle('active', r === role);
+    document.getElementById('section-'+r).classList.toggle('hidden', r !== role);
+  });
+}
+
+function toggleStudentMode(mode) {
+  document.getElementById('btn-show-login').classList.toggle('active', mode === 'login');
+  document.getElementById('btn-show-register').classList.toggle('active', mode === 'register');
+  document.getElementById('form-student-login').classList.toggle('hidden', mode !== 'login');
+  document.getElementById('form-student-register').classList.toggle('hidden', mode !== 'register');
+  if (mode === 'register') generateCaptcha();
+}
+
+// ── Student Login ──
+async function handleStudentLogin(e) {
+  e.preventDefault();
+  const email    = document.getElementById('std-login-email').value.trim();
+  const password = document.getElementById('std-login-pass').value;
+  const btn      = document.getElementById('btn-std-login');
+  btn.disabled = true; btn.textContent = 'Verifying...';
+  try {
+    const res  = await fetch('/api/students/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
+    const data = await res.json();
+    if (data.success) {
+      localStorage.setItem('studentToken', data.token);
+      toast('✅ Login successful! Redirecting...', 'success');
+      setTimeout(() => { window.location.href = 'student-dashboard.html'; }, 600);
+    } else { toast('❌ '+data.message, 'error'); btn.disabled=false; btn.textContent='🎓 Login to Student Portal'; }
+  } catch { toast('❌ Unable to connect to server','error'); btn.disabled=false; btn.textContent='🎓 Login to Student Portal'; }
+}
+
+let registeredPhotoBase64 = '';
+
+function previewStudentPhoto(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  // Compress image to reasonable base64 size (passport size ~ 300x380 max)
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 300;
+      const scale = MAX_WIDTH / img.width;
+      canvas.width = MAX_WIDTH;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      registeredPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
+
+      const previewImg = document.getElementById('reg-photo-preview');
+      const placeholder = document.getElementById('reg-photo-placeholder');
+      const removeBtn = document.getElementById('btn-remove-reg-photo');
+      previewImg.src = registeredPhotoBase64;
+      previewImg.style.display = 'block';
+      placeholder.style.display = 'none';
+      if (removeBtn) removeBtn.style.display = 'inline-block';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearRegPhoto() {
+  registeredPhotoBase64 = '';
+  const input = document.getElementById('reg-photo');
+  if (input) input.value = '';
+  const previewImg = document.getElementById('reg-photo-preview');
+  const placeholder = document.getElementById('reg-photo-placeholder');
+  const removeBtn = document.getElementById('btn-remove-reg-photo');
+  if (previewImg) { previewImg.src = ''; previewImg.style.display = 'none'; }
+  if (placeholder) placeholder.style.display = 'block';
+  if (removeBtn) removeBtn.style.display = 'none';
+}
+
+// ── Student Register ──
+async function handleStudentRegister(e) {
+  e.preventDefault();
+  const name         = document.getElementById('reg-name').value.trim();
+  const fatherName   = document.getElementById('reg-father').value.trim();
+  const cls          = document.getElementById('reg-class').value;
+  const section      = document.getElementById('reg-section').value;
+  const rollNumber   = document.getElementById('reg-roll').value.trim();
+  const mobile       = document.getElementById('reg-mobile').value.trim();
+  const email        = document.getElementById('reg-email').value.trim();
+  const password     = document.getElementById('reg-password').value;
+  const captchaInput = document.getElementById('reg-captcha-input').value.trim().toUpperCase();
+  const btn          = document.getElementById('btn-std-reg');
+
+  if (captchaInput !== currentCaptcha) {
+    toast('❌ Incorrect Captcha! Please try again.', 'error');
+    generateCaptcha();
+    document.getElementById('reg-captcha-input').value = '';
+    return;
+  }
+  btn.disabled=true; btn.textContent='Registering...';
+  try {
+    const res  = await fetch('/api/students/register', { 
+      method:'POST', 
+      headers:{'Content-Type':'application/json'}, 
+      body: JSON.stringify({ 
+        name, 
+        fatherName, 
+        cls, 
+        section, 
+        rollNumber,
+        mobile, 
+        email, 
+        password,
+        photo: registeredPhotoBase64 || ''
+      }) 
+    });
+    const data = await res.json();
+    if (data.success) {
+      localStorage.setItem('studentToken', data.token);
+      toast('🎉 Registration Successful! Welcome!', 'success');
+      setTimeout(() => { window.location.href = 'student-dashboard.html'; }, 600);
+    } else { toast('❌ '+data.message,'error'); btn.disabled=false; btn.textContent='✅ Complete Registration & Login'; generateCaptcha(); }
+  } catch { toast('❌ Unable to connect to server','error'); btn.disabled=false; btn.textContent='✅ Complete Registration & Login'; }
+}
+
+// ── Teacher Login (Password-Only) ──
+async function handleTeacherLogin(e) {
+  e.preventDefault();
+  const password = document.getElementById('tch-login-pass').value;
+  const btn      = document.getElementById('btn-tch-login-submit');
+  btn.disabled = true; btn.textContent = 'Verifying...';
+  try {
+    const res  = await fetch('/api/teachers/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password })
+    });
+    const data = await res.json();
+    if (data.success) {
+      sessionStorage.setItem('adminToken', data.token);
+      sessionStorage.setItem('userRole', 'teacher');
+      toast('✅ Teacher Login Successful!', 'success');
+      setTimeout(() => { window.location.href = 'teacher-dashboard.html'; }, 600);
+    } else {
+      toast('❌ ' + data.message, 'error');
+      btn.disabled = false;
+      btn.textContent = '👨‍🏫 Login to Teacher Portal';
+    }
+  } catch {
+    toast('❌ Unable to connect to server', 'error');
+    btn.disabled = false;
+    btn.textContent = '👨‍🏫 Login to Teacher Portal';
+  }
+}
+
+// ── Admin Login ──
+async function handleAdminLogin(e) {
+  e.preventDefault();
+  const password = document.getElementById('admin-password').value;
+  const btn      = document.getElementById('btn-admin-login');
+  btn.disabled=true; btn.textContent='Verifying...';
+  try {
+    const res  = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password }) });
+    const data = await res.json();
+    if (data.success) {
+      sessionStorage.setItem('adminToken', data.token);
+      sessionStorage.setItem('userRole', 'admin');
+      toast('✅ Administrator Login Successful!', 'success');
+      setTimeout(() => { window.location.href = 'admin.html'; }, 600);
+    } else { toast('❌ '+data.message,'error'); btn.disabled=false; btn.textContent='👑 Login as Administrator'; }
+  } catch { toast('❌ Unable to connect to server','error'); btn.disabled=false; btn.textContent='👑 Login as Administrator'; }
+}
+
+// ── Forgot Password ──
+let fpVerifiedStudentId = null;
+let currentFpCaptcha = '';
+
+function generateFpCaptcha() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 5; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+  currentFpCaptcha = code;
+  document.getElementById('fp-captcha-display').textContent = code;
+}
+
+function openForgotPassword() {
+  fpVerifiedStudentId = null;
+  document.getElementById('fp-step1').style.display = 'block';
+  document.getElementById('fp-step2').style.display = 'none';
+  document.getElementById('fp-verify-form').reset();
+  document.getElementById('fp-reset-form').reset();
+  generateFpCaptcha();
+  const modal = document.getElementById('forgot-modal');
+  modal.style.display = 'flex';
+}
+
+function closeForgotPassword() {
+  document.getElementById('forgot-modal').style.display = 'none';
+  fpVerifiedStudentId = null;
+}
+
+async function handleForgotVerify(e) {
+  e.preventDefault();
+  const email        = document.getElementById('fp-email').value.trim();
+  const mobile       = document.getElementById('fp-mobile').value.trim();
+  const captchaInput = document.getElementById('fp-captcha-input').value.trim().toUpperCase();
+  const btn          = document.getElementById('btn-fp-verify');
+
+  // Captcha check
+  if (captchaInput !== currentFpCaptcha) {
+    toast('❌ Galat Captcha! Dobara try karein.', 'error');
+    generateFpCaptcha();
+    document.getElementById('fp-captcha-input').value = '';
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Verifying...';
+  try {
+    const res  = await fetch('/api/students/forgot-password/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, mobile })
+    });
+    const data = await res.json();
+    if (data.success) {
+      fpVerifiedStudentId = data.studentId;
+      document.getElementById('fp-verified-name').textContent =
+        `✅ Identity verified: ${data.studentName}. Ab naya password set karein.`;
+      document.getElementById('fp-step1').style.display = 'none';
+      document.getElementById('fp-step2').style.display = 'block';
+    } else {
+      toast('❌ ' + data.message, 'error');
+      generateFpCaptcha();
+      document.getElementById('fp-captcha-input').value = '';
+      btn.disabled = false; btn.textContent = '✅ Verify Identity';
+    }
+  } catch {
+    toast('❌ Server se connect nahi ho pa raha. Dobara try karein.', 'error');
+    btn.disabled = false; btn.textContent = '✅ Verify Identity';
+  }
+}
+
+async function handleForgotReset(e) {
+  e.preventDefault();
+  const newPass     = document.getElementById('fp-new-pass').value;
+  const confirmPass = document.getElementById('fp-confirm-pass').value;
+  const btn         = document.getElementById('btn-fp-reset');
+
+  if (newPass !== confirmPass) {
+    toast('❌ Dono passwords match nahi kar rahe!', 'error');
+    return;
+  }
+  if (newPass.length < 4) {
+    toast('⚠️ Password kam se kam 4 characters ka hona chahiye.', 'info');
+    return;
+  }
+  if (!fpVerifiedStudentId) {
+    toast('⚠️ Session expire ho gaya. Dobara Forgot Password try karein.', 'error');
+    closeForgotPassword();
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Saving...';
+  try {
+    const res  = await fetch('/api/students/forgot-password/reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ studentId: fpVerifiedStudentId, newPassword: newPass })
+    });
+    const data = await res.json();
+    if (data.success) {
+      toast('🎉 Password successfully reset! Ab login karein.', 'success');
+      closeForgotPassword();
+      toggleStudentMode('login');
+    } else {
+      toast('❌ ' + data.message, 'error');
+      btn.disabled = false; btn.textContent = '💾 Save New Password';
+    }
+  } catch {
+    toast('❌ Server se connect nahi ho pa raha.', 'error');
+    btn.disabled = false; btn.textContent = '💾 Save New Password';
+  }
+}
+
+function toast(msg, type = 'info') {
+  const c  = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.innerHTML = msg;
+  c.appendChild(el);
+  setTimeout(() => { el.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => el.remove(), 300); }, 3500);
+}
+</script>
+</body>
+</html>
