@@ -8,9 +8,18 @@ const app = require('../../server.js');
 const handler = serverless(app);
 
 module.exports.handler = async (event, context) => {
-  // Requests rewritten from /api/* may arrive as /.netlify/functions/api/*; restore the /api prefix Express expects
-  if (event.path && event.path.startsWith('/.netlify/functions/api')) {
-    event.path = '/api' + event.path.slice('/.netlify/functions/api'.length);
+  try {
+    // Requests rewritten from /api/* may arrive as /.netlify/functions/api/*; restore the /api prefix Express expects
+    if (event.path && event.path.startsWith('/.netlify/functions/api')) {
+      event.path = '/api' + event.path.slice('/.netlify/functions/api'.length);
+    }
+    return await handler(event, context);
+  } catch (err) {
+    console.error('Unhandled Netlify function error:', err);
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ success: false, message: 'Server error: ' + (err.message || 'Please try again in a few moments.') })
+    };
   }
-  return handler(event, context);
 };
