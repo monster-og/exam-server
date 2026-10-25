@@ -23,5 +23,18 @@
     "password": "Vinit@2026",
     "registeredAt": "2026-10-01T17:00:46.930Z",
     "rollNumber": "1"
+  },
+  {
+    "id": "std_1792935285829_8wmx",
+    "name": "Priya Pandey",
+    "fatherName": "",
+    "class": "Class 10",
+    "section": "A",
+    "rollNumber": "10",
+    "mobile": "8085749645",
+    "email": "std_10@oxfordconvent.com",
+    "photo": "",
+    "password": "2026",
+    "registeredAt": "2026-10-25T13:34:45.830Z"
   }
 ]

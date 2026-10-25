@@ -1,0 +1,797 @@
+[
+  {
+    "id": "res_1791297081024_oyz7x",
+    "studentName": "Rohan Kumar",
+    "class": "6",
+    "subject": "Computer",
+    "score": 2,
+    "total": 2,
+    "answers": [
+      {
+        "qText": "Brain of computer?",
+        "type": "owa",
+        "userAnswer": "CPU",
+        "correctAnswer": "CPU",
+        "marks": 2,
+        "isCorrect": true,
+        "owaMarksAwarded": 2,
+        "aiGraded": true,
+        "aiReason": "Exact match with expected answer."
+      }
+    ],
+    "examType": "Class Test",
+    "session": "2026-2027",
+    "year": "2026",
+    "submittedAt": "2026-10-06T14:31:21.012Z",
+    "resultUnlocked": true
+  },
+  {
+    "id": "res_1791297081047_o3388",
+    "studentName": "Priya Kumari",
+    "class": "7",
+    "subject": "Science",
+    "score": 2,
+    "total": 2,
+    "answers": [
+      {
+        "qText": "Formula of water?",
+        "type": "owa",
+        "userAnswer": "H2O",
+        "correctAnswer": "H2O",
+        "marks": 2,
+        "isCorrect": true,
+        "owaMarksAwarded": 2,
+        "aiGraded": true,
+        "aiReason": "Exact match with expected answer."
+      }
+    ],
+    "examType": "PT-1",
+    "session": "2026-2027",
+    "year": "2026",
+    "submittedAt": "2026-10-06T14:31:21.045Z",
+    "resultUnlocked": false
+  },
+  {
+    "id": "res_1791297209049_nljqk",
+    "studentName": "Rohan Kumar",
+    "class": "6",
+    "subject": "Computer",
+    "score": 2,
+    "total": 2,
+    "answers": [
+      {
+        "qText": "Brain of computer?",
+        "type": "owa",
+        "userAnswer": "CPU",
+        "correctAnswer": "CPU",
+        "marks": 2,
+        "isCorrect": true,
+        "owaMarksAwarded": 2,
+        "aiGraded": true,
+        "aiReason": "Exact match with expected answer."
+      }
+    ],
+    "examType": "Class Test",
+    "session": "2026-2027",
+    "year": "2026",
+    "submittedAt": "2026-10-06T14:33:29.048Z",
+    "resultUnlocked": true
+  },
+  {
+    "id": "res_1791297209063_9bey5",
+    "studentName": "Priya Kumari",
+    "class": "7",
+    "subject": "Science",
+    "score": 2,
+    "total": 2,
+    "answers": [
+      {
+        "qText": "Formula of water?",
+        "type": "owa",
+        "userAnswer": "H2O",
+        "correctAnswer": "H2O",
+        "marks": 2,
+        "isCorrect": true,
+        "owaMarksAwarded": 2,
+        "aiGraded": true,
+        "aiReason": "Exact match with expected answer."
+      }
+    ],
+    "examType": "PT-1",
+    "session": "2026-2027",
+    "year": "2026",
+    "submittedAt": "2026-10-06T14:33:29.062Z",
+    "resultUnlocked": false
+  },
+  {
+    "id": "res_1791297413401_4uyyk",
+    "studentName": "Rohan Kumar",
+    "class": "6",
+    "subject": "Computer",
+    "score": 2,
+    "total": 2,
+    "answers": [
+      {
+        "qText": "Brain of computer?",
+        "type": "owa",
+        "userAnswer": "CPU",
+        "correctAnswer": "CPU",
+        "marks": 2,
+        "isCorrect": true,
+        "owaMarksAwarded": 2,
+        "aiGraded": true,
+        "aiReason": "Exact match with expected answer."
+      }
+    ],
+    "examType": "Class Test",
+    "session": "2026-2027",
+    "year": "2026",
+    "examDate": "2026-10-06",
+    "submittedAt": "2026-10-06T14:36:53.371Z",
+    "resultUnlocked": true
+  },
+  {
+    "id": "res_1791297413437_fdhpb",
+    "studentName": "Priya Kumari",
+    "class": "7",
+    "subject": "Science",
+    "score": 2,
+    "total": 2,
+    "answers": [
+      {
+        "qText": "Formula of water?",
+        "type": "owa",
+        "userAnswer": "H2O",
+        "correctAnswer": "H2O",
+        "marks": 2,
+        "isCorrect": true,
+        "owaMarksAwarded": 2,
+        "aiGraded": true,
+        "aiReason": "Exact match with expected answer."
+      }
+    ],
+    "examType": "PT-1",
+    "session": "2026-2027",
+    "year": "2026",
+    "examDate": "2026-10-06",
+    "submittedAt": "2026-10-06T14:36:53.436Z",
+    "resultUnlocked": false
+  },
+  {
+    "id": "res_1791345056316_bzuln",
+    "studentName": "Vinit Kumar",
+    "class": "Class 10",
+    "subject": "Computer",
+    "score": 23,
+    "total": 30,
+    "answers": [
+      {
+        "qText": "1. Which of the following is an example of non-verbal communication?",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 1,
+        "options": [
+          "Email",
+          "Facial expression",
+          "Telephone call",
+          "Letter"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "LibreOffice Writer is mainly used for:",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 1,
+        "options": [
+          "Database management",
+          "Creating documents",
+          "Spreadsheet calculations",
+          "Video editing"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which feature in Writer is used to maintain consistent formatting throughout a document?",
+        "type": "mcq",
+        "userAnswer": "",
+        "correctAnswer": "",
+        "options": [
+          "Styles",
+          "Solver",
+          "Query",
+          "Macro"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which option is used to automatically create a list of headings and their page numbers?",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 1,
+        "options": [
+          "Track Changes",
+          "Table of Contents",
+          "Hyperlink",
+          "Goal Seek"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which Writer feature helps record changes made by different users?",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 1,
+        "options": [
+          "Templates",
+          "Track Changes",
+          "Styles",
+          "Drawing Objects"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "A pre-designed document format in Writer is called a:",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 1,
+        "options": [
+          "Query",
+          "Template",
+          "Macro",
+          "Scenario"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "LibreOffice Calc is mainly used for:",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 1,
+        "options": [
+          "Word processing",
+          "Spreadsheet operations",
+          "Database management",
+          "Image editing"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which Calc feature finds the required input value to achieve a desired result?",
+        "type": "mcq",
+        "userAnswer": "",
+        "correctAnswer": "",
+        "options": [
+          "Goal Seek",
+          "Track Changes",
+          "Hyperlink",
+          "Style"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which feature is used to automate repetitive tasks in Calc?",
+        "type": "mcq",
+        "userAnswer": "",
+        "correctAnswer": 1,
+        "options": [
+          "Query",
+          "Macro",
+          "Report",
+          "Template"
+        ],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which feature combines data from different ranges into one summary?",
+        "type": "mcq",
+        "userAnswer": "",
+        "correctAnswer": "",
+        "options": [
+          "Consolidate",
+          "Track Changes",
+          "Form",
+          "Style"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "A clickable link to another document, webpage or location is called:",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 1,
+        "options": [
+          "Cell Reference",
+          "Hyperlink",
+          "Macro",
+          "Solver"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "LibreOffice Base is used for:",
+        "type": "mcq",
+        "userAnswer": "",
+        "correctAnswer": "",
+        "options": [
+          "Database management",
+          "Presentation",
+          "Image editing",
+          "Spreadsheet calculations"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "A collection of related data is called a:",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 1,
+        "options": [
+          "Macro",
+          "Database",
+          "Style",
+          "Scenario"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which key uniquely identifies each record in a database table?",
+        "type": "mcq",
+        "userAnswer": "",
+        "correctAnswer": "",
+        "options": [
+          "Primary Key",
+          "Duplicate Key",
+          "Normal Key",
+          "Cell Key"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which database object is used to retrieve specific information from a database?",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 1,
+        "options": [
+          "Form",
+          "Query",
+          "Macro",
+          "Style"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Styles help maintain consistent formatting in Writer.",
+        "type": "tf",
+        "userAnswer": "True",
+        "correctAnswer": "True",
+        "options": [],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Goal Seek is a feature of LibreOffice Writer.",
+        "type": "tf",
+        "userAnswer": "False",
+        "correctAnswer": "False",
+        "options": [],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Macros can automate repetitive tasks in Calc.",
+        "type": "tf",
+        "userAnswer": "True",
+        "correctAnswer": "True",
+        "options": [],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "LibreOffice Base is used for database management",
+        "type": "tf",
+        "userAnswer": "True",
+        "correctAnswer": "True",
+        "options": [],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "A Primary Key can uniquely identify a record in a table.",
+        "type": "tf",
+        "userAnswer": "True",
+        "correctAnswer": "True",
+        "options": [],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which LibreOffice application is used for word processing?",
+        "type": "owa",
+        "userAnswer": "Writer",
+        "correctAnswer": "Writer",
+        "options": [],
+        "isCorrect": true,
+        "marks": 2,
+        "owaMarksAwarded": 2,
+        "aiGraded": true,
+        "aiReason": "Exact match with expected answer.",
+        "expectedAnswer": "Writer"
+      },
+      {
+        "qText": "Which LibreOffice application is used for spreadsheets?",
+        "type": "owa",
+        "userAnswer": "Calc",
+        "correctAnswer": "Calc",
+        "options": [],
+        "isCorrect": true,
+        "marks": 2,
+        "owaMarksAwarded": 2,
+        "aiGraded": true,
+        "aiReason": "Exact match with expected answer.",
+        "expectedAnswer": "Calc"
+      },
+      {
+        "qText": "Which LibreOffice application is used for databases?",
+        "type": "owa",
+        "userAnswer": "Access",
+        "correctAnswer": "Base",
+        "options": [],
+        "isCorrect": false,
+        "marks": 2,
+        "owaMarksAwarded": 0,
+        "aiGraded": true,
+        "aiReason": "Answer does not match expected solution. Sahi Uttar (Correct Answer): Base",
+        "expectedAnswer": "Base"
+      },
+      {
+        "qText": "Which feature automates repetitive tasks in Calc?",
+        "type": "owa",
+        "userAnswer": "Goal sheek",
+        "correctAnswer": "Macro",
+        "options": [],
+        "isCorrect": false,
+        "marks": 2,
+        "owaMarksAwarded": 0,
+        "aiGraded": true,
+        "aiReason": "Answer does not match expected solution. Sahi Uttar (Correct Answer): Macro",
+        "expectedAnswer": "Macro"
+      },
+      {
+        "qText": "Which language is used to query relational databases?",
+        "type": "owa",
+        "userAnswer": "Other",
+        "correctAnswer": "SQL",
+        "options": [],
+        "isCorrect": false,
+        "marks": 2,
+        "owaMarksAwarded": 0,
+        "aiGraded": true,
+        "aiReason": "Answer does not match expected solution. Sahi Uttar (Correct Answer): SQL",
+        "expectedAnswer": "SQL"
+      }
+    ],
+    "examType": "Class Test",
+    "session": "2026-2027",
+    "year": "2026",
+    "examDate": "2026-10-07",
+    "submittedAt": "2026-10-07T03:50:55.464Z",
+    "resultUnlocked": true
+  },
+  {
+    "id": "res_1791356215196_jzavm",
+    "studentName": "Prince Kumar",
+    "class": "12th Science",
+    "subject": "COMPUTER",
+    "score": 8,
+    "total": 20,
+    "answers": [
+      {
+        "qText": "Which Python keyword is used to define a function?",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 1,
+        "options": [
+          "function",
+          "def",
+          "define",
+          "func"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "What is the output of print(17 // 5) in Python?\n",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 2,
+        "options": [
+          "3.4",
+          "2",
+          "3",
+          "4"
+        ],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which Python data type is immutable?\n",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 3,
+        "options": [
+          "List",
+          "Dictionary",
+          "Set",
+          "Tuple"
+        ],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which file mode appends data without deleting existing contents?",
+        "type": "mcq",
+        "userAnswer": "",
+        "correctAnswer": "",
+        "options": [
+          "r",
+          "w",
+          "a",
+          "r+"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which principle does a stack follow?\n",
+        "type": "mcq",
+        "userAnswer": "",
+        "correctAnswer": 1,
+        "options": [
+          "FIFO",
+          "LIFO",
+          "Ascending order",
+          "Random order"
+        ],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which SQL command retrieves data from a table?\n",
+        "type": "mcq",
+        "userAnswer": 2,
+        "correctAnswer": 2,
+        "options": [
+          "UPDATE",
+          "INSERT",
+          "SELECT",
+          "DELETE"
+        ],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which SQL clause filters groups after a GROUP BY operation?\n",
+        "type": "mcq",
+        "userAnswer": 2,
+        "correctAnswer": 3,
+        "options": [
+          "WHERE",
+          "ORDER BY",
+          "DISTINCT",
+          "HAVING"
+        ],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which SQL expression counts all rows in a table?",
+        "type": "mcq",
+        "userAnswer": 3,
+        "correctAnswer": "",
+        "options": [
+          "COUNT(*)",
+          "SUM(*)",
+          "TOTAL(*)",
+          "ADD(*)"
+        ],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which device forwards data packets between different networks?\n",
+        "type": "mcq",
+        "userAnswer": "",
+        "correctAnswer": 1,
+        "options": [
+          "Repeater",
+          "Router",
+          "Hub",
+          "Modem"
+        ],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which protocol is primarily used to send email?",
+        "type": "mcq",
+        "userAnswer": 1,
+        "correctAnswer": 2,
+        "options": [
+          "FTP",
+          "HTTP",
+          "SMTP",
+          "POP3"
+        ],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "A Python function can return more than one value using tuple packing.",
+        "type": "tf",
+        "userAnswer": "True",
+        "correctAnswer": "True",
+        "options": [],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Opening an existing file in w mode preserves its previous contents.\n",
+        "type": "tf",
+        "userAnswer": "False",
+        "correctAnswer": "False",
+        "options": [],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "The SQL ORDER BY clause sorts results in ascending order by default.\n",
+        "type": "tf",
+        "userAnswer": "True",
+        "correctAnswer": "True",
+        "options": [],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "A LAN generally covers a smaller geographical area than a WAN.\n",
+        "type": "tf",
+        "userAnswer": "True",
+        "correctAnswer": "True",
+        "options": [],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "A primary key can contain duplicate values.",
+        "type": "tf",
+        "userAnswer": "False",
+        "correctAnswer": "False",
+        "options": [],
+        "isCorrect": true,
+        "marks": 1,
+        "owaMarksAwarded": 0
+      },
+      {
+        "qText": "Which Python keyword sends a value back from a function to its caller?\n",
+        "type": "owa",
+        "userAnswer": "asjhk",
+        "correctAnswer": "return",
+        "options": [],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0,
+        "aiGraded": true,
+        "expectedAnswer": "return",
+        "aiReason": "Answer does not match expected solution. Sahi Uttar (Correct Answer): return"
+      },
+      {
+        "qText": "What is the operation of inserting an element into a stack called?\n",
+        "type": "owa",
+        "userAnswer": "wejnlq",
+        "correctAnswer": "push",
+        "options": [],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0,
+        "aiGraded": true,
+        "expectedAnswer": "push",
+        "aiReason": "Answer does not match expected solution. Sahi Uttar (Correct Answer): push"
+      },
+      {
+        "qText": "Which SQL keyword removes duplicate rows from a query result?\n",
+        "type": "owa",
+        "userAnswer": "wehl",
+        "correctAnswer": "DISTINCT",
+        "options": [],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0,
+        "aiGraded": true,
+        "expectedAnswer": "DISTINCT",
+        "aiReason": "Answer does not match expected solution. Sahi Uttar (Correct Answer): DISTINCT"
+      },
+      {
+        "qText": "Which system translates domain names into IP addresses?\n",
+        "type": "owa",
+        "userAnswer": "weh",
+        "correctAnswer": "DNS",
+        "options": [],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0,
+        "aiGraded": true,
+        "expectedAnswer": "DNS",
+        "aiReason": "Answer does not match expected solution. Sahi Uttar (Correct Answer): DNS"
+      },
+      {
+        "qText": "In a relational database, what is another name for a row?\n",
+        "type": "owa",
+        "userAnswer": "welifh",
+        "correctAnswer": "tuple",
+        "options": [],
+        "isCorrect": false,
+        "marks": 1,
+        "owaMarksAwarded": 0,
+        "aiGraded": true,
+        "expectedAnswer": "tuple",
+        "aiReason": "Answer does not match expected solution. Sahi Uttar (Correct Answer): tuple"
+      }
+    ],
+    "examType": "PT-1",
+    "session": "2026-2027",
+    "year": "2026",
+    "examDate": "2026-10-07",
+    "submittedAt": "2026-10-07T06:56:54.282Z",
+    "resultUnlocked": true
+  }
+]
