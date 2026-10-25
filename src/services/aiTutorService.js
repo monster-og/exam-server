@@ -7,12 +7,13 @@
 
 export function getGeminiKey() {
   try {
-    const custom = localStorage.getItem('ocs_gemini_api_key');
+    const custom = typeof localStorage !== 'undefined' ? localStorage.getItem('ocs_gemini_api_key') : null;
     if (custom && custom.trim()) return custom.trim();
   } catch {}
 
-  if (import.meta.env.VITE_GEMINI_API_KEY && import.meta.env.VITE_GEMINI_API_KEY.trim()) {
-    return import.meta.env.VITE_GEMINI_API_KEY.trim();
+  const envKey = import.meta?.env?.VITE_GEMINI_API_KEY;
+  if (envKey && envKey.trim()) {
+    return envKey.trim();
   }
 
   // School Oxford Convent primary key (joined to prevent raw secret scanner flags)
@@ -21,10 +22,10 @@ export function getGeminiKey() {
 
 export function getOpenAIKey() {
   try {
-    const custom = localStorage.getItem('ocs_openai_api_key');
+    const custom = typeof localStorage !== 'undefined' ? localStorage.getItem('ocs_openai_api_key') : null;
     if (custom && custom.trim()) return custom.trim();
   } catch {}
-  return import.meta.env.VITE_OPENAI_API_KEY || '';
+  return import.meta?.env?.VITE_OPENAI_API_KEY || '';
 }
 
 export function getPreferredAIProvider() {
