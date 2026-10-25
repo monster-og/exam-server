@@ -2,10 +2,43 @@
  * Nandu — AI Smart Academic Tutor Service
  * Oxford Convent School, Sasaram
  * Comprehensive Doubt Clearing across Mathematics, Science, Computer Science, English Grammar, and Social Studies.
- * Powered by Google Gemini AI with high-precision academic knowledge engine & SVG diagrams.
+ * Directly connected to Google Gemini AI & OpenAI ChatGPT API with resilient academic fallback engine.
  */
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
+export function getGeminiKey() {
+  try {
+    const custom = localStorage.getItem('ocs_gemini_api_key');
+    if (custom && custom.trim()) return custom.trim();
+  } catch {}
+  return import.meta.env.VITE_GEMINI_API_KEY || "";
+}
+
+export function getOpenAIKey() {
+  try {
+    const custom = localStorage.getItem('ocs_openai_api_key');
+    if (custom && custom.trim()) return custom.trim();
+  } catch {}
+  return import.meta.env.VITE_OPENAI_API_KEY || '';
+}
+
+export function getPreferredAIProvider() {
+  try {
+    const pref = localStorage.getItem('ocs_ai_provider');
+    if (pref) return pref; // 'gemini' or 'openai'
+  } catch {}
+  return getOpenAIKey() ? 'openai' : 'gemini';
+}
+
+export function setAIProviderConfig({ provider, geminiKey, openAIKey }) {
+  try {
+    if (provider) localStorage.setItem('ocs_ai_provider', provider);
+    if (geminiKey !== undefined) localStorage.setItem('ocs_gemini_api_key', geminiKey.trim());
+    if (openAIKey !== undefined) localStorage.setItem('ocs_openai_api_key', openAIKey.trim());
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 const NANDU_SYSTEM_PROMPT = `
 You are "Nandu", the official, highly accomplished AI Academic Tutor of Oxford Convent School, Sasaram.
@@ -277,7 +310,6 @@ $$I = \\frac{V}{R}, \\qquad R = \\frac{V}{I}$$
 
 /**
  * Smart Diagram Detector
- * Maps questions to corresponding educational diagrams
  */
 export function detectDiagram(query = '', answer = '') {
   const combined = (query + ' ' + answer).toLowerCase();
@@ -342,44 +374,20 @@ export function detectDiagram(query = '', answer = '') {
 }
 
 /**
- * Ask Nandu a Doubt
+ * Call Live Google Gemini AI (3.5 Flash / Flash Latest)
  */
-export async function askNanduAI({ doubt, subject = '', studentClass = '', chatHistory = [] }) {
-  if (!doubt || !doubt.trim()) {
-    throw new Error('Please enter an academic question for Nandu.');
-  }
+async function callGeminiLive({ promptText, apiKey }) {
+  const models = ['gemini-3.5-flash', 'gemini-flash-latest', 'gemini-pro-latest'];
+  let lastError = null;
 
-  const cleanDoubt = doubt.trim();
-
-  // 1. Try Online Google Gemini API first
-  if (GEMINI_API_KEY && !GEMINI_API_KEY.includes('your_api_key')) {
+  for (const model of models) {
     try {
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-      let promptText = `${NANDU_SYSTEM_PROMPT}\n\n=== STUDENT PROFILE ===\nClass/Grade: ${studentClass || 'Class 10'}\nSubject: ${subject || 'General Academic'}\n`;
-
-      if (chatHistory && chatHistory.length > 0) {
-        promptText += `\n=== RECENT CONVERSATION CONTEXT ===\n`;
-        const recent = chatHistory.slice(-4);
-        recent.forEach(msg => {
-          promptText += `${msg.sender === 'student' ? 'Student' : 'Nandu'}: ${msg.text}\n`;
-        });
-      }
-
-      promptText += `\n=== STUDENT'S QUESTION ===\n${cleanDoubt}\n\nPlease deliver a structured, precise, 100% proper English explanation following all required sections (Concept, Formula, Steps, Worked Example, Exam Tip):`;
-
-      const contents = [
-        {
-          role: 'user',
-          parts: [{ text: promptText }]
-        }
-      ];
-
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents,
+          contents: [{ role: 'user', parts: [{ text: promptText }] }],
           generationConfig: {
             temperature: 0.6,
             maxOutputTokens: 1200,
@@ -391,22 +399,166 @@ export async function askNanduAI({ doubt, subject = '', studentClass = '', chatH
         const data = await response.json();
         const candidate = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (candidate) {
-          const detected = detectDiagram(cleanDoubt, candidate);
           return {
             success: true,
-            source: 'gemini_ai',
-            tutor: 'Nandu',
-            answer: candidate.trim(),
-            diagram: detected
+            provider: 'Google Gemini',
+            model: model,
+            text: candidate.trim()
           };
         }
+      } else {
+        const errJson = await response.json().catch(() => ({}));
+        lastError = errJson.error?.message || `HTTP ${response.status}`;
       }
+    } catch (e) {
+      lastError = e.message;
+    }
+  }
+
+  throw new Error(lastError || 'Google Gemini API call failed');
+}
+
+/**
+ * Call Live OpenAI ChatGPT API
+ */
+async function callChatGPTLive({ promptText, apiKey }) {
+  const endpoint = 'https://api.openai.com/v1/chat/completions';
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: NANDU_SYSTEM_PROMPT },
+        { role: 'user', content: promptText }
+      ],
+      temperature: 0.6,
+      max_tokens: 1200
+    })
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    const candidate = data.choices?.[0]?.message?.content;
+    if (candidate) {
+      return {
+        success: true,
+        provider: 'OpenAI ChatGPT',
+        model: 'gpt-4o-mini',
+        text: candidate.trim()
+      };
+    }
+  }
+
+  const errJson = await response.json().catch(() => ({}));
+  throw new Error(errJson.error?.message || `ChatGPT HTTP ${response.status}`);
+}
+
+/**
+ * Test Connection with Gemini or ChatGPT API Key
+ */
+export async function testAIConnection({ provider = 'gemini', apiKey }) {
+  const keyToTest = apiKey || (provider === 'openai' ? getOpenAIKey() : getGeminiKey());
+  if (!keyToTest) throw new Error('No API key provided.');
+
+  if (provider === 'openai') {
+    return await callChatGPTLive({
+      promptText: 'Hello from student test!',
+      apiKey: keyToTest
+    });
+  } else {
+    return await callGeminiLive({
+      promptText: 'Hello from student test!',
+      apiKey: keyToTest
+    });
+  }
+}
+
+/**
+ * Ask Nandu a Doubt (Connected to Google Gemini & OpenAI ChatGPT)
+ */
+export async function askNanduAI({ doubt, subject = '', studentClass = '', chatHistory = [] }) {
+  if (!doubt || !doubt.trim()) {
+    throw new Error('Please enter an academic question for Nandu.');
+  }
+
+  const cleanDoubt = doubt.trim();
+
+  // Construct structured pedagogical prompt for Gemini/ChatGPT
+  let promptText = `${NANDU_SYSTEM_PROMPT}\n\n=== STUDENT PROFILE ===\nClass/Grade: ${studentClass || 'Class 10'}\nSubject: ${subject || 'General Academic'}\n`;
+
+  if (chatHistory && chatHistory.length > 0) {
+    promptText += `\n=== RECENT CONVERSATION CONTEXT ===\n`;
+    const recent = chatHistory.slice(-4);
+    recent.forEach(msg => {
+      promptText += `${msg.sender === 'student' ? 'Student' : 'Nandu'}: ${msg.text}\n`;
+    });
+  }
+
+  promptText += `\n=== STUDENT'S QUESTION ===\n${cleanDoubt}\n\nPlease deliver a structured, precise, 100% proper English explanation following all required sections (Concept, Formula, Steps, Worked Example, Exam Tip):`;
+
+  const preferredProvider = getPreferredAIProvider();
+  const openAIKey = getOpenAIKey();
+  const geminiKey = getGeminiKey();
+
+  // 1. Try ChatGPT if preferred and key exists
+  if (preferredProvider === 'openai' && openAIKey) {
+    try {
+      const res = await callChatGPTLive({ promptText, apiKey: openAIKey });
+      const detected = detectDiagram(cleanDoubt, res.text);
+      return {
+        success: true,
+        source: 'chatgpt_ai',
+        providerName: 'OpenAI ChatGPT (GPT-4o)',
+        tutor: 'Nandu',
+        answer: res.text,
+        diagram: detected
+      };
+    } catch (err) {
+      console.warn('ChatGPT API call notice, falling back to Gemini:', err.message);
+    }
+  }
+
+  // 2. Try Google Gemini AI (3.5 Flash / Flash Latest)
+  if (geminiKey) {
+    try {
+      const res = await callGeminiLive({ promptText, apiKey: geminiKey });
+      const detected = detectDiagram(cleanDoubt, res.text);
+      return {
+        success: true,
+        source: 'gemini_ai',
+        providerName: `Google Gemini AI (${res.model})`,
+        tutor: 'Nandu',
+        answer: res.text,
+        diagram: detected
+      };
     } catch (err) {
       console.warn('Gemini API call notice, falling back to local academic engine:', err.message);
     }
   }
 
-  // 2. Local Academic Knowledge Engine Fallback (100% Proper English)
+  // 3. Fallback: If ChatGPT configured but not preferred
+  if (openAIKey && preferredProvider !== 'openai') {
+    try {
+      const res = await callChatGPTLive({ promptText, apiKey: openAIKey });
+      const detected = detectDiagram(cleanDoubt, res.text);
+      return {
+        success: true,
+        source: 'chatgpt_ai',
+        providerName: 'OpenAI ChatGPT (GPT-4o)',
+        tutor: 'Nandu',
+        answer: res.text,
+        diagram: detected
+      };
+    } catch (err) {
+      console.warn('ChatGPT secondary fallback notice:', err.message);
+    }
+  }
+
+  // 4. Local Academic Knowledge Engine Fallback (100% Proper English)
   const qLower = cleanDoubt.toLowerCase();
 
   // Polite English Greeting
@@ -414,6 +566,7 @@ export async function askNanduAI({ doubt, subject = '', studentClass = '', chatH
     return {
       success: true,
       source: 'local_engine',
+      providerName: 'Oxford Academic Base',
       tutor: 'Nandu',
       answer: `Hello! I am **Nandu**, your dedicated AI Academic Tutor at **Oxford Convent School, Sasaram**.
 
@@ -436,6 +589,7 @@ Please type your exact academic doubt or numerical problem below, and I will gui
       return {
         success: true,
         source: 'local_engine',
+        providerName: 'Oxford Academic Base',
         tutor: 'Nandu',
         answer: item.answer,
         diagram: {
@@ -452,6 +606,7 @@ Please type your exact academic doubt or numerical problem below, and I will gui
   return {
     success: true,
     source: 'local_engine',
+    providerName: 'Oxford Academic Base',
     tutor: 'Nandu',
     answer: `📌 **Core Concept Analysis**:
 Regarding your question: *"**${cleanDoubt}**"*

@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { askNanduAI, SUGGESTED_DOUBTS, detectDiagram } from '../services/aiTutorService';
+import { 
+  askNanduAI, 
+  SUGGESTED_DOUBTS, 
+  detectDiagram,
+  getPreferredAIProvider,
+  setAIProviderConfig,
+  getGeminiKey,
+  getOpenAIKey,
+  testAIConnection
+} from '../services/aiTutorService';
 import EducationalDiagram from './EducationalDiagram';
 import { 
   Bot, 
@@ -9,11 +18,13 @@ import {
   Trash2, 
   Copy, 
   Check, 
-  BookOpen, 
-  GraduationCap, 
-  HelpCircle,
   Maximize2,
-  Minimize2
+  Minimize2,
+  Settings,
+  Key,
+  Cpu,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 
 const SUBJECT_FILTERS = [
@@ -40,7 +51,7 @@ export default function NanduAiTutorModal({ isOpen, onClose, studentClass = 'Cla
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         text: `Hello! I am **Nandu**, your AI Academic Tutor at **Oxford Convent School, Sasaram**.
 
-I am ready to solve your doubts with step-by-step explanations, formulas, and visual diagrams across all subjects:
+Connected directly to **Google Gemini AI & ChatGPT** to solve your doubts with accurate formulas, step-by-step solutions, and visual diagrams:
 - 📐 **Mathematics**: Algebra, Trigonometry, Geometry, Arithmetic, Calculus
 - 🔬 **Science**: Physics, Chemistry, Biology & Natural Phenomena
 - 💻 **Computer Science**: Memory Architecture, Coding, Logic & IT
@@ -48,6 +59,8 @@ I am ready to solve your doubts with step-by-step explanations, formulas, and vi
 - 🌍 **Social Studies**: History, Civics, Geography & Economics
 
 Please type your question or numerical problem below, or tap any of the suggested doubts to get started!`,
+        source: 'gemini_ai',
+        providerName: 'Google Gemini 3.5 AI',
         diagram: null
       }
     ];
@@ -58,6 +71,14 @@ Please type your question or numerical problem below, or tap any of the suggeste
   const [loading, setLoading] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // AI Engine Settings State
+  const [showSettings, setShowSettings] = useState(false);
+  const [activeProvider, setActiveProvider] = useState(() => getPreferredAIProvider());
+  const [geminiKeyInput, setGeminiKeyInput] = useState(() => localStorage.getItem('ocs_gemini_api_key') || '');
+  const [openAIKeyInput, setOpenAIKeyInput] = useState(() => localStorage.getItem('ocs_openai_api_key') || '');
+  const [testResult, setTestResult] = useState(null);
+  const [testing, setTesting] = useState(false);
 
   const messagesEndRef = useRef(null);
 
@@ -112,6 +133,7 @@ Please type your question or numerical problem below, or tap any of the suggeste
         sender: 'nandu',
         text: cleanedText,
         source: res.source,
+        providerName: res.providerName || (res.source === 'chatgpt_ai' ? 'OpenAI ChatGPT' : 'Google Gemini AI'),
         diagram: detectedDiag,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
@@ -122,6 +144,8 @@ Please type your question or numerical problem below, or tap any of the suggeste
         id: `err_${Date.now()}`,
         sender: 'nandu',
         text: '⚠️ Unable to connect to the AI tutor engine at this moment. Please re-submit your question or choose one of the suggested topics below.',
+        source: 'local_engine',
+        providerName: 'Oxford Academic Base',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, errMsg]);
@@ -138,6 +162,8 @@ Please type your question or numerical problem below, or tap any of the suggeste
           sender: 'nandu',
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           text: `👋 Chat cleared! I am Nandu. What academic doubt can I solve for you today?`,
+          source: 'gemini_ai',
+          providerName: 'Google Gemini 3.5 AI',
           diagram: null
         }
       ];
@@ -150,6 +176,36 @@ Please type your question or numerical problem below, or tap any of the suggeste
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  // Test and save API Key
+  const handleTestAndSave = async () => {
+    setTesting(true);
+    setTestResult(null);
+    try {
+      setAIProviderConfig({
+        provider: activeProvider,
+        geminiKey: geminiKeyInput,
+        openAIKey: openAIKeyInput
+      });
+
+      const res = await testAIConnection({
+        provider: activeProvider,
+        apiKey: activeProvider === 'openai' ? openAIKeyInput : (geminiKeyInput || getGeminiKey())
+      });
+
+      setTestResult({
+        success: true,
+        message: `✅ Connected to ${res.provider} (${res.model}) successfully! Responses are live.`
+      });
+    } catch (err) {
+      setTestResult({
+        success: false,
+        message: `❌ Connection failed: ${err.message}`
+      });
+    } finally {
+      setTesting(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -176,9 +232,9 @@ Please type your question or numerical problem below, or tap any of the suggeste
       <div
         className="glass-card"
         style={{
-          width: isExpanded ? '96vw' : '820px',
+          width: isExpanded ? '96vw' : '840px',
           maxWidth: '100%',
-          height: isExpanded ? '94vh' : '85vh',
+          height: isExpanded ? '94vh' : '86vh',
           display: 'flex',
           flexDirection: 'column',
           background: 'linear-gradient(160deg, rgba(20, 16, 48, 0.98), rgba(9, 7, 24, 0.99))',
@@ -198,6 +254,8 @@ Please type your question or numerical problem below, or tap any of the suggeste
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '12px',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -230,7 +288,7 @@ Please type your question or numerical problem below, or tap any of the suggeste
               />
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                 <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900, color: '#fff' }}>
                   Nandu
                 </h3>
@@ -245,28 +303,41 @@ Please type your question or numerical problem below, or tap any of the suggeste
                     fontWeight: 700,
                   }}
                 >
-                  AI Smart Academic Tutor
+                  AI Academic Tutor
                 </span>
                 <span
                   style={{
-                    background: 'rgba(16, 185, 129, 0.2)',
-                    color: '#34d399',
+                    background: activeProvider === 'openai' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(6, 182, 212, 0.2)',
+                    color: activeProvider === 'openai' ? '#34d399' : '#67e8f9',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
                     padding: '2px 8px',
                     borderRadius: '20px',
                     fontSize: '0.72rem',
-                    fontWeight: 700,
+                    fontWeight: 800,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
                   }}
                 >
-                  🟢 24/7 Active
+                  ⚡ {activeProvider === 'openai' ? 'ChatGPT (GPT-4o)' : 'Google Gemini 3.5'}
                 </span>
               </div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                Oxford Convent School • Maths, Science, English, SST &amp; Computer Doubts
+                Oxford Convent School • Instant Doubts in Maths, Science, English, SST &amp; Computer
               </div>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              onClick={() => setShowSettings(!showSettings)}
+              title="Configure Gemini & ChatGPT API Keys"
+              className={`btn ${showSettings ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ padding: '8px 12px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              <Key size={15} />
+              <span>AI Access</span>
+            </button>
             <button
               onClick={handleClearChat}
               title="Clear chat history"
@@ -293,6 +364,127 @@ Please type your question or numerical problem below, or tap any of the suggeste
             </button>
           </div>
         </div>
+
+        {/* ── AI Access & API Key Settings Drawer (Collapsible) ── */}
+        {showSettings && (
+          <div
+            style={{
+              padding: '16px 20px',
+              background: 'rgba(15, 12, 38, 0.98)',
+              borderBottom: '1px solid rgba(99, 102, 241, 0.35)',
+              boxShadow: '0 8px 25px rgba(0, 0, 0, 0.5)',
+              animation: 'fadeIn 0.2s ease',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#fff', fontWeight: 800, fontSize: '0.92rem' }}>
+                <Cpu size={18} color="#67e8f9" /> AI Engine Configuration &amp; API Keys
+              </div>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                Direct LLM Access (Google Gemini &amp; OpenAI ChatGPT)
+              </span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '14px', marginBottom: '14px' }}>
+              {/* Provider Selection */}
+              <div>
+                <label style={{ fontSize: '0.8rem', color: '#cbd5e1', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                  Select Primary AI Engine:
+                </label>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setActiveProvider('gemini')}
+                    className={`btn ${activeProvider === 'gemini' ? 'btn-primary' : 'btn-surface'}`}
+                    style={{ flex: 1, padding: '8px 12px', fontSize: '0.82rem', fontWeight: 700 }}
+                  >
+                    Google Gemini AI
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveProvider('openai')}
+                    className={`btn ${activeProvider === 'openai' ? 'btn-primary' : 'btn-surface'}`}
+                    style={{ flex: 1, padding: '8px 12px', fontSize: '0.82rem', fontWeight: 700 }}
+                  >
+                    OpenAI ChatGPT
+                  </button>
+                </div>
+              </div>
+
+              {/* Gemini Key */}
+              <div>
+                <label style={{ fontSize: '0.8rem', color: '#cbd5e1', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                  Google Gemini API Key:
+                </label>
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder={geminiKeyInput ? '••••••••••••••••' : 'Using School Default Key (Active 🟢)'}
+                  value={geminiKeyInput}
+                  onChange={(e) => setGeminiKeyInput(e.target.value)}
+                  style={{ fontSize: '0.84rem', padding: '8px 12px', borderRadius: '8px' }}
+                />
+              </div>
+
+              {/* OpenAI Key */}
+              <div>
+                <label style={{ fontSize: '0.8rem', color: '#cbd5e1', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
+                  OpenAI API Key (Optional for ChatGPT):
+                </label>
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Paste sk-... key to activate ChatGPT"
+                  value={openAIKeyInput}
+                  onChange={(e) => setOpenAIKeyInput(e.target.value)}
+                  style={{ fontSize: '0.84rem', padding: '8px 12px', borderRadius: '8px' }}
+                />
+              </div>
+            </div>
+
+            {/* Test Status Banner */}
+            {testResult && (
+              <div
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: '8px',
+                  marginBottom: '12px',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: testResult.success ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                  border: `1px solid ${testResult.success ? '#10b981' : '#ef4444'}`,
+                  color: testResult.success ? '#34d399' : '#f87171',
+                }}
+              >
+                {testResult.success ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                <span>{testResult.message}</span>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => setShowSettings(false)}
+                style={{ fontSize: '0.84rem', padding: '6px 14px' }}
+              >
+                Close Settings
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleTestAndSave}
+                disabled={testing}
+                style={{ fontSize: '0.84rem', padding: '6px 16px', fontWeight: 700 }}
+              >
+                {testing ? 'Testing Connection...' : 'Test & Save Configuration'}
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* ── Subject Filter Tabs ── */}
         <div
@@ -384,7 +576,7 @@ Please type your question or numerical problem below, or tap any of the suggeste
                   background:
                     m.sender === 'student'
                       ? 'linear-gradient(135deg, #4f46e5, #4338ca)'
-                      : 'rgba(28, 24, 58, 0.92)',
+                      : 'rgba(28, 24, 58, 0.94)',
                   border:
                     m.sender === 'student'
                       ? '1px solid rgba(99, 102, 241, 0.5)'
@@ -409,7 +601,32 @@ Please type your question or numerical problem below, or tap any of the suggeste
                     fontWeight: 700,
                   }}
                 >
-                  <span>{m.sender === 'student' ? 'You (Student)' : 'Nandu (AI Academic Tutor)'}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <span>{m.sender === 'student' ? 'You (Student)' : 'Nandu (AI Tutor)'}</span>
+                    {m.sender === 'nandu' && (
+                      <span
+                        style={{
+                          background: m.source === 'chatgpt_ai' 
+                            ? 'rgba(16, 185, 129, 0.22)' 
+                            : m.source === 'gemini_ai' 
+                              ? 'rgba(6, 182, 212, 0.22)' 
+                              : 'rgba(99, 102, 241, 0.22)',
+                          color: m.source === 'chatgpt_ai' ? '#34d399' : m.source === 'gemini_ai' ? '#67e8f9' : '#a5b4fc',
+                          border: '1px solid rgba(255, 255, 255, 0.15)',
+                          padding: '1px 8px',
+                          borderRadius: '10px',
+                          fontSize: '0.68rem',
+                          fontWeight: 800,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                        }}
+                      >
+                        <Sparkles size={11} /> {m.providerName || (m.source === 'gemini_ai' ? 'Google Gemini AI' : m.source === 'chatgpt_ai' ? 'OpenAI ChatGPT' : 'Oxford Academic Engine')}
+                      </span>
+                    )}
+                  </div>
+
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span>{m.time}</span>
                     {m.sender === 'nandu' && (
@@ -485,7 +702,7 @@ Please type your question or numerical problem below, or tap any of the suggeste
                 }}
               >
                 <Sparkles size={16} className="animate-spin" />
-                <span>Nandu is formulating a structured, step-by-step English solution with formulas...</span>
+                <span>Nandu is asking {activeProvider === 'openai' ? 'OpenAI ChatGPT' : 'Google Gemini 3.5 AI'} to formulate your solution...</span>
               </div>
             </div>
           )}
