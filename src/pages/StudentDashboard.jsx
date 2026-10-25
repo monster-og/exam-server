@@ -298,7 +298,7 @@ export default function StudentDashboard({ setActivePage, setSelectedExam, openN
               </span>
             </div>
             <p style={{ margin: '4px 0 0 0', fontSize: '0.88rem', color: 'rgba(255, 255, 255, 0.8)' }}>
-              Instant step-by-step solutions for <strong>Mathematics, Science, English, SST & Computer</strong> with Hinglish & English explanations.
+              Instant step-by-step solutions for <strong>Mathematics, Science, English, SST &amp; Computer</strong> with formulas, worked examples, and visual diagrams.
             </p>
           </div>
         </div>

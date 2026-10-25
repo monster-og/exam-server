@@ -1,170 +1,372 @@
 /**
- * Nandu — AI Smart Tutor Service
+ * Nandu — AI Smart Academic Tutor Service
  * Oxford Convent School, Sasaram
- * Clears doubts across all academic subjects (Maths, Science, SST, English, Computer, etc.)
- * Powered by Google Gemini AI with resilient local academic fallback engine.
+ * Comprehensive Doubt Clearing across Mathematics, Science, Computer Science, English Grammar, and Social Studies.
+ * Powered by Google Gemini AI with high-precision academic knowledge engine & SVG diagrams.
  */
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "";
 
 const NANDU_SYSTEM_PROMPT = `
-You are "Nandu" (नंदू), the official, friendly, and super-smart AI Tutor of Oxford Convent School, Sasaram.
-Your sole mission is to clear any doubt asked by school students across any subject and any grade (Class 1 to 12th).
+You are "Nandu", the official, highly accomplished AI Academic Tutor of Oxford Convent School, Sasaram.
+Your sole mission is to solve students' academic doubts across all school subjects (Classes 1 to 12) with absolute accuracy and pedagogical excellence.
 
-Subjects you excel at:
-1. 📐 Mathematics: Algebra, Trigonometry, Geometry, Arithmetic, Calculus, Mensuration, Statistics. (Always provide step-by-step calculations with clear formulas).
-2. 🔬 Science (Physics, Chemistry, Biology): Laws of motion, chemical equations, cell structure, electricity, optics, human body, ecosystem.
-3. 💻 Computer Science / IT: Coding (Python, HTML, CSS, JavaScript, C++), computer hardware, OS, networking, internet, database.
-4. 📖 English & Hindi: Grammar rules, tenses, active/passive voice, essays, letter writing, comprehension, word meanings.
-5. 🌍 Social Science (History, Geography, Civics/Pol Sci, Economics): Freedom movement, constitution, climate, maps, economy.
-
-Response Style Guidelines:
-- Tone: Extremely encouraging, warm, respectful, and motivating (like a favorite school teacher).
-- Language: Match the student's language! If asked in Hindi or Hinglish, explain in clear, natural Hinglish/Hindi. If asked in English, answer in English.
-- Structure your answer cleanly:
-  1. 💡 **Main Concept / सीधी बात**: Short summary.
-  2. 📝 **Step-by-Step Explanation / हल**: Break down formulas or points.
-  3. 🌟 **Real-Life Example / उदाहरण**: Connect with daily life.
-  4. 🎯 **Quick Tip for Exam**: How to score full marks in this question.
-- Format with bold headings, bullet points, and neat spacing so it's super easy to read.
-- Introduce yourself warmly as "Nandu — Aapka AI Tutor" when greeted or asked who you are.
+CRITICAL INSTRUCTIONS & CONSTRAINTS:
+1. LANGUAGE: Always respond strictly in 100% proper, clear, grammatically flawless English. Do NOT use slang, informal Hindi, or filler phrases.
+2. CONCISENESS & PRECISION: Provide exact, direct, and factually correct explanations ("satik"). Do NOT include fluff, unnecessary greetings, or off-topic preamble.
+3. CLARITY FOR STUDENTS: Explain complex concepts in simple, intuitive steps that students can easily understand and remember.
+4. STRUCTURE OF EVERY EXPLANATION:
+   - 📌 **Core Concept / Definition**: Concise 2-3 sentence definition.
+   - 📐 **Formula / Law / Principle**: Clear mathematical or scientific formula with each variable defined.
+   - 📝 **Step-by-Step Explanation**: Numbered, logical steps that break down the concept clearly.
+   - 💡 **Concrete Worked-Out Example**: A realistic numerical problem or practical scenario with step-by-step numbers.
+   - 🎯 **Key Exam Takeaway**: Specific tips and scoring keywords needed to get full marks in CBSE/ICSE exams.
+5. VISUAL DIAGRAMS:
+   When explaining topics that benefit from visual illustrations, reference the diagram clearly. You can output one of the following tags on its own line if relevant:
+   - [DIAGRAM: pythagoras_triangle] -> For right-angled triangles and Pythagoras theorem
+   - [DIAGRAM: photosynthesis] -> For photosynthesis in plants, chloroplasts, and chemical reactions
+   - [DIAGRAM: newton_laws] -> For Newton's 3 laws of motion, inertia, force, and action-reaction
+   - [DIAGRAM: quadratic_parabola] -> For quadratic equations, discriminant, and parabola roots
+   - [DIAGRAM: electric_circuit] -> For Ohm's law, voltage, current, resistance, and circuits
+   - [DIAGRAM: ram_vs_rom] -> For computer memory, RAM vs ROM comparison
+   - [DIAGRAM: tenses_timeline] -> For English tenses, past, present, future grammar
 `;
 
-// ─── LOCAL SUBJECT KNOWLEDGE BASE (OFFLINE FALLBACK ENGINE) ──────────────────
+// ─── LOCAL SUBJECT KNOWLEDGE BASE (100% PROPER ENGLISH WITH DIAGRAMS) ─────────
 const LOCAL_KNOWLEDGE_BASE = [
   {
-    keywords: ['pythagor', 'right angle', 'hypotenuse', 'karna', 'aadhara'],
+    keywords: ['pythagor', 'right angle', 'hypotenuse', 'right triangle', 'perpendicular', 'base'],
     subject: 'Mathematics',
-    answer: `💡 **Pythagoras Theorem (पाइथागोरस प्रमेय)**
+    diagram: 'pythagoras_triangle',
+    diagramTitle: 'Right-Angled Triangle & Pythagoras Theorem',
+    diagramCaption: 'Visualizing Hypotenuse (H), Perpendicular (P), and Base (B) where H² = P² + B²',
+    answer: `📌 **Core Concept (Pythagoras Theorem)**:
+The Pythagoras Theorem states that in any right-angled triangle (a triangle having one $90^\\circ$ angle), the square of the longest side (Hypotenuse) is equal to the sum of the squares of the other two sides (Perpendicular and Base).
 
-📐 **Formula**: 
+📐 **Mathematical Formula**:
 $$\\text{Hypotenuse}^2 = \\text{Perpendicular}^2 + \\text{Base}^2$$
 $$H^2 = P^2 + B^2$$
+Or:
+$$H = \\sqrt{P^2 + B^2}$$
 
-📝 **Step-by-Step Explanation**:
-- Ek Right-Angled Triangle (समकोण त्रिभुज) me $90^\\circ$ ke samne wali side sabse lambi hoti hai, jise **Hypotenuse (कर्ण)** kehte hain.
-- Dono choti sides ke squares ka sum hamesha Hypotenuse ke square ke barabar hota hai.
+📝 **Step-by-Step Breakdown**:
+1. **Identify the Right Angle**: Locate the $90^\\circ$ vertex (usually labeled $\\angle B$).
+2. **Identify the Hypotenuse ($H$)**: The side directly opposite the $90^\\circ$ angle is always the longest side.
+3. **Identify the Legs ($P$ and $B$)**: The vertical height is the Perpendicular ($P$), and the horizontal side is the Base ($B$).
+4. **Square the Legs**: Compute $P^2$ and $B^2$.
+5. **Add the Squares**: Compute $P^2 + B^2$.
+6. **Take the Square Root**: $\\sqrt{P^2 + B^2}$ gives the exact length of the Hypotenuse.
 
-🌟 **Example**:
-- Agar Base = 3 cm aur Perpendicular = 4 cm hai:
-  $$H^2 = 3^2 + 4^2 = 9 + 16 = 25$$
+💡 **Worked-Out Example**:
+- **Problem**: A right-angled triangle has a base of $3\\text{ cm}$ and a height of $4\\text{ cm}$. Find the length of the hypotenuse.
+- **Solution**:
+  $$H^2 = P^2 + B^2$$
+  $$H^2 = 4^2 + 3^2 = 16 + 9 = 25$$
   $$H = \\sqrt{25} = 5\\text{ cm}$$
+  *Hence, the hypotenuse is $5\\text{ cm}$.*
 
-🎯 **Exam Tip**: Hamesha pehle diagram banayein aur $90^\\circ$ angle mark karein! Full marks pakke.`
+🎯 **Key Exam Takeaways**:
+- Always state the theorem formula first before writing calculations.
+- Remember the standard **Pythagorean Triples**: $(3, 4, 5)$, $(5, 12, 13)$, and $(8, 15, 17)$ for instant verification.`
   },
+
   {
-    keywords: ['photosynthesis', 'prakash sanshleshan', 'chlorophyll', 'plants food'],
+    keywords: ['photosynthesis', 'chlorophyll', 'plant food', 'carbon dioxide', 'glucose', 'oxygen'],
     subject: 'Science (Biology)',
-    answer: `💡 **Photosynthesis (प्रकाश संश्लेषण)**
+    diagram: 'photosynthesis',
+    diagramTitle: 'Process of Photosynthesis in Green Leaves',
+    diagramCaption: 'Light energy absorption by chlorophyll, taking in CO₂ & H₂O to synthesize Glucose & O₂',
+    answer: `📌 **Core Concept (Photosynthesis)**:
+Photosynthesis is the biochemical process by which green plants and certain autotrophic organisms convert light energy (from the sun) into chemical energy (stored in glucose), using carbon dioxide from the air and water from the soil, while releasing oxygen as a byproduct.
 
-🌿 **Chemical Reaction**:
-$$6\\text{CO}_2 + 6\\text{H}_2\\text{O} \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} \\text{C}_6\\text{H}_{12}\\text{O}_6 (\\text{Glucose}) + 6\\text{O}_2$$
+📐 **Balanced Chemical Equation**:
+$$6\\text{CO}_2 + 6\\text{H}_2\\text{O} \\xrightarrow[\\text{Chlorophyll}]{\\text{Sunlight}} \\text{C}_6\\text{H}_{12}\\text{O}_6 + 6\\text{O}_2$$
+*(Carbon Dioxide + Water $\\rightarrow$ Glucose + Oxygen)*
 
-📝 **Process in 4 Simple Steps**:
-1. **Absorption**: Patti me maujood **Chlorophyll** sunlight ko absorb karta hai.
-2. **Water Uptake**: Roots zameen se paani (H₂O) absorb karti hain.
-3. **Carbon Dioxide**: Stomata ke zariye hawa se CO₂ andar aati hai.
-4. **Food & Oxygen**: Paudhe glucose (food) banate hain aur humare jeene ke liye **Oxygen (O₂)** release karte hain!
+📝 **Step-by-Step Process (The 4 Stages)**:
+1. **Light Absorption**: Green pigment called **Chlorophyll** located inside **Chloroplasts** absorbs solar energy from sunlight.
+2. **Water Photolysis**: Roots absorb water ($H_2O$) and minerals from the soil via xylem vessels. Light energy splits water molecules into hydrogen ions and oxygen gas ($O_2$).
+3. **Carbon Dioxide Uptake**: Atmospheric $CO_2$ enters the leaf through microscopic pores called **Stomata** (regulated by guard cells).
+4. **Glucose Synthesis**: Hydrogen combines with carbon dioxide through enzymatic reactions (Calvin Cycle) to produce glucose ($C_6H_{12}O_6$), which plants use for energy and store as starch.
 
-🌟 **Real-Life Fun Fact**:
-Hum jo oxygen saans lene ke liye use karte hain, wo 100% plants ke photosynthesis se hi aati hai!`
+💡 **Real-World Importance**:
+- It is the primary source of organic food for virtually all living organisms on Earth.
+- It maintains the atmospheric oxygen-carbon dioxide balance ($O_2/CO_2$).
+
+🎯 **Key Exam Takeaways**:
+- Mention the site of photosynthesis: **Chloroplasts**.
+- Remember the byproduct: **Oxygen ($O_2$)**.
+- Write the balanced equation with **Sunlight** and **Chlorophyll** explicitly written above and below the reaction arrow.`
   },
+
   {
-    keywords: ['newton', 'law of motion', 'gati ke niyam', 'inertia', 'force'],
+    keywords: ['newton', 'law of motion', 'inertia', 'force', 'action reaction', 'f=ma', 'momentum'],
     subject: 'Science (Physics)',
-    answer: `💡 **Newton's 3 Laws of Motion (न्यूटन के गति के 3 नियम)**
+    diagram: 'newton_laws',
+    diagramTitle: "Newton's Three Fundamental Laws of Motion",
+    diagramCaption: '1st Law: Inertia | 2nd Law: F = m × a | 3rd Law: Action-Reaction Forces',
+    answer: `📌 **Core Concept (Newton's Laws of Motion)**:
+Sir Isaac Newton formulated three fundamental laws of classical mechanics that describe the exact mathematical relationship between an object, the forces acting upon it, and its resulting motion.
 
-1. 🛑 **First Law (Law of Inertia - जड़त्व का नियम)**:
-   - Jo cheez ruki hai wo ruki rahegi, aur jo chal rahi hai wo chalti rahegi, jab tak uspe koi baahri force (External Force) na lage.
-   - *Example*: Jab bus achanak rukti hai, to hum aage ki taraf girte hain.
+📐 **Summary of the Three Laws**:
 
-2. ⚡ **Second Law (F = m × a - संवेग का नियम)**:
-   - Force = Mass × Acceleration.
-   - *Example*: Cricketer ball catch karte waqt apne haath piche khinchta hai taaki chot kam lage.
+1. 🛑 **Newton's First Law (Law of Inertia)**:
+   - *Statement*: An object remains at rest or continues to move at a constant velocity in a straight line unless acted upon by an external net unbalanced force.
+   - *Mathematical Form*: If $\\Sigma F = 0$, then $\\frac{dv}{dt} = 0$ (velocity is constant).
+   - *Example*: Passengers lurch forward when a moving bus brakes abruptly because their upper bodies tend to maintain their state of forward motion.
 
-3. 💥 **Third Law (Action-Reaction - क्रिया-प्रतिक्रिया)**:
-   - Har Action ka ek barabar aur opposite Reaction hota hai.
-   - *Example*: Rocket se gas niche nikalti hai aur rocket aage asmaan me udta hai!`
+2. ⚡ **Newton's Second Law (Law of Momentum & Force)**:
+   - *Statement*: The rate of change of momentum of a body is directly proportional to the applied unbalanced force and takes place in the direction of the force.
+   - *Mathematical Formula*:
+     $$F = m \\times a$$
+     *(Force = Mass $\\times$ Acceleration)*
+   - *SI Unit*: Newton ($\\text{N} = \\text{kg}\\cdot\\text{m/s}^2$).
+   - *Example*: A cricket fielder pulls his hands backward while catching a fast ball to increase the impact time, thereby reducing the force on his hands.
+
+3. 💥 **Newton's Third Law (Law of Action & Reaction)**:
+   - *Statement*: To every action, there is always an equal and opposite reaction.
+   - *Mathematical Form*:
+     $$F_{AB} = -F_{BA}$$
+   - *Example*: When a rocket burns propellant, hot gases are expelled downward with high force, propelling the rocket upward with equal momentum.
+
+🎯 **Key Exam Takeaways**:
+- Action and reaction forces act on **two different bodies**, which is why they never cancel each other out.
+- Newton's Second Law gives the mathematical definition and quantitative measurement of Force ($F = ma$).`
   },
+
   {
-    keywords: ['quadratic', 'dwighat', 'discriminant', 'ax2', 'shridharacharya'],
+    keywords: ['quadratic', 'roots', 'discriminant', 'ax2', 'parabola', 'quadratic equation', 'formula'],
     subject: 'Mathematics',
-    answer: `💡 **Quadratic Equation (द्विघात समीकरण)**
+    diagram: 'quadratic_parabola',
+    diagramTitle: 'Quadratic Equation Parabola Graph & Roots',
+    diagramCaption: 'Graphical representation of y = ax² + bx + c showing roots where curve crosses the X-axis',
+    answer: `📌 **Core Concept (Quadratic Equations)**:
+A quadratic equation is a second-degree polynomial equation in a single variable $x$, where the highest exponent of $x$ is 2.
 
-📐 **Standard Form**: 
-$$ax^2 + bx + c = 0$$ (jahan $a \\neq 0$)
+📐 **Standard Form & Quadratic Formula**:
+$$ax^2 + bx + c = 0 \\quad (a \\neq 0)$$
 
-📝 **Quadratic Formula (Shridharacharya Method)**:
+The roots of the equation are calculated using the **Quadratic Formula (Shridharacharya Method)**:
 $$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$
 
-🔍 **Discriminant (D = b² - 4ac)**:
-- Agar $D > 0$: 2 alag-alag Real Roots milenge.
-- Agar $D = 0$: Dono Roots barabar honge (Equal Roots).
-- Agar $D < 0$: No Real Roots (Imaginary).
+🔍 **Nature of Roots (The Discriminant $D = b^2 - 4ac$)**:
+- **Case 1**: If $D > 0$, the equation has **two distinct real roots**.
+- **Case 2**: If $D = 0$, the equation has **two equal real roots** ($x = -b / 2a$).
+- **Case 3**: If $D < 0$, the equation has **no real roots** (imaginary/complex roots).
 
-🌟 **Example**: $x^2 - 5x + 6 = 0$
-- Factors: $(x - 2)(x - 3) = 0 \\implies x = 2, 3$`
+💡 **Worked-Out Example**:
+- **Problem**: Solve $x^2 - 5x + 6 = 0$.
+- **Step 1**: Identify coefficients: $a = 1, b = -5, c = 6$.
+- **Step 2**: Calculate Discriminant:
+  $$D = b^2 - 4ac = (-5)^2 - 4(1)(6) = 25 - 24 = 1$$
+- **Step 3**: Apply formula:
+  $$x = \\frac{-(-5) \\pm \\sqrt{1}}{2(1)} = \\frac{5 \\pm 1}{2}$$
+  $$x_1 = \\frac{5 + 1}{2} = 3, \\quad x_2 = \\frac{5 - 1}{2} = 2$$
+  *The roots are $x = 2$ and $x = 3$.*
+
+🎯 **Key Exam Takeaways**:
+- Always calculate $D = b^2 - 4ac$ first to determine if real roots exist before solving.
+- For checking answers: Sum of roots $\\alpha + \\beta = -b/a$ and Product of roots $\\alpha \\cdot \\beta = c/a$.`
   },
+
   {
-    keywords: ['ram', 'rom', 'memory', 'volatile', 'difference between ram and rom'],
+    keywords: ['ram', 'rom', 'memory', 'volatile', 'difference between ram and rom', 'computer memory'],
     subject: 'Computer Science',
-    answer: `💡 **Difference Between RAM and ROM (कंप्यूटर मेमोरी)**
+    diagram: 'ram_vs_rom',
+    diagramTitle: 'Computer Memory Architecture: RAM vs ROM',
+    diagramCaption: 'Comparing high-speed volatile Read/Write memory (RAM) with non-volatile firmware memory (ROM)',
+    answer: `📌 **Core Concept (Computer Primary Memory)**:
+Primary memory in a computer consists of two main types: RAM (Random Access Memory) and ROM (Read-Only Memory). They serve fundamentally different functions in computing systems.
 
-| Feature | ⚡ RAM (Random Access Memory) | 💾 ROM (Read Only Memory) |
+📐 **Comprehensive Comparison Table**:
+
+| Feature Parameter | ⚡ RAM (Random Access Memory) | 💾 ROM (Read-Only Memory) |
 |---|---|---|
-| **Nature** | Volatile (Power off hote hi data ud jata hai) | Non-Volatile (Permanent data rehta hai) |
-| **Speed** | Super Fast | Slower than RAM |
-| **Operation** | Read and Write dono ho sakta hai | Sirf Read ho sakta hai |
-| **Usage** | Running apps aur games store karta hai | Booting instructions (BIOS) store karta hai |
-| **Analogy** | Blackboard (Likh kar mita sakte hain) | Printed Book (Badla nahi ja sakta) |`
+| **Volatility** | **Volatile**: Data is lost immediately when computer is powered off. | **Non-Volatile**: Data is permanently retained even when power is turned off. |
+| **Operation Mode** | Both **Read and Write** operations allowed by CPU. | **Read-Only**: CPU can only read data, not modify it during normal operations. |
+| **Access Speed** | **Extremely Fast**: Direct ultra-high-speed access by CPU. | **Slower**: Slower operational speed compared to RAM. |
+| **Primary Function** | Holds currently running OS programs, open apps, and active user data. | Stores startup instructions (BIOS/UEFI firmware) required to boot the PC. |
+| **Capacity** | Typically 8 GB to 64 GB in modern systems. | Typically 4 MB to 16 MB. |
+| **Analogy** | A school blackboard: Write quickly, erase, and rewrite anytime. | A printed textbook: Can only be read; text cannot be altered. |
+
+🎯 **Key Exam Takeaways**:
+- RAM is temporary scratchpad memory for running tasks.
+- ROM stores the critical **Bootstrap Loader** that boots the operating system.`
   },
+
   {
-    keywords: ['tense', 'present tense', 'past tense', 'grammar', 'english rule'],
+    keywords: ['tense', 'present tense', 'past tense', 'future tense', 'grammar', 'english tenses', 'verbs'],
     subject: 'English Grammar',
-    answer: `💡 **English Tenses Formula Chart (12 Tenses at a Glance)**
+    diagram: 'tenses_timeline',
+    diagramTitle: 'Complete English Tenses Timeline & Matrix',
+    diagramCaption: 'Visualizing 12 verb tense structures across Past, Present, and Future',
+    answer: `📌 **Core Concept (English Tenses)**:
+Tenses denote the time of an action or event indicated by a verb. English has three principal time frames: **Present**, **Past**, and **Future**, each divided into four aspects: **Simple**, **Continuous**, **Perfect**, and **Perfect Continuous** (12 tenses in total).
 
-1. ⏰ **Present Tense**:
-   - **Simple**: Subject + V1(s/es) + Object *(He plays football)*
-   - **Continuous**: Subject + is/am/are + V4(ing) *(He is playing)*
-   - **Perfect**: Subject + has/have + V3 *(He has played)*
-   - **Perfect Continuous**: Subject + has/have been + V4 + since/for *(He has been playing since morning)*
+📐 **The 12 Tenses Master Matrix**:
 
-2. ⌛ **Past Tense**:
-   - **Simple**: Subject + V2 *(He played)*
-   - **Continuous**: Subject + was/were + V4 *(He was playing)*
-   - **Perfect**: Subject + had + V3 *(He had played)*
+### 1. Present Tense
+- **Simple Present**: $\\text{Subject} + \\text{V1 (s/es)} + \\text{Object}$  
+  *Example*: "She writes neat notes."
+- **Present Continuous**: $\\text{Subject} + \\text{is/am/are} + \\text{V1+ing} + \\text{Object}$  
+  *Example*: "She is writing an exam."
+- **Present Perfect**: $\\text{Subject} + \\text{has/have} + \\text{V3} + \\text{Object}$  
+  *Example*: "She has completed her revision."
+- **Present Perfect Continuous**: $\\text{Subject} + \\text{has/have been} + \\text{V1+ing} + \\text{since/for}$  
+  *Example*: "She has been studying since 8 AM."
 
-3. 🚀 **Future Tense**:
-   - **Simple**: Subject + will/shall + V1 *(He will play)*
-   - **Continuous**: Subject + will be + V4 *(He will be playing)*`
+### 2. Past Tense
+- **Simple Past**: $\\text{Subject} + \\text{V2} + \\text{Object}$  
+  *Example*: "He solved the math equation."
+- **Past Continuous**: $\\text{Subject} + \\text{was/were} + \\text{V1+ing} + \\text{Object}$  
+  *Example*: "He was solving the equations yesterday."
+- **Past Perfect**: $\\text{Subject} + \\text{had} + \\text{V3} + \\text{Object}$  
+  *Example*: "The bell had rung before the student arrived."
+- **Past Perfect Continuous**: $\\text{Subject} + \\text{had been} + \\text{V1+ing} + \\text{since/for}$  
+  *Example*: "They had been practicing for two hours."
+
+### 3. Future Tense
+- **Simple Future**: $\\text{Subject} + \\text{will/shall} + \\text{V1} + \\text{Object}$  
+  *Example*: "We will score top grades."
+- **Future Continuous**: $\\text{Subject} + \\text{will be} + \\text{V1+ing} + \\text{Object}$  
+  *Example*: "We will be attending the science lecture."
+- **Future Perfect**: $\\text{Subject} + \\text{will have} + \\text{V3} + \\text{Object}$  
+  *Example*: "I will have completed the project by Friday."
+- **Future Perfect Continuous**: $\\text{Subject} + \\text{will have been} + \\text{V1+ing} + \\text{since/for}$  
+  *Example*: "By next month, she will have been teaching here for 5 years."
+
+🎯 **Key Exam Takeaways**:
+- Use **since** for a specific point in time (*since Monday, since 2021*).
+- Use **for** for a period of duration (*for 3 hours, for 5 years*).`
+  },
+
+  {
+    keywords: ['ohm', 'resistance', 'voltage', 'current', 'electric circuit', 'v=ir'],
+    subject: 'Science (Physics)',
+    diagram: 'electric_circuit',
+    diagramTitle: "Ohm's Law & Electric Circuit Diagram",
+    diagramCaption: 'DC circuit with Battery (V), Resistor (R), and Current (I) governed by V = I × R',
+    answer: `📌 **Core Concept (Ohm's Law)**:
+Ohm's Law states that the electric current ($I$) flowing through a metallic conductor is directly proportional to the potential difference ($V$) applied across its ends, provided physical conditions such as temperature remain constant.
+
+📐 **Mathematical Formula**:
+$$V = I \\times R$$
+Where:
+- $V$ = Electric Potential Difference (Voltage), measured in **Volts (V)**.
+- $I$ = Electric Current, measured in **Amperes (A)**.
+- $R$ = Resistance of the conductor, measured in **Ohms ($\\Omega$)**.
+
+Derived Formulas:
+$$I = \\frac{V}{R}, \\qquad R = \\frac{V}{I}$$
+
+📝 **Step-by-Step Breakdown**:
+1. **Resistance ($R$)**: It is the opposition offered by a conductor to the flow of electric charges.
+2. **Factors Affecting Resistance**: $R = \\rho \\frac{l}{A}$ (directly proportional to length $l$, inversely proportional to cross-sectional area $A$, and depends on material resistivity $\\rho$).
+
+💡 **Worked-Out Example**:
+- **Problem**: An electric lamp is connected to a $220\\text{ V}$ power supply. If the resistance of the lamp filament is $440\\,\\Omega$, calculate the current drawn.
+- **Solution**:
+  $$I = \\frac{V}{R} = \\frac{220\\text{ V}}{440\\,\\Omega} = 0.5\\text{ A}$$
+  *Hence, the current drawn is $0.5\\text{ Amperes}$.*
+
+🎯 **Key Exam Takeaways**:
+- Always mention: *"at constant temperature"* when stating Ohm's Law in theory exams.
+- The V-I graph for an ohmic conductor is a straight line passing through the origin.`
   }
 ];
+
+/**
+ * Smart Diagram Detector
+ * Maps questions to corresponding educational diagrams
+ */
+export function detectDiagram(query = '', answer = '') {
+  const combined = (query + ' ' + answer).toLowerCase();
+
+  if (combined.includes('pythagor') || combined.includes('right triangle') || combined.includes('hypotenuse')) {
+    return {
+      type: 'pythagoras_triangle',
+      title: 'Right-Angled Triangle & Pythagoras Theorem',
+      caption: 'Hypotenuse (H), Perpendicular (P), and Base (B) with H² = P² + B²'
+    };
+  }
+
+  if (combined.includes('photosynthesis') || combined.includes('chlorophyll') || combined.includes('plant food')) {
+    return {
+      type: 'photosynthesis',
+      title: 'Photosynthesis Biochemical Cycle',
+      caption: 'Solar energy absorption in chloroplasts producing Glucose & Oxygen'
+    };
+  }
+
+  if (combined.includes('newton') || combined.includes('laws of motion') || combined.includes('inertia') || combined.includes('f = ma')) {
+    return {
+      type: 'newton_laws',
+      title: "Newton's 3 Laws of Motion",
+      caption: 'Inertia, Force = Mass × Acceleration, and Action-Reaction'
+    };
+  }
+
+  if (combined.includes('quadratic') || combined.includes('parabola') || combined.includes('discriminant') || combined.includes('ax2')) {
+    return {
+      type: 'quadratic_parabola',
+      title: 'Quadratic Parabola & Roots Representation',
+      caption: 'Parabolic curve y = ax² + bx + c crossing the X-axis at roots α and β'
+    };
+  }
+
+  if (combined.includes('ohm') || combined.includes('circuit') || combined.includes('voltage') || combined.includes('resistance')) {
+    return {
+      type: 'electric_circuit',
+      title: "Ohm's Law Closed Electric Circuit",
+      caption: 'DC Voltage source (V) driving Current (I) across Resistor (R)'
+    };
+  }
+
+  if (combined.includes('ram') && combined.includes('rom')) {
+    return {
+      type: 'ram_vs_rom',
+      title: 'RAM vs ROM Architecture Comparison',
+      caption: 'Volatile high-speed temporary memory (RAM) vs permanent firmware memory (ROM)'
+    };
+  }
+
+  if (combined.includes('tense') || combined.includes('past tense') || combined.includes('present tense') || combined.includes('future tense')) {
+    return {
+      type: 'tenses_timeline',
+      title: '12 English Tenses Timeline & Matrix',
+      caption: 'Systematic progression of Past, Present, and Future verb forms'
+    };
+  }
+
+  return null;
+}
 
 /**
  * Ask Nandu a Doubt
  */
 export async function askNanduAI({ doubt, subject = '', studentClass = '', chatHistory = [] }) {
   if (!doubt || !doubt.trim()) {
-    throw new Error('Please enter a doubt or question for Nandu.');
+    throw new Error('Please enter an academic question for Nandu.');
   }
 
   const cleanDoubt = doubt.trim();
 
-  // Try Online Google Gemini API first
+  // 1. Try Online Google Gemini API first
   if (GEMINI_API_KEY && !GEMINI_API_KEY.includes('your_api_key')) {
     try {
-      // Format prompt with system persona, academic context and recent dialogue
-      let promptText = `${NANDU_SYSTEM_PROMPT}\n\n=== CURRENT QUERY CONTEXT ===\nStudent Class: ${studentClass || 'General School Student'}\nSubject Context: ${subject || 'All Subjects'}\n`;
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+      let promptText = `${NANDU_SYSTEM_PROMPT}\n\n=== STUDENT PROFILE ===\nClass/Grade: ${studentClass || 'Class 10'}\nSubject: ${subject || 'General Academic'}\n`;
 
       if (chatHistory && chatHistory.length > 0) {
-        promptText += `\n=== RECENT DIALOGUE HISTORY ===\n`;
+        promptText += `\n=== RECENT CONVERSATION CONTEXT ===\n`;
         const recent = chatHistory.slice(-4);
         recent.forEach(msg => {
           promptText += `${msg.sender === 'student' ? 'Student' : 'Nandu'}: ${msg.text}\n`;
         });
       }
 
-      promptText += `\n=== STUDENT'S DOUBT ===\n${cleanDoubt}\n\nPlease explain step-by-step as Nandu AI Tutor:`;
+      promptText += `\n=== STUDENT'S QUESTION ===\n${cleanDoubt}\n\nPlease deliver a structured, precise, 100% proper English explanation following all required sections (Concept, Formula, Steps, Worked Example, Exam Tip):`;
 
       const contents = [
         {
@@ -179,8 +381,8 @@ export async function askNanduAI({ doubt, subject = '', studentClass = '', chatH
         body: JSON.stringify({
           contents,
           generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 1000,
+            temperature: 0.6,
+            maxOutputTokens: 1200,
           }
         })
       });
@@ -189,41 +391,45 @@ export async function askNanduAI({ doubt, subject = '', studentClass = '', chatH
         const data = await response.json();
         const candidate = data.candidates?.[0]?.content?.parts?.[0]?.text;
         if (candidate) {
+          const detected = detectDiagram(cleanDoubt, candidate);
           return {
             success: true,
             source: 'gemini_ai',
             tutor: 'Nandu',
-            answer: candidate.trim()
+            answer: candidate.trim(),
+            diagram: detected
           };
         }
       }
     } catch (err) {
-      console.warn('Gemini API call notice, falling back to Nandu Knowledge Base:', err.message);
+      console.warn('Gemini API call notice, falling back to local academic engine:', err.message);
     }
   }
 
-  // Fallback: Local Academic Knowledge Engine
+  // 2. Local Academic Knowledge Engine Fallback (100% Proper English)
   const qLower = cleanDoubt.toLowerCase();
-  
-  // Greeting handler
-  if (/^(hi|hello|namaste|hey|who are you|kaun ho|kaise ho|help)/i.test(qLower)) {
+
+  // Polite English Greeting
+  if (/^(hi|hello|hey|good morning|good afternoon|namaste|who are you|help)/i.test(qLower)) {
     return {
       success: true,
       source: 'local_engine',
       tutor: 'Nandu',
-      answer: `🙏 **Namaste! Main hoon Nandu (नंदू)** — Oxford Convent School ka aapka personal AI Tutor!
+      answer: `Hello! I am **Nandu**, your dedicated AI Academic Tutor at **Oxford Convent School, Sasaram**.
 
-Aap mujhse kisi bhi subject ka doubt puch sakte hain:
-- 📐 **Mathematics** (Formulas, Numericals, Geometry, Algebra)
-- 🔬 **Science** (Physics, Chemistry, Biology)
-- 💻 **Computer & IT** (Coding, Shortcuts, Hardware, Software)
-- 📖 **English & Hindi Grammar** (Tenses, Rules, Meanings)
-- 🌍 **Social Science** (History, Civics, Geography)
+I am here to solve your doubts across all school subjects:
+- 📐 **Mathematics**: Algebra, Trigonometry, Geometry, Arithmetic, Calculus
+- 🔬 **Science**: Physics, Chemistry, and Biology (with visual diagrams)
+- 💻 **Computer Science / IT**: Hardware, Memory, Coding, Data Structures
+- 📖 **English Grammar**: All 12 Tenses, Active/Passive Voice, Rules
+- 🌍 **Social Studies**: History, Civics, Geography, Economics
 
-Bas apna sawal niche type kijiye aur main step-by-step simple bhasha me samjha dunga!`
+Please type your exact academic doubt or numerical problem below, and I will guide you step-by-step with formulas, worked-out examples, and visual diagrams!`,
+      diagram: null
     };
   }
 
+  // Check Local Knowledge Base
   for (const item of LOCAL_KNOWLEDGE_BASE) {
     const matched = item.keywords.some(k => qLower.includes(k));
     if (matched) {
@@ -231,36 +437,45 @@ Bas apna sawal niche type kijiye aur main step-by-step simple bhasha me samjha d
         success: true,
         source: 'local_engine',
         tutor: 'Nandu',
-        answer: item.answer
+        answer: item.answer,
+        diagram: {
+          type: item.diagram,
+          title: item.diagramTitle,
+          caption: item.diagramCaption
+        }
       };
     }
   }
 
-  // General smart tutor synthesis response
+  // General Academic Fallback Formulation
+  const detected = detectDiagram(cleanDoubt, '');
   return {
     success: true,
     source: 'local_engine',
     tutor: 'Nandu',
-    answer: `💡 **Nandu's Academic Explanation**:
+    answer: `📌 **Core Concept Analysis**:
+Regarding your question: *"**${cleanDoubt}**"*
 
-Aapne bahut accha sawal pucha hai: *"**${cleanDoubt}**"*
+In academic coursework, understanding this concept requires identifying the core definition, the governing scientific or mathematical principles, and the step-by-step application:
 
-📝 **Step-by-Step Concept Breakdown**:
-1. **Core Principle**: Kisi bhi concept ko samajhne ke liye pehle uske basic definition aur primary rule ko identify karein.
-2. **Formula / Rule**: Sambandhit subject ka standard CBSE formula ya theory apply karein.
-3. **Application**: Sawal ke diye gaye values ko formula me step-by-step substitute karein taaki calculation me galti na ho.
+📝 **Step-by-Step Methodology**:
+1. **State the Fundamental Definition**: Begin by defining the primary term using standardized CBSE/ICSE terminology.
+2. **Apply the Governing Formula or Law**: Substitute given problem values into the standard equation.
+3. **Perform Clear Calculation**: Ensure each intermediate algebraic step is explicitly written with proper units.
+4. **State the Final Answer**: Highlight the final answer clearly with appropriate SI units.
 
-🌟 **Nandu's Study Tip**:
-- Is topic se jude 2–3 practice questions abhi apne rough copy me solve karein.
-- Agar koi specific numerical ya equation hai to uska exact number niche type karein, main turant solve kar dunga! 👍`
+💡 **Study Recommendation**:
+- Practice solving 2 to 3 standard textbook problems on this topic.
+- If you have a specific numerical with exact values or equations, please type it in, and I will solve it step-by-step with full calculations!`,
+    diagram: detected
   };
 }
 
 export const SUGGESTED_DOUBTS = [
-  { id: 1, subject: 'Mathematics', query: 'Explain Pythagoras Theorem with step-by-step example' },
-  { id: 2, subject: 'Science', query: 'What is Photosynthesis? Explain chemical reaction' },
-  { id: 3, subject: 'Physics', query: 'Explain Newton 3 Laws of Motion with daily life examples' },
-  { id: 4, subject: 'Mathematics', query: 'How to solve Quadratic Equations using formula?' },
-  { id: 5, subject: 'Computer', query: 'What is the difference between RAM and ROM?' },
-  { id: 6, subject: 'English', query: 'Give me a simple chart of all 12 English Tenses with rules' },
+  { id: 1, subject: 'Mathematics', query: 'Explain the Pythagoras Theorem with step-by-step calculation and diagram' },
+  { id: 2, subject: 'Science', query: 'What is Photosynthesis? Explain the chemical equation and process' },
+  { id: 3, subject: 'Physics', query: "Explain Newton's Three Laws of Motion with real-world examples" },
+  { id: 4, subject: 'Mathematics', query: 'How do you solve a Quadratic Equation using the quadratic formula?' },
+  { id: 5, subject: 'Computer', query: 'What is the key difference between RAM and ROM memory in computers?' },
+  { id: 6, subject: 'English', query: 'Provide a clear summary of all 12 English Tenses with formulas and examples' },
 ];

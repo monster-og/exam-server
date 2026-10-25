@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { askNanduAI, SUGGESTED_DOUBTS } from '../services/aiTutorService';
+import { askNanduAI, SUGGESTED_DOUBTS, detectDiagram } from '../services/aiTutorService';
+import EducationalDiagram from './EducationalDiagram';
 import { 
   Bot, 
   Send, 
@@ -15,10 +16,21 @@ import {
   Minimize2
 } from 'lucide-react';
 
+const SUBJECT_FILTERS = [
+  { id: 'All', label: 'All Subjects' },
+  { id: 'Mathematics', label: '📐 Mathematics' },
+  { id: 'Science', label: '🔬 Science' },
+  { id: 'Physics', label: '⚡ Physics' },
+  { id: 'Biology', label: '🌿 Biology' },
+  { id: 'Computer', label: '💻 Computer' },
+  { id: 'English', label: '📖 English Grammar' },
+  { id: 'Social Science', label: '🌍 Social Studies' },
+];
+
 export default function NanduAiTutorModal({ isOpen, onClose, studentClass = 'Class 10' }) {
   const [messages, setMessages] = useState(() => {
     try {
-      const saved = localStorage.getItem('ocs_nandu_chat_history');
+      const saved = localStorage.getItem('ocs_nandu_chat_history_v2');
       if (saved) return JSON.parse(saved);
     } catch {}
     return [
@@ -26,16 +38,17 @@ export default function NanduAiTutorModal({ isOpen, onClose, studentClass = 'Cla
         id: 'init_1',
         sender: 'nandu',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        text: `🙏 **Namaste! Main hoon Nandu (नंदू)** — Oxford Convent School ka aapka personal AI Tutor!
+        text: `Hello! I am **Nandu**, your AI Academic Tutor at **Oxford Convent School, Sasaram**.
 
-Aap mujhse kisi bhi subject ka doubt puch sakte hain:
-- 📐 **Mathematics** (Step-by-step solutions & formulas)
-- 🔬 **Science** (Physics, Chemistry, Biology concepts)
-- 💻 **Computer / IT** (Coding, hardware, theory)
-- 📖 **English & Hindi Grammar** (Rules, tenses, meanings)
-- 🌍 **Social Science** (History, Civics, Geography)
+I am ready to solve your doubts with step-by-step explanations, formulas, and visual diagrams across all subjects:
+- 📐 **Mathematics**: Algebra, Trigonometry, Geometry, Arithmetic, Calculus
+- 🔬 **Science**: Physics, Chemistry, Biology & Natural Phenomena
+- 💻 **Computer Science**: Memory Architecture, Coding, Logic & IT
+- 📖 **English Grammar**: All 12 Tenses, Rules, Voice & Structure
+- 🌍 **Social Studies**: History, Civics, Geography & Economics
 
-Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click kijiye!`
+Please type your question or numerical problem below, or tap any of the suggested doubts to get started!`,
+        diagram: null
       }
     ];
   });
@@ -50,7 +63,7 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
 
   useEffect(() => {
     try {
-      localStorage.setItem('ocs_nandu_chat_history', JSON.stringify(messages));
+      localStorage.setItem('ocs_nandu_chat_history_v2', JSON.stringify(messages));
     } catch {}
     scrollToBottom();
   }, [messages]);
@@ -82,11 +95,24 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
         chatHistory: messages
       });
 
+      // Extract [DIAGRAM: type] if embedded in text
+      let cleanedText = res.answer;
+      let detectedDiag = res.diagram;
+
+      const diagMatch = cleanedText.match(/\[DIAGRAM:\s*([a-zA-Z0-9_-]+)\]/i);
+      if (diagMatch) {
+        cleanedText = cleanedText.replace(/\[DIAGRAM:\s*[a-zA-Z0-9_-]+\]/gi, '').trim();
+        if (!detectedDiag) {
+          detectedDiag = detectDiagram(textToSend, diagMatch[1]);
+        }
+      }
+
       const nanduMsg = {
         id: `nandu_${Date.now()}`,
         sender: 'nandu',
-        text: res.answer,
+        text: cleanedText,
         source: res.source,
+        diagram: detectedDiag,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
@@ -95,7 +121,7 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
       const errMsg = {
         id: `err_${Date.now()}`,
         sender: 'nandu',
-        text: '⚠️ Maaf kijiye, abhi server se connect hone me samasya aayi. Kripya apna sawal dubara puchiye ya niche diye gaye topics me se choose kijiye.',
+        text: '⚠️ Unable to connect to the AI tutor engine at this moment. Please re-submit your question or choose one of the suggested topics below.',
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
       setMessages((prev) => [...prev, errMsg]);
@@ -105,17 +131,18 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
   };
 
   const handleClearChat = () => {
-    if (window.confirm('Clear your conversation with Nandu?')) {
+    if (window.confirm('Clear all conversation history with Nandu?')) {
       const initial = [
         {
           id: 'init_fresh',
           sender: 'nandu',
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          text: `👋 Chat cleared! Main Nandu hoon. Aap apna naya doubt ya sawal puch sakte hain.`
+          text: `👋 Chat cleared! I am Nandu. What academic doubt can I solve for you today?`,
+          diagram: null
         }
       ];
       setMessages(initial);
-      localStorage.removeItem('ocs_nandu_chat_history');
+      localStorage.removeItem('ocs_nandu_chat_history_v2');
     }
   };
 
@@ -140,19 +167,23 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
         alignItems: 'center',
         justifyContent: 'center',
         padding: '16px',
+        animation: 'fadeIn 0.25s ease-out',
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
       }}
     >
       <div
         className="glass-card"
         style={{
-          width: isExpanded ? '95vw' : '100%',
-          maxWidth: isExpanded ? '1200px' : '720px',
-          height: isExpanded ? '92vh' : '82vh',
+          width: isExpanded ? '96vw' : '820px',
+          maxWidth: '100%',
+          height: isExpanded ? '94vh' : '85vh',
           display: 'flex',
           flexDirection: 'column',
-          background: 'linear-gradient(160deg, rgba(22, 18, 52, 0.96), rgba(10, 8, 25, 0.98))',
-          border: '1px solid rgba(99, 102, 241, 0.3)',
-          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(99, 102, 241, 0.25)',
+          background: 'linear-gradient(160deg, rgba(20, 16, 48, 0.98), rgba(9, 7, 24, 0.99))',
+          border: '1px solid rgba(99, 102, 241, 0.35)',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(99, 102, 241, 0.25)',
           borderRadius: '20px',
           overflow: 'hidden',
           transition: 'all 0.3s ease',
@@ -163,7 +194,7 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
           style={{
             padding: '16px 20px',
             borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-            background: 'linear-gradient(90deg, rgba(79, 70, 229, 0.2), rgba(6, 182, 212, 0.15))',
+            background: 'linear-gradient(90deg, rgba(79, 70, 229, 0.25), rgba(6, 182, 212, 0.18))',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -214,7 +245,7 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
                     fontWeight: 700,
                   }}
                 >
-                  AI Smart Tutor
+                  AI Smart Academic Tutor
                 </span>
                 <span
                   style={{
@@ -226,11 +257,11 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
                     fontWeight: 700,
                   }}
                 >
-                  🟢 24/7 Doubt Solver
+                  🟢 24/7 Active
                 </span>
               </div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                Oxford Convent School • Maths, Science, English, SST & Computer Doubts
+                Oxford Convent School • Maths, Science, English, SST &amp; Computer Doubts
               </div>
             </div>
           </div>
@@ -263,11 +294,11 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
           </div>
         </div>
 
-        {/* ── Subject Filter Bar ── */}
+        {/* ── Subject Filter Tabs ── */}
         <div
           style={{
-            padding: '10px 18px',
-            background: 'rgba(15, 12, 35, 0.8)',
+            padding: '8px 16px',
+            background: 'rgba(12, 10, 28, 0.9)',
             borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
             display: 'flex',
             alignItems: 'center',
@@ -275,32 +306,32 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
             overflowX: 'auto',
           }}
         >
-          <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
-            Subject:
+          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 700, whiteSpace: 'nowrap' }}>
+            Filter Subject:
           </span>
-          {['All', 'Mathematics', 'Science', 'Computer', 'English', 'Social Science'].map((sub) => (
+          {SUBJECT_FILTERS.map((s) => (
             <button
-              key={sub}
-              onClick={() => setSelectedSubject(sub)}
+              key={s.id}
+              onClick={() => setSelectedSubject(s.id)}
               style={{
-                background: selectedSubject === sub ? 'var(--primary)' : 'rgba(255, 255, 255, 0.05)',
-                color: selectedSubject === sub ? '#fff' : 'var(--text-muted)',
-                border: selectedSubject === sub ? '1px solid var(--accent)' : '1px solid rgba(255, 255, 255, 0.1)',
-                padding: '4px 12px',
-                borderRadius: '16px',
-                fontSize: '0.78rem',
+                padding: '4px 10px',
+                borderRadius: '12px',
+                fontSize: '0.74rem',
                 fontWeight: 600,
+                border: 'none',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
                 transition: 'all 0.2s',
+                background: selectedSubject === s.id ? 'var(--primary)' : 'rgba(255, 255, 255, 0.06)',
+                color: selectedSubject === s.id ? '#fff' : 'var(--text-muted)',
               }}
             >
-              {sub}
+              {s.label}
             </button>
           ))}
         </div>
 
-        {/* ── Chat Messages Body ── */}
+        {/* ── Chat Messages Stream ── */}
         <div
           style={{
             flex: 1,
@@ -316,35 +347,44 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
               key={m.id}
               style={{
                 display: 'flex',
-                justifyContent: m.sender === 'student' ? 'flex-end' : 'flex-start',
-                gap: '10px',
+                gap: '12px',
+                alignItems: 'flex-start',
+                flexDirection: m.sender === 'student' ? 'row-reverse' : 'row',
               }}
             >
-              {m.sender === 'nandu' && (
-                <div
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '10px',
-                    background: 'linear-gradient(135deg, #6366f1, #06b6d4)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    marginTop: '2px',
-                  }}
-                >
-                  <Bot size={18} color="#fff" />
-                </div>
-              )}
-
+              {/* Avatar */}
               <div
                 style={{
-                  maxWidth: '82%',
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '12px',
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background:
+                    m.sender === 'student'
+                      ? 'linear-gradient(135deg, #06b6d4, #0891b2)'
+                      : 'linear-gradient(135deg, #6366f1, #4f46e5)',
+                  boxShadow:
+                    m.sender === 'student'
+                      ? '0 0 10px rgba(6, 182, 212, 0.4)'
+                      : '0 0 10px rgba(99, 102, 241, 0.4)',
+                  fontSize: '1rem',
+                  color: '#fff',
+                }}
+              >
+                {m.sender === 'student' ? '👨‍🎓' : <Bot size={20} />}
+              </div>
+
+              {/* Chat Bubble */}
+              <div
+                style={{
+                  maxWidth: '85%',
                   background:
                     m.sender === 'student'
                       ? 'linear-gradient(135deg, #4f46e5, #4338ca)'
-                      : 'rgba(30, 26, 62, 0.85)',
+                      : 'rgba(28, 24, 58, 0.92)',
                   border:
                     m.sender === 'student'
                       ? '1px solid rgba(99, 102, 241, 0.5)'
@@ -363,13 +403,13 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     gap: '12px',
-                    marginBottom: '6px',
+                    marginBottom: '8px',
                     fontSize: '0.72rem',
                     color: m.sender === 'student' ? '#c7d2fe' : 'var(--accent-light)',
                     fontWeight: 700,
                   }}
                 >
-                  <span>{m.sender === 'student' ? 'Student' : 'Nandu (AI Tutor)'}</span>
+                  <span>{m.sender === 'student' ? 'You (Student)' : 'Nandu (AI Academic Tutor)'}</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span>{m.time}</span>
                     {m.sender === 'nandu' && (
@@ -394,13 +434,23 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
                 <div
                   style={{
                     fontSize: '0.92rem',
-                    lineHeight: '1.6',
+                    lineHeight: '1.65',
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'break-word',
                   }}
                 >
                   {m.text}
                 </div>
+
+                {/* Educational Diagram / Illustration */}
+                {m.diagram && (
+                  <EducationalDiagram
+                    type={m.diagram.type}
+                    title={m.diagram.title}
+                    caption={m.diagram.caption}
+                    imageUrl={m.diagram.imageUrl}
+                  />
+                )}
               </div>
             </div>
           ))}
@@ -435,7 +485,7 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
                 }}
               >
                 <Sparkles size={16} className="animate-spin" />
-                <span>Nandu is solving your doubt with step-by-step concepts...</span>
+                <span>Nandu is formulating a structured, step-by-step English solution with formulas...</span>
               </div>
             </div>
           )}
@@ -456,7 +506,7 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
           }}
         >
           <span style={{ fontSize: '0.74rem', color: 'var(--accent)', fontWeight: 800, whiteSpace: 'nowrap' }}>
-            💡 Quick Doubts:
+            💡 Suggested Doubts:
           </span>
           {SUGGESTED_DOUBTS.map((q) => (
             <button
@@ -464,9 +514,9 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
               onClick={() => handleSend(q.query)}
               disabled={loading}
               style={{
-                background: 'rgba(99, 102, 241, 0.12)',
+                background: 'rgba(99, 102, 241, 0.14)',
                 color: '#e0e7ff',
-                border: '1px solid rgba(99, 102, 241, 0.3)',
+                border: '1px solid rgba(99, 102, 241, 0.35)',
                 padding: '4px 12px',
                 borderRadius: '14px',
                 fontSize: '0.76rem',
@@ -475,7 +525,7 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
                 transition: 'all 0.2s',
               }}
               onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(99, 102, 241, 0.28)')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(99, 102, 241, 0.12)')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(99, 102, 241, 0.14)')}
             >
               {q.query}
             </button>
@@ -500,7 +550,7 @@ Bas apna sawal niche type kijiye ya niche diye gaye sample questions par click k
           <input
             type="text"
             className="form-control"
-            placeholder="Apna doubt ya sawal yahan puchiye (e.g. Solve 2x + 5 = 15 or What is Gravity?)..."
+            placeholder="Ask any question in English (e.g. Pythagoras Theorem, Photosynthesis, Newton's Laws)..."
             value={inputDoubt}
             onChange={(e) => setInputDoubt(e.target.value)}
             disabled={loading}

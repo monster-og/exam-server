@@ -121,6 +121,21 @@ export default function Navbar({ activePage, setActivePage, openNandu }) {
               >
                 <Award size={16} /> Check Result
               </button>
+              <button
+                className="btn btn-ghost"
+                style={{
+                  padding: '8px 14px',
+                  fontSize: '0.86rem',
+                  color: '#38bdf8',
+                  border: '1px solid rgba(56, 189, 248, 0.4)',
+                  background: 'rgba(56, 189, 248, 0.1)',
+                  fontWeight: 700,
+                }}
+                onClick={openNandu}
+                title="Ask Nandu — AI Doubt Solver"
+              >
+                <Bot size={16} color="#38bdf8" /> AI Tutor (Nandu)
+              </button>
             </>
           )}
 
@@ -187,23 +202,6 @@ export default function Navbar({ activePage, setActivePage, openNandu }) {
               </button>
             </>
           )}
-
-          {/* 🤖 Universal AI Tutor Nandu Button */}
-          <button
-            className="btn btn-ghost"
-            style={{
-              padding: '8px 14px',
-              fontSize: '0.86rem',
-              color: '#38bdf8',
-              border: '1px solid rgba(56, 189, 248, 0.35)',
-              background: 'rgba(56, 189, 248, 0.08)',
-              fontWeight: 700,
-            }}
-            onClick={openNandu}
-            title="Ask Nandu — AI Doubt Solver"
-          >
-            <Bot size={16} color="#38bdf8" /> AI Tutor (Nandu)
-          </button>
 
           {/* User Profile Pill & Logout */}
           {role && (
