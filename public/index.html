@@ -175,8 +175,8 @@
       <!-- Student Login Form -->
       <form id="form-student-login" onsubmit="handleStudentLogin(event)">
         <div class="form-group">
-          <label class="form-label">Registered Email ID</label>
-          <input type="email" id="std-login-email" class="form-control" placeholder="e.g. nandu@gmail.com" required autocomplete="email">
+          <label class="form-label">Roll Number / Registered Email / Mobile</label>
+          <input type="text" id="std-login-email" class="form-control" placeholder="Enter Roll No (e.g. 1), Email, or Mobile..." required>
         </div>
         <div class="form-group">
           <label class="form-label">Password</label>
@@ -399,6 +399,7 @@
 </div>
 
 <script>
+const API_BASE = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:2011' : '';
 let currentCaptcha = '';
 
 function generateCaptcha() {
@@ -480,19 +481,23 @@ function toggleStudentMode(mode) {
 // ── Student Login ──
 async function handleStudentLogin(e) {
   e.preventDefault();
-  const email    = document.getElementById('std-login-email').value.trim();
+  const inputVal = document.getElementById('std-login-email').value.trim();
   const password = document.getElementById('std-login-pass').value;
   const btn      = document.getElementById('btn-std-login');
   btn.disabled = true; btn.textContent = 'Verifying...';
   try {
-    const res  = await fetch('/api/students/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, password }) });
+    const res  = await fetch(`${API_BASE}/api/students/login`, { 
+      method:'POST', 
+      headers:{'Content-Type':'application/json'}, 
+      body: JSON.stringify({ email: inputVal, identifier: inputVal, rollNumber: inputVal, mobile: inputVal, password }) 
+    });
     const data = await res.json();
     if (data.success) {
       localStorage.setItem('studentToken', data.token);
       toast('✅ Login successful! Redirecting...', 'success');
       setTimeout(() => { window.location.href = 'student-dashboard.html'; }, 600);
     } else { toast('❌ '+data.message, 'error'); btn.disabled=false; btn.textContent='🎓 Login to Student Portal'; }
-  } catch { toast('❌ Unable to connect to server','error'); btn.disabled=false; btn.textContent='🎓 Login to Student Portal'; }
+  } catch (err) { toast('❌ Unable to connect to server: ' + (err.message || 'Check server status'),'error'); btn.disabled=false; btn.textContent='🎓 Login to Student Portal'; }
 }
 
 let registeredPhotoBase64 = '';
@@ -593,7 +598,7 @@ async function handleTeacherLogin(e) {
   const btn      = document.getElementById('btn-tch-login-submit');
   btn.disabled = true; btn.textContent = 'Verifying...';
   try {
-    const res  = await fetch('/api/teachers/login', {
+    const res  = await fetch(`${API_BASE}/api/teachers/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password })
@@ -623,7 +628,7 @@ async function handleAdminLogin(e) {
   const btn      = document.getElementById('btn-admin-login');
   btn.disabled=true; btn.textContent='Verifying...';
   try {
-    const res  = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password }) });
+    const res  = await fetch(`${API_BASE}/api/admin/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ password }) });
     const data = await res.json();
     if (data.success) {
       sessionStorage.setItem('adminToken', data.token);

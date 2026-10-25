@@ -35,19 +35,8 @@ process.on('unhandledRejection', (reason) => {
   console.error('⚠️ Handled unhandled rejection:', reason);
 });
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function readJSON(filePath, fallback) {
-  try {
-    const raw = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(raw);
-  } catch {
-    return fallback;
-  }
-}
-
-function writeJSON(filePath, data) {
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
-}
+// ─── Database & Helpers (Universal Atomic JSON & MongoDB Cloud Sync) ─────────
+const { initDatabase, readJSON, writeJSON, isMongoConnected } = require('./services/dbService');
 
 function getLocalIpAddresses() {
   const interfaces = os.networkInterfaces();
@@ -199,32 +188,59 @@ app.post('/api/students/register', (req, res) => {
   res.json({ success: true, token, student: safeProfile });
 });
 
+function normalizeClass(c) {
+  if (!c) return '';
+  return String(c).toLowerCase().replace(/class\s*/i, '').replace(/th\s*/i, '').trim();
+}
+
 app.post('/api/students/login', (req, res) => {
-  const { email, password, rollNumber, classNumber, cls } = req.body;
+  const { email, password, rollNumber, rollNo, classNumber, cls, mobile, phone, identifier } = req.body;
+  const rawId = String(identifier || email || rollNumber || rollNo || mobile || phone || '').trim();
   const inputClass = String(classNumber || cls || '').trim();
-  const inputRoll = String(rollNumber || '').trim();
-  const inputEmail = String(email || '').toLowerCase().trim();
   const cleanPass = String(password || '').trim();
 
-  if (!cleanPass || (!inputEmail && !inputRoll)) {
-    return res.status(400).json({ success: false, message: 'Roll number (or Email) and password are required!' });
+  if (!cleanPass || !rawId) {
+    return res.status(400).json({ success: false, message: 'Roll Number, Email, ya Mobile Number aur Password required hain!' });
   }
 
   const students = readJSON(STUDENTS_FILE, []);
-  const student = students.find(s => {
-    const passMatch = String(s.password).trim() === cleanPass;
-    if (!passMatch) return false;
+  const cleanId = rawId.toLowerCase();
+  const normInputClass = normalizeClass(inputClass);
 
-    if (inputEmail && s.email && s.email.toLowerCase().trim() === inputEmail) return true;
-    if (inputRoll && String(s.rollNumber || '').trim() === inputRoll) {
-      if (!inputClass) return true;
-      return String(s.class || '').toLowerCase().trim() === inputClass.toLowerCase();
+  const student = students.find(s => {
+    if (String(s.password || '').trim() !== cleanPass) return false;
+
+    // 1. Direct Email match
+    if (s.email && s.email.toLowerCase().trim() === cleanId) return true;
+
+    // 2. Direct Mobile / Phone match
+    if (s.mobile && String(s.mobile).trim() === rawId) return true;
+
+    // 3. Student ID match
+    if (s.id && s.id.toLowerCase().trim() === cleanId) return true;
+
+    // 4. Roll Number match (flexible: "1" == "01")
+    const sRoll = String(s.rollNumber || '').trim();
+    if (sRoll && (sRoll === rawId || (!isNaN(sRoll) && !isNaN(rawId) && Number(sRoll) === Number(rawId)))) {
+      if (normInputClass) {
+        return normalizeClass(s.class) === normInputClass;
+      }
+      return true;
     }
+
+    // 5. Name match
+    if (s.name && s.name.toLowerCase().trim() === cleanId) {
+      if (normInputClass) {
+        return normalizeClass(s.class) === normInputClass;
+      }
+      return true;
+    }
+
     return false;
   });
 
   if (!student) {
-    return res.status(401).json({ success: false, message: 'Invalid credentials! Please check your details.' });
+    return res.status(401).json({ success: false, message: 'Invalid credentials! Please check your Roll Number/Email and Password.' });
   }
 
   const token = Buffer.from(`student:${student.id}:${student.email || student.rollNumber}`).toString('base64');
@@ -281,21 +297,41 @@ app.get('/api/students/me', (req, res) => {
 
 // ─── FORGOT PASSWORD ──────────────────────────────────────────────────────────
 
-// Step 1: Verify identity (email + mobile must match)
+// Step 1: Verify identity (Roll/Email + Mobile/Phone)
 app.post('/api/students/forgot-password/verify', (req, res) => {
-  const { email, mobile } = req.body;
-  if (!email || !mobile) {
-    return res.status(400).json({ success: false, message: 'Email aur Mobile dono required hain.' });
+  const { email, mobile, rollNumber, phone, classNumber, cls } = req.body;
+  const rawId = String(rollNumber || email || '').trim();
+  const rawContact = String(mobile || phone || '').trim();
+  const targetClass = String(classNumber || cls || '').trim();
+
+  if (!rawContact || (!rawId && !targetClass)) {
+    return res.status(400).json({ success: false, message: 'Roll Number/Email aur Mobile Number required hain.' });
   }
+
   const students = readJSON(STUDENTS_FILE, []);
-  const student = students.find(s =>
-    s.email.toLowerCase() === email.toLowerCase().trim() &&
-    String(s.mobile).trim() === String(mobile).trim()
-  );
+  const cleanId = rawId.toLowerCase();
+  const normClass = normalizeClass(targetClass);
+
+  const student = students.find(s => {
+    const mobileMatch = s.mobile && String(s.mobile).trim() === rawContact;
+    if (!mobileMatch) return false;
+
+    if (cleanId && s.email && s.email.toLowerCase().trim() === cleanId) return true;
+
+    const sRoll = String(s.rollNumber || '').trim();
+    if (rawId && sRoll && (sRoll === rawId || (!isNaN(sRoll) && !isNaN(rawId) && Number(sRoll) === Number(rawId)))) {
+      if (normClass) return normalizeClass(s.class) === normClass;
+      return true;
+    }
+
+    if (!rawId && normClass && normalizeClass(s.class) === normClass) return true;
+
+    return false;
+  });
+
   if (!student) {
-    return res.status(404).json({ success: false, message: 'Koi student nahi mila is Email aur Mobile se. Sahi details daalein.' });
+    return res.status(404).json({ success: false, message: 'Koi student record nahi mila. Sahi Roll No aur Mobile daalein.' });
   }
-  // Return student id (used in step 2 to reset password)
   res.json({ success: true, studentId: student.id, studentName: student.name });
 });
 
@@ -1388,6 +1424,7 @@ app.use('/api', (req, res) => {
 
 // ─── START (High-Capacity Multi-Computer & Zero-Password Cloudflare Tunnel) ───
 const server = app.listen(PORT, '0.0.0.0', async () => {
+  await initDatabase();
   const localIps = getLocalIpAddresses();
   
   let publicIp = 'N/A';

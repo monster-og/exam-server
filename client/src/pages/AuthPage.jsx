@@ -20,10 +20,12 @@ import {
 const CLASSES = [
   'Nursery', 'LKG', 'UKG',
   'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5',
-  'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10'
+  'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10',
+  'Class 11', '11th Science', '11th Commerce', '11th Arts',
+  'Class 12', '12th Science', '12th Commerce', '12th Arts'
 ];
 
-const SECTIONS = ['A', 'B', 'C', 'D'];
+const SECTIONS = ['A', 'B', 'C', 'D', 'E'];
 
 export default function AuthPage({ setActivePage }) {
   const { loginStudent, loginStaff } = useAuth();
@@ -84,7 +86,11 @@ export default function AuthPage({ setActivePage }) {
     try {
       const res = await api.studentLogin({
         rollNumber: loginRoll.trim(),
+        identifier: loginRoll.trim(),
+        email: loginRoll.trim(),
+        mobile: loginRoll.trim(),
         classNumber: loginClass,
+        cls: loginClass,
         password: loginPass,
       });
 
@@ -360,12 +366,12 @@ export default function AuthPage({ setActivePage }) {
             <div className="form-group">
               <label className="form-label">
                 <Hash size={14} style={{ display: 'inline', marginRight: '6px' }} />
-                Student Roll Number
+                Roll Number, Email, or Mobile
               </label>
               <input
                 type="text"
                 className="form-control"
-                placeholder="Enter assigned roll number (e.g. 101)"
+                placeholder="Enter Roll No (e.g. 1), Email, or Mobile"
                 value={loginRoll}
                 onChange={(e) => setLoginRoll(e.target.value)}
                 required
