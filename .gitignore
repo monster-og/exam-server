@@ -1,29 +1,9 @@
-# Dependencies
 node_modules/
-
-# Environment variables & secrets
+client/node_modules/
+client/dist/
 .env
-.env.local
-.env.*.local
-
-# Logs
-logs/
+exports/
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
-
-# OS files
 .DS_Store
-Thumbs.db
-
-# Generated export spreadsheets (keep templates)
-exports/*.xlsx
-!exports/*template*.xlsx
-
-# Temporary scratch files
-scratch/
-tmp/
-
-# Local Netlify folder
-.netlify

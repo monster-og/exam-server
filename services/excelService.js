@@ -2,32 +2,13 @@ const ExcelJS = require('exceljs');
 const path = require('path');
 const fs = require('fs');
 
-const os = require('os');
+const EXPORTS_DIR = path.join(__dirname, '..', 'exports');
+const STUDENTS_FILE = path.join(__dirname, '..', 'data', 'students.json');
 
-// Vercel or Netlify Functions (AWS Lambda): filesystem is read-only except the tmp dir
-const IS_SERVERLESS = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
-
-const EXPORTS_DIR = IS_SERVERLESS
-  ? path.join(os.tmpdir(), 'exports')
-  : path.join(__dirname, '..', 'exports');
-
-const STUDENTS_FILE = IS_SERVERLESS
-  ? path.join(os.tmpdir(), 'exam-server-data', 'students.json')
-  : path.join(__dirname, '..', 'data', 'students.json');
-
-function getStudentsMap(students) {
+function getStudentsMap() {
   try {
-    let list = Array.isArray(students) ? students : null;
-    if (!list) {
-      let filePath = STUDENTS_FILE;
-      if (!fs.existsSync(filePath)) {
-        filePath = path.join(__dirname, '..', 'data', 'students.json');
-      }
-      if (fs.existsSync(filePath)) {
-        list = JSON.parse(fs.readFileSync(filePath, 'utf8') || '[]');
-      }
-    }
-    if (list) {
+    if (fs.existsSync(STUDENTS_FILE)) {
+      const list = JSON.parse(fs.readFileSync(STUDENTS_FILE, 'utf8') || '[]');
       const map = {};
       list.forEach(s => {
         const name = (s.name || '').trim().toLowerCase();
@@ -53,12 +34,12 @@ function getGrade(pct) {
   return 'F';
 }
 
-async function generateExcel(results, students) {
+async function generateExcel(results) {
   if (!fs.existsSync(EXPORTS_DIR)) {
     fs.mkdirSync(EXPORTS_DIR, { recursive: true });
   }
 
-  const studentsMap = getStudentsMap(students);
+  const studentsMap = getStudentsMap();
   const workbook = new ExcelJS.Workbook();
   workbook.creator = 'Oxford Convent School Admin Portal';
   workbook.created = new Date();

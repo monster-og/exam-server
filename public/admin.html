@@ -686,11 +686,11 @@ async function doLogin() {
       onAdminReady();
       toast(`✅ ${userRole === 'admin' ? 'Administrator' : 'Teacher'} login successful!`, 'success');
     } else {
-      toast('❌ ' + (data.message || data.errorMessage || 'Invalid password!'), 'error');
+      toast('❌ ' + data.message, 'error');
       btn.disabled = false; btn.textContent = 'Login';
     }
   } catch {
-    toast('❌ Unable to connect to server. Please try again.', 'error');
+    toast('❌ Unable to connect to server', 'error');
     btn.disabled = false; btn.textContent = 'Login';
   }
 }

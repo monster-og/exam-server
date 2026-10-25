@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,38 +8,18 @@
   <script src="html2pdf.bundle.min.js"></script>
   <style>
     @keyframes titleShimmer {
-      0% {
-        background-position: 0% 50%;
-      }
-
-      50% {
-        background-position: 100% 50%;
-      }
-
-      100% {
-        background-position: 0% 50%;
-      }
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
-
     @keyframes pulseGlow {
-
-      0%,
-      100% {
-        filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.5));
-        transform: translateY(0);
-      }
-
-      50% {
-        filter: drop-shadow(0 0 30px rgba(6, 182, 212, 0.8));
-        transform: translateY(-3px);
-      }
+      0%, 100% { filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.5)); transform: translateY(0); }
+      50% { filter: drop-shadow(0 0 30px rgba(6, 182, 212, 0.8)); transform: translateY(-3px); }
     }
-
     .grand-school-header {
       text-align: center;
       padding: 10px 10px 28px;
     }
-
     .grand-school-badge {
       display: inline-block;
       padding: 6px 18px;
@@ -54,7 +33,6 @@
       margin-bottom: 12px;
       text-transform: uppercase;
     }
-
     .grand-school-name {
       font-size: 3.2rem;
       font-weight: 900;
@@ -70,7 +48,6 @@
       line-height: 1.15;
       text-shadow: 0 10px 30px rgba(99, 102, 241, 0.35);
     }
-
     .grand-school-sub {
       font-size: 1.1rem;
       color: var(--text-muted);
@@ -88,7 +65,6 @@
       backdrop-filter: blur(16px);
       box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
-
     .action-card {
       background: linear-gradient(145deg, rgba(30, 27, 75, 0.65), rgba(15, 14, 30, 0.8));
       border: 1px solid rgba(255, 255, 255, 0.12);
@@ -106,19 +82,12 @@
       box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(16px);
     }
-
     .action-card:hover {
       transform: translateY(-8px) scale(1.02);
       border-color: rgba(99, 102, 241, 0.6);
       box-shadow: 0 20px 45px -5px rgba(0, 0, 0, 0.65), 0 0 30px rgba(99, 102, 241, 0.3);
     }
-
-    .action-icon {
-      font-size: 3rem;
-      margin-bottom: 12px;
-      filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
-    }
-
+    .action-icon { font-size: 3rem; margin-bottom: 12px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); }
     .status-badge {
       display: inline-block;
       padding: 4px 12px;
@@ -126,18 +95,8 @@
       font-size: 0.8rem;
       font-weight: 700;
     }
-
-    .badge-published {
-      background: rgba(34, 197, 94, 0.15);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.3);
-    }
-
-    .badge-pending {
-      background: rgba(245, 158, 11, 0.15);
-      color: #fbbf24;
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
+    .badge-published { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+    .badge-pending { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
 
     /* PT Partwise Tabs & Cards */
     .pt-nav-tabs {
@@ -150,7 +109,6 @@
       overflow-x: auto;
       margin-bottom: 24px;
     }
-
     .pt-nav-btn {
       flex: 1;
       min-width: 140px;
@@ -169,19 +127,16 @@
       transition: all 0.25s ease;
       font-family: inherit;
     }
-
     .pt-nav-btn:hover {
       background: rgba(255, 255, 255, 0.06);
       color: var(--text);
     }
-
     .pt-nav-btn.active {
       background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.25));
       border-color: rgba(99, 102, 241, 0.5);
       color: #fff;
       box-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
     }
-
     .pt-nav-btn .pt-badge {
       font-size: 0.72rem;
       padding: 2px 8px;
@@ -189,7 +144,6 @@
       background: rgba(255, 255, 255, 0.1);
       font-weight: 600;
     }
-
     .pt-panel-banner {
       background: linear-gradient(145deg, rgba(30, 27, 75, 0.7), rgba(15, 14, 30, 0.85));
       border: 1px solid rgba(99, 102, 241, 0.25);
@@ -203,1700 +157,641 @@
       gap: 16px;
     }
 
-    .hub-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .hub-card {
-      background: linear-gradient(145deg, rgba(30, 27, 75, 0.75), rgba(15, 14, 30, 0.9));
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: var(--radius);
-      padding: 22px;
-      transition: all 0.28s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-    }
-    .hub-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.45);
-      border-color: rgba(234, 179, 8, 0.5);
-    }
-    .hub-badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 50px;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-    .hub-sub-tabs {
-      display: flex;
-      gap: 8px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 12px;
-      margin-bottom: 18px;
-      overflow-x: auto;
-    }
-    .hub-sub-btn {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
-      font-size: 0.88rem;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .hub-sub-btn.active {
-      background: linear-gradient(135deg, #eab308, #f97316);
-      color: #000;
-      border-color: #facc15;
-    }
-    .hub-point-item {
-      background: var(--surface2);
-      border-left: 4px solid var(--accent);
-      padding: 12px 16px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-      font-size: 0.92rem;
-      line-height: 1.6;
-    }
-    .cbse-filter-btn {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 6px 14px;
-      border-radius: 50px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .cbse-filter-btn:hover {
-      border-color: #f87171;
-      color: #fff;
-    }
-    .cbse-filter-btn.active {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: #fff;
-      border-color: #f87171;
-      box-shadow: 0 2px 10px rgba(239, 68, 68, 0.35);
-    }
-
     @media (max-width: 600px) {
-      .grand-school-name {
-        font-size: 2.2rem;
-      }
-
-      .pt-nav-tabs {
-        flex-wrap: nowrap;
-      }
+      .grand-school-name { font-size: 2.2rem; }
+      .pt-nav-tabs { flex-wrap: nowrap; }
     }
   </style>
 </head>
-
 <body>
-  <div id="toast-container"></div>
+<div id="toast-container"></div>
 
-  <nav class="navbar">
-    <a href="/" class="logo">🏫 Exam Portal</a>
-    <div class="nav-links">
-      <a href="student-dashboard.html" class="active">Student Portal</a>
-      <a href="exam.html">Take Exam</a>
-      <a href="check-result.html">Show Result</a>
-      <button class="btn btn-ghost btn-sm" onclick="studentLogout()">Logout</button>
-    </div>
-  </nav>
+<nav class="navbar">
+  <a href="/" class="logo">🏫 Exam Portal</a>
+  <div class="nav-links">
+    <a href="student-dashboard.html" class="active">Student Portal</a>
+    <a href="exam.html">Take Exam</a>
+    <a href="check-result.html">Show Result</a>
+    <button class="btn btn-ghost btn-sm" onclick="studentLogout()">Logout</button>
+  </div>
+</nav>
 
-  <main class="container" style="padding-top: 30px; padding-bottom: 60px;">
+<main class="container" style="padding-top: 30px; padding-bottom: 60px;">
+  
+  <!-- Grand Animated School Banner -->
+  <div class="grand-school-header animate-in">
+    <div class="grand-school-badge">✨ Official Online Examination Portal</div>
+    <div class="grand-school-name">OXFORD CONVENT SCHOOL SASARAM</div>
+    <div class="grand-school-sub">Empowering Students Through Quality Education</div>
+  </div>
 
-    <!-- Grand Animated School Banner -->
-    <div class="grand-school-header animate-in">
-      <div class="grand-school-badge">✨ Official Online Examination Portal</div>
-      <div class="grand-school-name">OXFORD CONVENT SCHOOL SASARAM</div>
-      <div class="grand-school-sub">Empowering Students Through Quality Education</div>
-    </div>
-
-    <!-- Student Profile Banner -->
-    <div class="student-profile-card animate-in" style="animation-delay: 0.1s;">
-      <div class="flex justify-between items-center flex-wrap gap-3">
-        <div class="flex items-center gap-3">
-          <div id="std-photo-wrap"
-            style="width: 75px; height: 95px; border-radius: 8px; border: 2px solid var(--accent); background: var(--surface2); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-            <img id="std-photo-img" src="" alt="Student Photo"
-              style="width: 100%; height: 100%; object-fit: cover; display: none;">
-            <span id="std-photo-placeholder" style="font-size: 2.8rem;">🎓</span>
-          </div>
-          <div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <h1 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0;" id="std-name">Loading...</h1>
-              <span id="std-section-badge" class="info-pill"
-                style="display:none; background:rgba(168,85,247,0.12); color:#c084fc; border-color:rgba(168,85,247,0.3);">Section
-                A</span>
-            </div>
-            <p class="text-muted" style="font-size: 0.95rem; margin-top: 4px;">
-              Course / Class: <strong style="color: var(--accent);" id="std-class">-</strong> •
-              Roll No: <strong style="color: #34d399;" id="std-roll">-</strong> •
-              <span id="std-father-wrap" style="display:none;">Father: <strong style="color:var(--text);"
-                  id="std-father">-</strong> • </span>
-              Mobile: <span id="std-mobile">-</span> •
-              Email: <span id="std-email">-</span>
-            </p>
-          </div>
+  <!-- Student Profile Banner -->
+  <div class="student-profile-card animate-in" style="animation-delay: 0.1s;">
+    <div class="flex justify-between items-center flex-wrap gap-3">
+      <div class="flex items-center gap-3">
+        <div id="std-photo-wrap" style="width: 75px; height: 95px; border-radius: 8px; border: 2px solid var(--accent); background: var(--surface2); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+          <img id="std-photo-img" src="" alt="Student Photo" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+          <span id="std-photo-placeholder" style="font-size: 2.8rem;">🎓</span>
         </div>
-        <div class="flex gap-2">
-          <button class="btn btn-primary btn-sm" onclick="openEditProfileModal()">✏️ Edit Profile</button>
-          <button class="btn btn-danger btn-sm" onclick="studentLogout()">🚪 Logout</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div id="edit-profile-modal" class="modal-overlay hidden"
-      style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;">
-      <div class="card animate-in"
-        style="max-width:560px;width:100%;max-height:90vh;overflow-y:auto;position:relative;">
-        <div class="flex justify-between items-center mb-4 pb-2" style="border-bottom:1px solid var(--border);">
-          <h2 style="font-size:1.3rem;font-weight:800;margin:0;">✏️ Edit Student Profile</h2>
-          <button class="btn btn-ghost btn-sm" onclick="closeEditProfileModal()">✕</button>
-        </div>
-
-        <form onsubmit="saveProfileChanges(event)">
-          <div class="form-group">
-            <label class="form-label">Full Name *</label>
-            <input type="text" id="edit-name" class="form-control" placeholder="Enter student full name" required>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Roll Number</label>
-            <input type="text" id="edit-roll" class="form-control" placeholder="Enter class roll number (e.g. 15)">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Father's Name (All Courses)</label>
-            <input type="text" id="edit-father" class="form-control" placeholder="Enter father's name">
-            <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Applicable for Class 1 to 12th.</p>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">🎓 Enrolled Class / Course (Locked)</label>
-            <input type="text" id="edit-class-display" class="form-control" readonly
-              style="background:var(--surface2);opacity:0.95;font-weight:700;color:var(--accent);">
-            <input type="hidden" id="edit-class">
-            <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">🔒 Class / Course is fixed to your
-              registration and cannot be modified.</p>
-          </div>
-
-          <!-- Section field: ONLY for Class 1 to 12th -->
-          <div class="form-group" id="edit-section-group">
-            <label class="form-label">Section <span style="color:#c084fc;font-weight:600;">(Class 1 to 12th
-                Only)</span></label>
-            <select id="edit-section" class="form-control">
-              <option value="">-- No Section / None --</option>
-              <option value="A">Section A</option>
-              <option value="B">Section B</option>
-              <option value="C">Section C</option>
-              <option value="D">Section D</option>
-              <option value="E">Section E</option>
-              <option value="F">Section F</option>
-            </select>
-            <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Select your classroom section (e.g. A,
-              B, C).</p>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Mobile Number *</label>
-            <input type="tel" id="edit-mobile" class="form-control" placeholder="10-digit mobile number" required
-              pattern="[0-9]{10}">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Email Address (Registered)</label>
-            <input type="email" id="edit-email" class="form-control" readonly
-              style="background:var(--surface2);opacity:0.85;">
-          </div>
-
-          <div class="form-group mb-3">
-            <label class="form-label">📷 Student Passport Photo</label>
-            <div style="display:flex; gap:14px; align-items:center;">
-              <div
-                style="width:65px; height:80px; border-radius:6px; border:2px dashed var(--accent); background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
-                <img id="edit-photo-preview" src="" alt="Photo"
-                  style="width:100%; height:100%; object-fit:cover; display:none;">
-                <span id="edit-photo-placeholder" style="font-size:1.8rem;">👤</span>
-              </div>
-              <div style="flex:1;">
-                <input type="file" id="edit-photo-input" class="form-control" accept="image/*"
-                  onchange="previewEditPhoto(event)" style="padding:8px 12px; font-size:0.85rem;">
-                <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Upload/Change passport photo
-                  (JPG/PNG).</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Change Password <span style="font-size:0.8rem;color:var(--text-muted);">(Leave
-                blank to keep unchanged)</span></label>
-            <input type="password" id="edit-password" class="form-control" placeholder="Enter new password (optional)"
-              minlength="6">
-          </div>
-
-          <div class="flex gap-3 justify-end mt-4">
-            <button type="button" class="btn btn-ghost" onclick="closeEditProfileModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary" id="save-profile-btn">💾 Save Profile Changes</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- ═══════════ CLASS TEST & ACADEMIC HUB ARCHITECTURE ═══════════ -->
-    <div class="pt-nav-tabs animate-in" style="animation-delay: 0.15s;">
-      <button class="pt-nav-btn active" id="pt-tab-Class-Test" onclick="switchStudentPT('Class Test')"
-        style="border-color:rgba(168,85,247,0.35);">
-        <span style="color:#c084fc; font-weight:700;">📝 Class Test</span>
-        <span class="pt-badge" style="background:rgba(168,85,247,0.25);color:#c084fc;">Instant AI</span>
-      </button>
-      <button class="pt-nav-btn" id="pt-tab-Board-Hub" onclick="switchStudentPT('Board Hub')"
-        style="border-color:rgba(234,179,8,0.45); background:rgba(234,179,8,0.06);">
-        <span style="color:#facc15; font-weight:800;">🎯 Class 10 Board Hub</span>
-        <span class="pt-badge" style="background:rgba(234,179,8,0.25);color:#facc15; font-weight:700;">All Subjects</span>
-      </button>
-      <button class="pt-nav-btn" id="pt-tab-Study-Notes" onclick="switchStudentPT('Study Notes')"
-        style="border-color:rgba(59,130,246,0.35);">
-        <span style="color:#60a5fa; font-weight:700;">📚 Notes &amp; Guides</span>
-        <span class="pt-badge" style="background:rgba(59,130,246,0.2);color:#60a5fa;">Class 1-12</span>
-      </button>
-      <button class="pt-nav-btn" id="pt-tab-CBSE-Downloads" onclick="switchStudentPT('CBSE Downloads')"
-        style="border-color:rgba(239,68,68,0.4); background:rgba(239,68,68,0.06);">
-        <span style="color:#f87171; font-weight:800;">📥 CBSE Sample Papers &amp; QB</span>
-        <span class="pt-badge" style="background:rgba(239,68,68,0.22);color:#fca5a5; font-weight:700;">Latest 2024-25</span>
-      </button>
-      <button class="pt-nav-btn" id="pt-tab-Answer-Key" onclick="switchStudentPT('Answer Key')"
-        style="border-color:rgba(16,185,129,0.35);">
-        <span style="color:#34d399; font-weight:700;">🔑 Answer Key</span>
-        <span class="pt-badge" style="background:rgba(16,185,129,0.22);color:#34d399;">Released Sets</span>
-      </button>
-      <button class="pt-nav-btn" id="pt-tab-all" onclick="switchStudentPT('all')">
-        <span>🌐 All Tests</span>
-        <span class="pt-badge">Archive</span>
-      </button>
-    </div>
-
-    <!-- ═══════════ PANEL 1: CLASS TEST & EXAM RESULTS ═══════════ -->
-    <div id="panel-exam-results">
-      <!-- Active PT Details & Quick Action Banner -->
-      <div class="pt-panel-banner animate-in" style="animation-delay: 0.2s;">
         <div>
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-            <span style="font-size:1.4rem;">🎯</span>
-            <h2 style="font-size:1.35rem; font-weight:800; margin:0;" id="pt-banner-title">Class Test Portal (Instant AI Result)</h2>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0;" id="std-name">Loading...</h1>
+            <span id="std-section-badge" class="info-pill" style="display:none; background:rgba(168,85,247,0.12); color:#c084fc; border-color:rgba(168,85,247,0.3);">Section A</span>
           </div>
-          <p class="text-muted" style="font-size:0.88rem; margin:0;" id="pt-banner-desc">
-            Appear in your subject class test. One-word answers are auto-evaluated by AI and your subject scorecard is generated immediately!
+          <p class="text-muted" style="font-size: 0.95rem; margin-top: 4px;">
+            Course / Class: <strong style="color: var(--accent);" id="std-class">-</strong> • 
+            Roll No: <strong style="color: #34d399;" id="std-roll">-</strong> • 
+            <span id="std-father-wrap" style="display:none;">Father: <strong style="color:var(--text);" id="std-father">-</strong> • </span>
+            Mobile: <span id="std-mobile">-</span> • 
+            Email: <span id="std-email">-</span>
           </p>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <a href="exam.html?pt=Class+Test" id="pt-start-exam-btn" class="btn btn-primary"
-            style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
-            📝 Start Class Test Now →
-          </a>
-          <button class="btn btn-success" id="pt-marksheet-btn"
-            style="display:inline-flex; align-items:center; gap:6px; font-weight:700;" onclick="openLatestClassTestMarksheet()">
-            📄 View Subject Marksheet
-          </button>
-        </div>
       </div>
-
-      <!-- My Exam Submissions List -->
-      <div class="card animate-in" style="animation-delay: 0.3s;">
-        <div class="card-header flex justify-between items-center flex-wrap gap-2">
-          <div>
-            <h2 style="font-size: 1.25rem; font-weight: 800; margin: 0;" id="pt-results-title">📋 Class Test History &amp; Evaluation Status</h2>
-            <span style="font-size:0.8rem; color:var(--text-muted);">Results are evaluated automatically with immediate answer key release</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); white-space: nowrap;">📅 Session:</label>
-            <select id="student-year-filter" class="form-control"
-              style="width: auto; padding: 4px 10px; font-size: 0.85rem;" onchange="loadMyResults()">
-              <option value="all">🌐 All Academic Years</option>
-              <option value="2026">2026 (Session 2026-2027)</option>
-              <option value="2025">2025 (Session 2025-2026)</option>
-              <option value="2024">2024 (Session 2024-2025)</option>
-              <option value="2023">2023 (Session 2023-2024)</option>
-            </select>
-            <button class="btn btn-ghost btn-sm" onclick="loadMyResults()">🔄 Refresh</button>
-          </div>
-        </div>
-        <div id="my-results-table">
-          <div class="spinner"></div>
-        </div>
+      <div class="flex gap-2">
+        <button class="btn btn-primary btn-sm" onclick="openEditProfileModal()">✏️ Edit Profile</button>
+        <button class="btn btn-danger btn-sm" onclick="studentLogout()">🚪 Logout</button>
       </div>
     </div>
+  </div>
 
-    <!-- ═══════════ PANEL 2: CLASS 10TH BOARD HUB ═══════════ -->
-    <div id="panel-board-hub" style="display:none;" class="animate-in">
-      <div class="pt-panel-banner" style="background: linear-gradient(145deg, rgba(30, 27, 75, 0.85), rgba(40, 20, 10, 0.85)); border-color: rgba(234, 179, 8, 0.4);">
-        <div>
-          <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-            <span style="font-size:1.8rem;">🎯</span>
-            <div>
-              <h2 style="font-size:1.45rem; font-weight:900; margin:0; color:#facc15;">Class 10th CBSE Board Exam Preparation Master Hub</h2>
-              <span class="hub-badge" style="background:rgba(234, 179, 8, 0.2); color:#facc15; border:1px solid rgba(234, 179, 8, 0.4); margin-top:4px;">Official Session 2025-2026</span>
-            </div>
-          </div>
-          <p class="text-muted" style="font-size:0.92rem; margin:4px 0 0; max-width:850px;">
-            Official Oxford Convent School Sasaram Board Preparation Hub covering <strong>all 6 subjects</strong>: Syllabus portion &amp; weightage, chapter revision notes, topper exam presentation strategies, and board sample papers with complete step-by-step solutions!
-          </p>
-        </div>
-        <div>
-          <a href="exam.html?pt=Class+Test" class="btn btn-primary" style="background:linear-gradient(135deg,#eab308,#f97316); color:#000; font-weight:800; border:none; padding:12px 20px;">
-            📝 Practice Board Mock Test →
-          </a>
-        </div>
+  <!-- Edit Profile Modal -->
+  <div id="edit-profile-modal" class="modal-overlay hidden" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;">
+    <div class="card animate-in" style="max-width:560px;width:100%;max-height:90vh;overflow-y:auto;position:relative;">
+      <div class="flex justify-between items-center mb-4 pb-2" style="border-bottom:1px solid var(--border);">
+        <h2 style="font-size:1.3rem;font-weight:800;margin:0;">✏️ Edit Student Profile</h2>
+        <button class="btn btn-ghost btn-sm" onclick="closeEditProfileModal()">✕</button>
       </div>
 
-      <!-- 6 Subject Cards Grid -->
-      <div class="hub-grid" id="board-subjects-grid">
-        <div class="spinner"></div>
-      </div>
-    </div>
-
-    <!-- ═══════════ PANEL 3: CLASS 1 TO 12TH NOTES & GUIDES ═══════════ -->
-    <div id="panel-study-notes" style="display:none;" class="animate-in">
-      <div class="pt-panel-banner" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.85)); border-color: rgba(59, 130, 246, 0.4);">
-        <div>
-          <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-            <span style="font-size:1.8rem;">📚</span>
-            <div>
-              <h2 style="font-size:1.4rem; font-weight:800; margin:0; color:#60a5fa;">School E-Library: Notes, Guides &amp; Reference Materials</h2>
-              <span class="hub-badge" style="background:rgba(59, 130, 246, 0.2); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.4); margin-top:4px;">Classes 1 to 12th</span>
-            </div>
-          </div>
-          <p class="text-muted" style="font-size:0.9rem; margin:4px 0 0;">
-            Browse and download subject-wise chapter notes, NCERT guide solutions, formula booklets, and revision cheat-sheets tailored to your class.
-          </p>
+      <form onsubmit="saveProfileChanges(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input type="text" id="edit-name" class="form-control" placeholder="Enter student full name" required>
         </div>
-        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-          <label style="font-size:0.85rem; font-weight:700; color:var(--text-muted);">Class Filter:</label>
-          <select id="notes-class-filter" class="form-control" style="width:auto; font-weight:700; background:var(--surface2);" onchange="filterStudyNotes()">
-            <option value="Class 10" selected>Class 10</option>
-            <option value="Class 9">Class 9</option>
-            <option value="Class 8">Class 8</option>
-            <option value="Class 7">Class 7</option>
-            <option value="Class 6">Class 6</option>
-            <option value="Class 5">Class 5</option>
-            <option value="Class 4">Class 4</option>
-            <option value="Class 3">Class 3</option>
-            <option value="Class 2">Class 2</option>
-            <option value="Class 1">Class 1</option>
-            <option value="Class 11">Class 11 (Senior Secondary)</option>
-            <option value="Class 12">Class 12 (Board)</option>
+
+        <div class="form-group">
+          <label class="form-label">Roll Number</label>
+          <input type="text" id="edit-roll" class="form-control" placeholder="Enter class roll number (e.g. 15)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Father's Name (All Courses)</label>
+          <input type="text" id="edit-father" class="form-control" placeholder="Enter father's name">
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Applicable for Class 1 to 12th.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🎓 Enrolled Class / Course (Locked)</label>
+          <input type="text" id="edit-class-display" class="form-control" readonly style="background:var(--surface2);opacity:0.95;font-weight:700;color:var(--accent);">
+          <input type="hidden" id="edit-class">
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">🔒 Class / Course is fixed to your registration and cannot be modified.</p>
+        </div>
+
+        <!-- Section field: ONLY for Class 1 to 12th -->
+        <div class="form-group" id="edit-section-group">
+          <label class="form-label">Section <span style="color:#c084fc;font-weight:600;">(Class 1 to 12th Only)</span></label>
+          <select id="edit-section" class="form-control">
+            <option value="">-- No Section / None --</option>
+            <option value="A">Section A</option>
+            <option value="B">Section B</option>
+            <option value="C">Section C</option>
+            <option value="D">Section D</option>
+            <option value="E">Section E</option>
+            <option value="F">Section F</option>
           </select>
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Select your classroom section (e.g. A, B, C).</p>
         </div>
-      </div>
 
-      <div class="hub-grid" id="study-notes-grid">
-        <div class="spinner"></div>
+        <div class="form-group">
+          <label class="form-label">Mobile Number *</label>
+          <input type="tel" id="edit-mobile" class="form-control" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address (Registered)</label>
+          <input type="email" id="edit-email" class="form-control" readonly style="background:var(--surface2);opacity:0.85;">
+        </div>
+
+        <div class="form-group mb-3">
+          <label class="form-label">📷 Student Passport Photo</label>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div style="width:65px; height:80px; border-radius:6px; border:2px dashed var(--accent); background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;">
+              <img id="edit-photo-preview" src="" alt="Photo" style="width:100%; height:100%; object-fit:cover; display:none;">
+              <span id="edit-photo-placeholder" style="font-size:1.8rem;">👤</span>
+            </div>
+            <div style="flex:1;">
+              <input type="file" id="edit-photo-input" class="form-control" accept="image/*" onchange="previewEditPhoto(event)" style="padding:8px 12px; font-size:0.85rem;">
+              <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Upload/Change passport photo (JPG/PNG).</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Change Password <span style="font-size:0.8rem;color:var(--text-muted);">(Leave blank to keep unchanged)</span></label>
+          <input type="password" id="edit-password" class="form-control" placeholder="Enter new password (optional)" minlength="6">
+        </div>
+
+        <div class="flex gap-3 justify-end mt-4">
+          <button type="button" class="btn btn-ghost" onclick="closeEditProfileModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="save-profile-btn">💾 Save Profile Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════ PERIODIC TEST (PT-1 to PT-4) & CLASS TEST ARCHITECTURE ═══════════ -->
+  <div class="pt-nav-tabs animate-in" style="animation-delay: 0.15s;">
+    <button class="pt-nav-btn active" id="pt-tab-PT-1" onclick="switchStudentPT('PT-1')">
+      <span>⭐ Periodic Test 1</span>
+      <span class="pt-badge">PT - 1</span>
+    </button>
+    <button class="pt-nav-btn" id="pt-tab-PT-2" onclick="switchStudentPT('PT-2')">
+      <span>⭐ Periodic Test 2</span>
+      <span class="pt-badge">PT - 2</span>
+    </button>
+    <button class="pt-nav-btn" id="pt-tab-PT-3" onclick="switchStudentPT('PT-3')">
+      <span>⭐ Periodic Test 3</span>
+      <span class="pt-badge">PT - 3</span>
+    </button>
+    <button class="pt-nav-btn" id="pt-tab-PT-4" onclick="switchStudentPT('PT-4')">
+      <span>⭐ Periodic Test 4</span>
+      <span class="pt-badge">PT - 4</span>
+    </button>
+    <button class="pt-nav-btn" id="pt-tab-Class-Test" onclick="switchStudentPT('Class Test')" style="border-color:rgba(168,85,247,0.35);">
+      <span style="color:#c084fc;">📝 Class Test</span>
+      <span class="pt-badge" style="background:rgba(168,85,247,0.25);color:#c084fc;">Instant AI</span>
+    </button>
+    <button class="pt-nav-btn" id="pt-tab-Answer-Key" onclick="switchStudentPT('Answer Key')" style="border-color:rgba(16,185,129,0.35);">
+      <span style="color:#34d399;">🔑 Answer Key</span>
+      <span class="pt-badge" style="background:rgba(16,185,129,0.22);color:#34d399;">All Released Sets</span>
+    </button>
+    <button class="pt-nav-btn" id="pt-tab-all" onclick="switchStudentPT('all')">
+      <span>🌐 All Tests</span>
+      <span class="pt-badge">Full Archive</span>
+    </button>
+  </div>
+
+  <!-- Active PT Details & Quick Action Banner -->
+  <div class="pt-panel-banner animate-in" style="animation-delay: 0.2s;">
+    <div>
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+        <span style="font-size:1.4rem;">🎯</span>
+        <h2 style="font-size:1.35rem; font-weight:800; margin:0;" id="pt-banner-title">Periodic Test - 1 (PT-1) Portal</h2>
+      </div>
+      <p class="text-muted" style="font-size:0.88rem; margin:0;" id="pt-banner-desc">
+        Take exam for PT-1, review your subject-wise marks, or download your official PT-1 consolidated marksheet.
+      </p>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <a href="exam.html?pt=PT-1" id="pt-start-exam-btn" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
+        📝 Start Exam Now →
+      </a>
+      <button class="btn btn-success" id="pt-marksheet-btn" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;" onclick="viewA4Result()">
+        📄 Official Marksheet (All Subjects)
+      </button>
+    </div>
+  </div>
+
+  <!-- My Exam Submissions List for Selected PT -->
+  <div class="card animate-in" style="animation-delay: 0.3s;">
+    <div class="card-header flex justify-between items-center flex-wrap gap-2">
+      <div>
+        <h2 style="font-size: 1.25rem; font-weight: 800; margin: 0;" id="pt-results-title">📋 PT-1 Exam History &amp; Evaluation Status</h2>
+        <span style="font-size:0.8rem; color:var(--text-muted);">Results are strictly segregated partwise for Oxford Convent School</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); white-space: nowrap;">📅 Session:</label>
+        <select id="student-year-filter" class="form-control" style="width: auto; padding: 4px 10px; font-size: 0.85rem;" onchange="loadMyResults()">
+          <option value="all">🌐 All Academic Years</option>
+          <option value="2026">2026 (Session 2026-2027)</option>
+          <option value="2025">2025 (Session 2025-2026)</option>
+          <option value="2024">2024 (Session 2024-2025)</option>
+          <option value="2023">2023 (Session 2023-2024)</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" onclick="loadMyResults()">🔄 Refresh</button>
       </div>
     </div>
+    <div id="my-results-table">
+      <div class="spinner"></div>
+    </div>
+  </div>
 
-    <!-- ═══════════ PANEL 4: CBSE OFFICIAL DOWNLOADS & QUESTION BANKS ═══════════ -->
-    <div id="panel-cbse-downloads" style="display:none;" class="animate-in">
-      <div class="pt-panel-banner" style="background: linear-gradient(145deg, rgba(69, 10, 10, 0.85), rgba(30, 15, 15, 0.85)); border-color: rgba(239, 68, 68, 0.4);">
+  <!-- Answersheet Review Modal -->
+  <div id="answersheet-modal" class="modal-overlay hidden" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;">
+    <div class="card animate-in" style="max-width:680px;width:100%;max-height:90vh;overflow-y:auto;position:relative;">
+      <div class="flex justify-between items-center mb-3 pb-2" style="border-bottom:1px solid var(--border);">
         <div>
-          <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-            <span style="font-size:1.8rem;">📥</span>
-            <div>
-              <h2 style="font-size:1.45rem; font-weight:900; margin:0; color:#f87171;">CBSE Official Downloads &amp; Question Bank Repository</h2>
-              <span class="hub-badge" style="background:rgba(239, 68, 68, 0.2); color:#fca5a5; border:1px solid rgba(239, 68, 68, 0.4); margin-top:4px;">Session 2024-2025 (Latest 2026 Board Exam)</span>
-            </div>
-          </div>
-          <p class="text-muted" style="font-size:0.92rem; margin:4px 0 0; max-width:850px;">
-            Authentic official CBSE Academic Sample Question Papers (SQP), official step-by-step Marking Schemes (MS), and Class 10 Question Banks downloaded directly from CBSE Academic Portal. Click to view online or download directly to your device!
-          </p>
+          <h2 style="font-size:1.3rem;font-weight:800;margin:0;">📝 Evaluated Answersheet Review</h2>
+          <p class="text-muted" style="font-size:0.82rem;margin:2px 0 0 0;" id="ans-modal-subtitle">Official Subject Examination Record</p>
         </div>
-        <div style="display:flex; gap:10px; align-items:center;">
-          <a href="exam.html?cls=Class+10&pt=Class+Test" class="btn btn-primary" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; font-weight:800; border:none; padding:12px 20px;">
-            ⚡ Start Online Mock Test →
-          </a>
+        <button class="btn btn-ghost btn-sm" onclick="closeAnswersheetModal()">✕ Close</button>
+      </div>
+
+      <div id="ans-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- A4 Official Result Marksheet Modal (with Print / PDF Download) -->
+  <div id="a4-result-modal" class="modal-overlay hidden" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;">
+    <div style="max-width:220mm;width:100%;max-height:95vh;overflow-y:auto;position:relative;display:flex;flex-direction:column;align-items:center;">
+      
+      <!-- Top Action Bar (hidden in print) -->
+      <div style="width:210mm;max-width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;background:var(--surface2);padding:10px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);" class="no-print">
+        <span style="font-weight:700;font-size:1rem;color:var(--text);">📄 Official A4 Student Report Card</span>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" onclick="downloadA4ResultPDF()" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);font-weight:700;">⬇️ Download PDF</button>
+          <button class="btn btn-success btn-sm" onclick="printA4ResultSheet()" style="background:linear-gradient(135deg,#059669,#10b981);font-weight:700;">🖨️ Print Marksheet</button>
+          <button class="btn btn-ghost btn-sm" onclick="closeA4ResultModal()">✕ Close</button>
         </div>
       </div>
 
-      <!-- Category Filter Pills -->
-      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; align-items:center;">
-        <span style="font-size:0.85rem; font-weight:700; color:var(--text-muted); margin-right:4px;">Filter Materials:</span>
-        <button class="cbse-filter-btn active" onclick="filterCbseMaterials('all', this)">🌐 All Materials (17)</button>
-        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Sample Question Paper (SQP)', this)">📄 Sample Papers (SQP)</button>
-        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Marking Scheme (MS)', this)">🔑 Marking Schemes (MS)</button>
-        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Official Question Bank', this)">📚 CBSE Question Banks</button>
-        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Mathematics', this)">📐 Mathematics</button>
-        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Science', this)">🔬 Science</button>
-        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Social Science', this)">🌍 Social Science</button>
-        <button class="cbse-filter-btn" onclick="filterCbseMaterials('English', this)">🔤 English</button>
-        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Hindi', this)">🇮🇳 Hindi</button>
-        <button class="cbse-filter-btn" onclick="filterCbseMaterials('Computer', this)">💻 Computer / IT</button>
-      </div>
-
-      <!-- Materials Grid -->
-      <div class="hub-grid" id="cbse-downloads-grid" style="margin-top:18px;">
-        <div class="spinner"></div>
+      <!-- Printable A4 Document Sheet -->
+      <div id="printable-a4-sheet" class="a4-marksheet-container">
+        <!-- Rendered dynamically -->
       </div>
     </div>
+  </div>
+</main>
 
-    <!-- Answersheet Review Modal -->
-    <div id="answersheet-modal" class="modal-overlay hidden"
-      style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px;">
-      <div class="card animate-in"
-        style="max-width:680px;width:100%;max-height:90vh;overflow-y:auto;position:relative;">
-        <div class="flex justify-between items-center mb-3 pb-2" style="border-bottom:1px solid var(--border);">
-          <div>
-            <h2 style="font-size:1.3rem;font-weight:800;margin:0;">📝 Evaluated Answersheet Review</h2>
-            <p class="text-muted" style="font-size:0.82rem;margin:2px 0 0 0;" id="ans-modal-subtitle">Official Subject
-              Examination Record</p>
-          </div>
-          <button class="btn btn-ghost btn-sm" onclick="closeAnswersheetModal()">✕ Close</button>
-        </div>
+<script>
+let currentStudent = null;
 
-        <div id="ans-modal-body"></div>
-      </div>
-    </div>
+const COURSE_GROUPS = {
+  school: [
+    { label: "🏫 Primary & High School (Class 1 to 10)", options: ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"] },
+    { label: "🔬 Senior Secondary (Class 11 & 12)", options: ["Class 11", "11th Science", "11th Commerce", "11th Arts", "Class 12", "12th Science", "12th Commerce", "12th Arts"] }
+  ]
+};
 
-    <!-- A4 Official Result Marksheet Modal (with Print / PDF Download) -->
-    <div id="a4-result-modal" class="modal-overlay hidden"
-      style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;">
-      <div
-        style="max-width:220mm;width:100%;max-height:95vh;overflow-y:auto;position:relative;display:flex;flex-direction:column;align-items:center;">
+function isSchoolClass(cls) {
+  if (!cls) return false;
+  const c = String(cls).toLowerCase().trim();
+  return c.startsWith('class ') || /^([1-9]|1[0-2])$/.test(c) || c.startsWith('11th') || c.startsWith('12th');
+}
 
-        <!-- Top Action Bar (hidden in print) -->
-        <div
-          style="width:210mm;max-width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;background:var(--surface2);padding:10px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);"
-          class="no-print">
-          <span style="font-weight:700;font-size:1rem;color:var(--text);">📄 Official A4 Student Report Card</span>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn btn-primary btn-sm" onclick="downloadA4ResultPDF()"
-              style="background:linear-gradient(135deg,#2563eb,#1d4ed8);font-weight:700;">⬇️ Download PDF</button>
-            <button class="btn btn-success btn-sm" onclick="printA4ResultSheet()"
-              style="background:linear-gradient(135deg,#059669,#10b981);font-weight:700;">🖨️ Print Marksheet</button>
-            <button class="btn btn-ghost btn-sm" onclick="closeA4ResultModal()">✕ Close</button>
-          </div>
-        </div>
+let editPhotoBase64 = null;
 
-    <!-- ═══════════ CLASS 10 BOARD SUBJECT DETAIL MODAL ═══════════ -->
-    <div id="board-subject-modal" class="modal-overlay hidden"
-      style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;">
-      <div class="card animate-in"
-        style="max-width:900px;width:100%;max-height:92vh;overflow-y:auto;position:relative;padding:26px;">
-        <div class="flex justify-between items-center mb-3 pb-2" style="border-bottom:1px solid var(--border);">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span id="bsm-icon" style="font-size:2rem;">📐</span>
-            <div>
-              <h2 style="font-size:1.35rem;font-weight:900;margin:0;" id="bsm-title">Mathematics (041 / 241)</h2>
-              <span class="hub-badge" style="background:rgba(234,179,8,0.2);color:#facc15;" id="bsm-badge">CBSE Board Exam 2025-2026</span>
-            </div>
-          </div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-primary btn-sm" onclick="printBoardModalContent()">🖨️ Print / Save PDF</button>
-            <button class="btn btn-ghost btn-sm" onclick="closeBoardSubjectModal()">✕ Close</button>
-          </div>
-        </div>
+function previewEditPhoto(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_WIDTH = 300;
+      const scale = MAX_WIDTH / img.width;
+      canvas.width = MAX_WIDTH;
+      canvas.height = img.height * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      editPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
 
-        <!-- Subject Internal Tabs -->
-        <div class="hub-sub-tabs">
-          <button class="hub-sub-btn active" id="bsm-tab-portion" onclick="switchBsmTab('portion')">📌 Portion &amp; Weightage</button>
-          <button class="hub-sub-btn" id="bsm-tab-notes" onclick="switchBsmTab('notes')">📖 Chapter Notes &amp; Formulas</button>
-          <button class="hub-sub-btn" id="bsm-tab-strategy" onclick="switchBsmTab('strategy')">🎯 Topper Strategy</button>
-          <button class="hub-sub-btn" id="bsm-tab-paper" onclick="switchBsmTab('paper')">📝 Board Sample Paper &amp; Solutions</button>
-          <button class="hub-sub-btn" id="bsm-tab-official" onclick="switchBsmTab('official')">📁 Official CBSE PDFs &amp; QB</button>
-          <button class="hub-sub-btn" id="bsm-tab-mock" onclick="switchBsmTab('mock')">⚡ Take Online Mock Test</button>
-        </div>
-
-        <!-- Tab Content Area -->
-        <div id="bsm-body" style="min-height:300px;">
-          <!-- Rendered dynamically -->
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══════════ GENERAL STUDY NOTES VIEWER MODAL ═══════════ -->
-    <div id="notes-viewer-modal" class="modal-overlay hidden"
-      style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;">
-      <div class="card animate-in"
-        style="max-width:850px;width:100%;max-height:92vh;overflow-y:auto;position:relative;padding:26px;">
-        <div class="flex justify-between items-center mb-3 pb-2" style="border-bottom:1px solid var(--border);">
-          <div>
-            <h2 style="font-size:1.3rem;font-weight:800;margin:0;" id="nvm-title">Subject Notes &amp; Guide Book</h2>
-            <p class="text-muted" style="font-size:0.82rem;margin:2px 0 0;" id="nvm-subtitle">Oxford Convent School Academic Library</p>
-          </div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-primary btn-sm" onclick="printNotesModalContent()">🖨️ Print Notes</button>
-            <button class="btn btn-ghost btn-sm" onclick="closeNotesViewerModal()">✕ Close</button>
-          </div>
-        </div>
-
-        <div id="nvm-body" style="padding:10px 0;"></div>
-      </div>
-    </div>
-  </main>
-
-  <script>
-    let currentStudent = null;
-
-    const COURSE_GROUPS = {
-      school: [
-        { label: "🏫 Primary & High School (Class 1 to 10)", options: ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"] },
-        { label: "🔬 Senior Secondary (Class 11 & 12)", options: ["Class 11", "11th Science", "11th Commerce", "11th Arts", "Class 12", "12th Science", "12th Commerce", "12th Arts"] }
-      ]
+      const preview = document.getElementById('edit-photo-preview');
+      const placeholder = document.getElementById('edit-photo-placeholder');
+      preview.src = editPhotoBase64;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
     };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
 
-    function isSchoolClass(cls) {
-      if (!cls) return false;
-      const c = String(cls).toLowerCase().trim();
-      return c.startsWith('class ') || /^([1-9]|1[0-2])$/.test(c) || c.startsWith('11th') || c.startsWith('12th');
+function renderStudentProfile(student) {
+  currentStudent = student;
+  document.getElementById('std-name').textContent = student.name || 'Student';
+  document.getElementById('std-class').textContent = student.class || '-';
+  document.getElementById('std-mobile').textContent = student.mobile || '-';
+  document.getElementById('std-email').textContent = student.email || '-';
+
+  // Photo display
+  const photoImg = document.getElementById('std-photo-img');
+  const photoPlaceholder = document.getElementById('std-photo-placeholder');
+  if (student.photo) {
+    photoImg.src = student.photo;
+    photoImg.style.display = 'block';
+    photoPlaceholder.style.display = 'none';
+  } else {
+    photoImg.style.display = 'none';
+    photoPlaceholder.style.display = 'inline-block';
+  }
+
+  // Section display (Class 1 to 12th only)
+  const secBadge = document.getElementById('std-section-badge');
+  if (isSchoolClass(student.class) && student.section) {
+    secBadge.textContent = `Section ${student.section}`;
+    secBadge.style.display = 'inline-flex';
+  } else {
+    secBadge.style.display = 'none';
+  }
+
+  // Father's Name display
+  const fatherWrap = document.getElementById('std-father-wrap');
+  const fatherSpan = document.getElementById('std-father');
+  if (student.fatherName && student.fatherName.trim()) {
+    fatherSpan.textContent = student.fatherName;
+    fatherWrap.style.display = 'inline';
+  } else {
+    fatherWrap.style.display = 'none';
+  }
+
+  // Roll Number display
+  const rollSpan = document.getElementById('std-roll');
+  if (rollSpan) {
+    rollSpan.textContent = student.rollNumber || '-';
+  }
+
+  // Also sync with sessionStorage
+  sessionStorage.setItem('studentProfile', JSON.stringify(student));
+}
+
+window.addEventListener('load', async () => {
+  const token = localStorage.getItem('studentToken');
+  if (!token) {
+    window.location.href = '/?logged_out=1';
+    return;
+  }
+
+  // First show cached profile instantly if available
+  try {
+    const cached = sessionStorage.getItem('studentProfile');
+    if (cached) {
+      renderStudentProfile(JSON.parse(cached));
+    }
+  } catch(e) {}
+
+  try {
+    const res = await fetch('/api/students/me', {
+      headers: { 'x-student-token': token }
+    });
+    const data = await res.json();
+    if (!data.success) {
+      localStorage.removeItem('studentToken');
+      sessionStorage.removeItem('studentProfile');
+      window.location.href = '/?logged_out=1';
+      return;
     }
 
-    let editPhotoBase64 = null;
+    renderStudentProfile(data.student);
+    await loadMyResults();
 
-    function previewEditPhoto(event) {
-      const file = event.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const img = new Image();
-        img.onload = function () {
-          const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 300;
-          const scale = MAX_WIDTH / img.width;
-          canvas.width = MAX_WIDTH;
-          canvas.height = img.height * scale;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          editPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
-
-          const preview = document.getElementById('edit-photo-preview');
-          const placeholder = document.getElementById('edit-photo-placeholder');
-          preview.src = editPhotoBase64;
-          preview.style.display = 'block';
-          placeholder.style.display = 'none';
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewCtId = urlParams.get('viewClassTest');
+    const viewAnsId = urlParams.get('viewAnswersheet');
+    if (viewAnsId) {
+      setTimeout(() => {
+        viewAnswersheet(viewAnsId);
+      }, 300);
+    } else if (viewCtId) {
+      switchStudentPT('Class Test');
+      setTimeout(() => {
+        viewClassTestMarksheet(viewCtId);
+      }, 200);
     }
+  } catch (e) {
+    toast('Error connecting to server. Please check internet.', 'error');
+  }
+});
 
-    function renderStudentProfile(student) {
-      currentStudent = student;
-      document.getElementById('std-name').textContent = student.name || 'Student';
-      document.getElementById('std-class').textContent = student.class || '-';
-      document.getElementById('std-mobile').textContent = student.mobile || '-';
-      document.getElementById('std-email').textContent = student.email || '-';
+function openEditProfileModal() {
+  if (!currentStudent) {
+    try {
+      const saved = sessionStorage.getItem('studentProfile');
+      if (saved) currentStudent = JSON.parse(saved);
+    } catch(e) {}
+  }
+  if (!currentStudent) {
+    toast('⚠️ Student profile data loading... please wait a moment', 'info');
+    return;
+  }
+  editPhotoBase64 = null;
+  document.getElementById('edit-name').value = currentStudent.name || '';
+  const editRollInput = document.getElementById('edit-roll');
+  if (editRollInput) editRollInput.value = currentStudent.rollNumber || '';
+  document.getElementById('edit-father').value = currentStudent.fatherName || '';
+  document.getElementById('edit-mobile').value = currentStudent.mobile || '';
+  document.getElementById('edit-email').value = currentStudent.email || '';
+  document.getElementById('edit-password').value = '';
 
-      // Photo display
-      const photoImg = document.getElementById('std-photo-img');
-      const photoPlaceholder = document.getElementById('std-photo-placeholder');
-      if (student.photo) {
-        photoImg.src = student.photo;
-        photoImg.style.display = 'block';
-        photoPlaceholder.style.display = 'none';
-      } else {
-        photoImg.style.display = 'none';
-        photoPlaceholder.style.display = 'inline-block';
-      }
+  const prevImg = document.getElementById('edit-photo-preview');
+  const prevPlaceholder = document.getElementById('edit-photo-placeholder');
+  if (currentStudent.photo) {
+    prevImg.src = currentStudent.photo;
+    prevImg.style.display = 'block';
+    prevPlaceholder.style.display = 'none';
+  } else {
+    prevImg.style.display = 'none';
+    prevPlaceholder.style.display = 'inline-block';
+  }
+  document.getElementById('edit-photo-input').value = '';
 
-      // Section display (Class 1 to 12th only)
-      const secBadge = document.getElementById('std-section-badge');
-      if (isSchoolClass(student.class) && student.section) {
-        secBadge.textContent = `Section ${student.section}`;
-        secBadge.style.display = 'inline-flex';
-      } else {
-        secBadge.style.display = 'none';
-      }
+  const stdCls = currentStudent.class || '';
+  document.getElementById('edit-class-display').value = stdCls;
+  document.getElementById('edit-class').value = stdCls;
 
-      // Father's Name display
-      const fatherWrap = document.getElementById('std-father-wrap');
-      const fatherSpan = document.getElementById('std-father');
-      if (student.fatherName && student.fatherName.trim()) {
-        fatherSpan.textContent = student.fatherName;
-        fatherWrap.style.display = 'inline';
-      } else {
-        fatherWrap.style.display = 'none';
-      }
+  // Set section visibility and value (only for school/12th)
+  const isSchool = isSchoolClass(stdCls);
+  const secGroup = document.getElementById('edit-section-group');
+  if (secGroup) {
+    secGroup.style.display = isSchool ? 'block' : 'none';
+  }
+  const secSelect = document.getElementById('edit-section');
+  if (secSelect) {
+    secSelect.value = currentStudent.section || '';
+  }
 
-      // Roll Number display
-      const rollSpan = document.getElementById('std-roll');
-      if (rollSpan) {
-        rollSpan.textContent = student.rollNumber || '-';
-      }
+  document.getElementById('edit-profile-modal').classList.remove('hidden');
+}
 
-      // Also sync with sessionStorage
-      sessionStorage.setItem('studentProfile', JSON.stringify(student));
+function closeEditProfileModal() {
+  document.getElementById('edit-profile-modal').classList.add('hidden');
+}
 
-      // Sync class with notes filter dropdown
-      const notesFilter = document.getElementById('notes-class-filter');
-      if (notesFilter && student.class) {
-        const cleanC = student.class.startsWith('Class ') ? student.class : `Class ${student.class}`;
-        const optionExists = Array.from(notesFilter.options).some(o => o.value === cleanC);
-        if (optionExists) notesFilter.value = cleanC;
-      }
-    }
+async function saveProfileChanges(e) {
+  e.preventDefault();
+  const token = localStorage.getItem('studentToken');
+  const name = document.getElementById('edit-name').value.trim();
+  const rollNumber = document.getElementById('edit-roll')?.value.trim() || '';
+  const fatherName = document.getElementById('edit-father').value.trim();
+  const cls = document.getElementById('edit-class').value;
+  const section = document.getElementById('edit-section').value;
+  const mobile = document.getElementById('edit-mobile').value.trim();
+  const password = document.getElementById('edit-password').value.trim();
 
-    window.addEventListener('load', async () => {
-      const token = localStorage.getItem('studentToken');
-      if (!token) {
-        window.location.href = '/?logged_out=1';
-        return;
-      }
+  if (!name || !cls || !mobile) {
+    toast('⚠️ Name, Class and Mobile are required', 'info');
+    return;
+  }
 
-      // First show cached profile instantly if available
-      try {
-        const cached = sessionStorage.getItem('studentProfile');
-        if (cached) {
-          renderStudentProfile(JSON.parse(cached));
-        }
-      } catch (e) { }
+  const btn = document.getElementById('save-profile-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
 
-      try {
-        const res = await fetch('/api/students/me', {
-          headers: { 'x-student-token': token }
-        });
-        const data = await res.json();
-        if (!data.success) {
-          localStorage.removeItem('studentToken');
-          sessionStorage.removeItem('studentProfile');
-          window.location.href = '/?logged_out=1';
-          return;
-        }
+  const bodyData = {
+    name,
+    rollNumber,
+    fatherName,
+    cls,
+    section,
+    mobile,
+    password: password || undefined
+  };
+  if (editPhotoBase64 !== null) {
+    bodyData.photo = editPhotoBase64;
+  }
 
-        renderStudentProfile(data.student);
-
-        // Preselect tab if passed in URL or default to Class Test
-        const urlParams = new URLSearchParams(window.location.search);
-        const activeTabParam = urlParams.get('tab');
-        if (activeTabParam === 'board-hub' || activeTabParam === 'board') {
-          switchStudentPT('Board Hub');
-        } else if (activeTabParam === 'notes' || activeTabParam === 'study') {
-          switchStudentPT('Study Notes');
-        } else {
-          switchStudentPT('Class Test');
-        }
-
-        const viewCtId = urlParams.get('viewClassTest');
-        const viewAnsId = urlParams.get('viewAnswersheet');
-        if (viewAnsId) {
-          setTimeout(() => {
-            viewAnswersheet(viewAnsId);
-          }, 300);
-        } else if (viewCtId) {
-          switchStudentPT('Class Test');
-          setTimeout(() => {
-            viewClassTestMarksheet(viewCtId);
-          }, 200);
-        }
-      } catch (e) {
-        toast('Error connecting to server. Please check internet.', 'error');
-      }
+  try {
+    const res = await fetch('/api/students/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-student-token': token
+      },
+      body: JSON.stringify(bodyData)
     });
 
-    function openEditProfileModal() {
-      if (!currentStudent) {
-        try {
-          const saved = sessionStorage.getItem('studentProfile');
-          if (saved) currentStudent = JSON.parse(saved);
-        } catch (e) { }
-      }
-      if (!currentStudent) {
-        toast('⚠️ Student profile data loading... please wait a moment', 'info');
-        return;
-      }
-      editPhotoBase64 = null;
-      document.getElementById('edit-name').value = currentStudent.name || '';
-      const editRollInput = document.getElementById('edit-roll');
-      if (editRollInput) editRollInput.value = currentStudent.rollNumber || '';
-      document.getElementById('edit-father').value = currentStudent.fatherName || '';
-      document.getElementById('edit-mobile').value = currentStudent.mobile || '';
-      document.getElementById('edit-email').value = currentStudent.email || '';
-      document.getElementById('edit-password').value = '';
-
-      const prevImg = document.getElementById('edit-photo-preview');
-      const prevPlaceholder = document.getElementById('edit-photo-placeholder');
-      if (currentStudent.photo) {
-        prevImg.src = currentStudent.photo;
-        prevImg.style.display = 'block';
-        prevPlaceholder.style.display = 'none';
-      } else {
-        prevImg.style.display = 'none';
-        prevPlaceholder.style.display = 'inline-block';
-      }
-      document.getElementById('edit-photo-input').value = '';
-
-      const stdCls = currentStudent.class || '';
-      document.getElementById('edit-class-display').value = stdCls;
-      document.getElementById('edit-class').value = stdCls;
-
-      // Set section visibility and value (only for school/12th)
-      const isSchool = isSchoolClass(stdCls);
-      const secGroup = document.getElementById('edit-section-group');
-      if (secGroup) {
-        secGroup.style.display = isSchool ? 'block' : 'none';
-      }
-      const secSelect = document.getElementById('edit-section');
-      if (secSelect) {
-        secSelect.value = currentStudent.section || '';
-      }
-
-      document.getElementById('edit-profile-modal').classList.remove('hidden');
-    }
-
-    function closeEditProfileModal() {
-      document.getElementById('edit-profile-modal').classList.add('hidden');
-    }
-
-    async function saveProfileChanges(e) {
-      e.preventDefault();
-      const token = localStorage.getItem('studentToken');
-      const name = document.getElementById('edit-name').value.trim();
-      const rollNumber = document.getElementById('edit-roll')?.value.trim() || '';
-      const fatherName = document.getElementById('edit-father').value.trim();
-      const cls = document.getElementById('edit-class').value;
-      const section = document.getElementById('edit-section').value;
-      const mobile = document.getElementById('edit-mobile').value.trim();
-      const password = document.getElementById('edit-password').value.trim();
-
-      if (!name || !cls || !mobile) {
-        toast('⚠️ Name, Class and Mobile are required', 'info');
-        return;
-      }
-
-      const btn = document.getElementById('save-profile-btn');
-      btn.disabled = true;
-      btn.textContent = 'Saving...';
-
-      const bodyData = {
-        name,
-        rollNumber,
-        fatherName,
-        cls,
-        section,
-        mobile,
-        password: password || undefined
-      };
-      if (editPhotoBase64 !== null) {
-        bodyData.photo = editPhotoBase64;
-      }
-
-      try {
-        const res = await fetch('/api/students/profile', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-student-token': token
-          },
-          body: JSON.stringify(bodyData)
-        });
-
-        const data = await res.json();
-        if (data.success) {
-          toast('✅ Profile updated successfully!', 'success');
-          renderStudentProfile(data.student);
-          closeEditProfileModal();
-          loadMyResults();
-        } else {
-          toast('❌ ' + data.message, 'error');
-        }
-      } catch (err) {
-        toast('❌ Failed to update profile', 'error');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = '💾 Save Profile Changes';
-      }
-    }
-
-    let activeStudentPT = 'Class Test';
-    let class10BoardHubData = null;
-    let currentBsmSubject = null;
-    let currentBsmTab = 'portion';
-    let cachedStudyMaterials = [];
-
-    function switchStudentPT(pt) {
-      activeStudentPT = pt;
-      ['Class-Test', 'Board-Hub', 'Study-Notes', 'CBSE-Downloads', 'Answer-Key', 'all'].forEach(p => {
-        const el = document.getElementById('pt-tab-' + p);
-        if (el) {
-          const isMatch = (pt === 'Class Test' && p === 'Class-Test') ||
-            (pt === 'Board Hub' && p === 'Board-Hub') ||
-            (pt === 'Study Notes' && p === 'Study-Notes') ||
-            (pt === 'CBSE Downloads' && p === 'CBSE-Downloads') ||
-            (pt === 'Answer Key' && p === 'Answer-Key') ||
-            (p === pt);
-          if (isMatch) el.classList.add('active');
-          else el.classList.remove('active');
-        }
-      });
-
-      const panelResults = document.getElementById('panel-exam-results');
-      const panelBoardHub = document.getElementById('panel-board-hub');
-      const panelStudyNotes = document.getElementById('panel-study-notes');
-      const panelCbseDownloads = document.getElementById('panel-cbse-downloads');
-
-      if (pt === 'Board Hub') {
-        if (panelResults) panelResults.style.display = 'none';
-        if (panelStudyNotes) panelStudyNotes.style.display = 'none';
-        if (panelCbseDownloads) panelCbseDownloads.style.display = 'none';
-        if (panelBoardHub) panelBoardHub.style.display = 'block';
-        loadBoardHub();
-        return;
-      }
-
-      if (pt === 'Study Notes') {
-        if (panelResults) panelResults.style.display = 'none';
-        if (panelBoardHub) panelBoardHub.style.display = 'none';
-        if (panelCbseDownloads) panelCbseDownloads.style.display = 'none';
-        if (panelStudyNotes) panelStudyNotes.style.display = 'block';
-        loadStudyMaterials();
-        return;
-      }
-
-      if (pt === 'CBSE Downloads') {
-        if (panelResults) panelResults.style.display = 'none';
-        if (panelBoardHub) panelBoardHub.style.display = 'none';
-        if (panelStudyNotes) panelStudyNotes.style.display = 'none';
-        if (panelCbseDownloads) panelCbseDownloads.style.display = 'block';
-        loadCbseMaterials();
-        return;
-      }
-
-      // Normal Exam Results Panel for Class Test / Answer Key / all
-      if (panelBoardHub) panelBoardHub.style.display = 'none';
-      if (panelStudyNotes) panelStudyNotes.style.display = 'none';
-      if (panelCbseDownloads) panelCbseDownloads.style.display = 'none';
-      if (panelResults) panelResults.style.display = 'block';
-
-      const titleEl = document.getElementById('pt-banner-title');
-      const descEl = document.getElementById('pt-banner-desc');
-      const examBtn = document.getElementById('pt-start-exam-btn');
-      const mBtn = document.getElementById('pt-marksheet-btn');
-      const resTitle = document.getElementById('pt-results-title');
-
-      if (pt === 'Answer Key') {
-        if (titleEl) titleEl.textContent = '🔑 Released Answer Keys & Solutions';
-        if (descEl) descEl.textContent = 'Apne exam dete hi Answer Sheet release ho chuki hai. Check your responses, correct answers, and marks for Class Tests & Subject Exams.';
-        if (examBtn) { examBtn.href = 'exam.html?pt=Class+Test'; examBtn.textContent = '📝 Appear in Class Test →'; }
-        if (mBtn) {
-          mBtn.textContent = '📄 View Published Marksheet';
-          mBtn.setAttribute('onclick', 'openLatestClassTestMarksheet()');
-        }
-        if (resTitle) resTitle.textContent = '🔑 Released Answer Sheets & Instant Solutions';
-      } else if (pt === 'all') {
-        if (titleEl) titleEl.textContent = 'All Examinations & Tests Archive';
-        if (descEl) descEl.textContent = 'Complete examination archive of your online exams and subject class tests.';
-        if (examBtn) { examBtn.href = 'exam.html?pt=Class+Test'; examBtn.textContent = '📝 Start Online Exam →'; }
-        if (mBtn) {
-          mBtn.textContent = '📄 Official Marksheet';
-          mBtn.setAttribute('onclick', 'viewA4Result()');
-        }
-        if (resTitle) resTitle.textContent = '📋 All Exams History & Evaluation Status';
-      } else {
-        // Default to Class Test
-        if (titleEl) titleEl.textContent = '📝 Class Test Portal (Instant AI Result)';
-        if (descEl) descEl.textContent = 'Appear in your subject class test. One-word answers are auto-evaluated by AI and your subject scorecard is generated immediately without waiting!';
-        if (examBtn) { examBtn.href = 'exam.html?pt=Class+Test'; examBtn.textContent = '📝 Start Class Test Now →'; }
-        if (mBtn) {
-          mBtn.textContent = '📄 View Subject Marksheet';
-          mBtn.setAttribute('onclick', 'openLatestClassTestMarksheet()');
-        }
-        if (resTitle) resTitle.textContent = '📝 Class Test History & Instant AI Results';
-      }
-
+    const data = await res.json();
+    if (data.success) {
+      toast('✅ Profile updated successfully!', 'success');
+      renderStudentProfile(data.student);
+      closeEditProfileModal();
       loadMyResults();
+    } else {
+      toast('❌ ' + data.message, 'error');
     }
+  } catch (err) {
+    toast('❌ Failed to update profile', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Save Profile Changes';
+  }
+}
 
-    // ─── CLASS 10 BOARD HUB LOGIC ───────────────────────────────────────────
-    async function loadBoardHub() {
-      const wrap = document.getElementById('board-subjects-grid');
-      if (!wrap) return;
-      if (class10BoardHubData) {
-        renderBoardHubCards(class10BoardHubData);
-        return;
-      }
-      wrap.innerHTML = '<div class="spinner" style="margin:40px auto;"></div>';
+let activeStudentPT = 'PT-1';
 
-      try {
-        const res = await fetch('/api/board-hub/class-10');
-        const data = await res.json();
-        if (data.success && data.hub) {
-          class10BoardHubData = data.hub;
-          renderBoardHubCards(class10BoardHubData);
-        } else {
-          wrap.innerHTML = '<p class="text-danger text-center" style="padding:20px;">Failed to load Board Hub data.</p>';
-        }
-      } catch (e) {
-        wrap.innerHTML = '<p class="text-danger text-center" style="padding:20px;">Error connecting to Board Hub service.</p>';
-      }
-    }
-
-    function renderBoardHubCards(hub) {
-      const wrap = document.getElementById('board-subjects-grid');
-      const subjects = Object.values(hub.subjects || {});
-      if (subjects.length === 0) {
-        wrap.innerHTML = '<p class="text-muted text-center" style="padding:20px;">No subjects found in Board Hub.</p>';
-        return;
-      }
-
-      wrap.innerHTML = subjects.map(s => {
-        const unitsCount = s.portion?.units?.length || 0;
-        const notesCount = s.notes?.length || 0;
-        const sampleQsCount = s.samplePaper?.questions?.length || 0;
-
-        return `
-          <div class="hub-card animate-in">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
-                <div style="font-size:2.8rem;">${s.icon}</div>
-                <span class="hub-badge" style="background:rgba(234,179,8,0.18); color:#facc15; border:1px solid rgba(234,179,8,0.35);">
-                  CBSE Code: ${s.code}
-                </span>
-              </div>
-              <h3 style="font-size:1.25rem; font-weight:800; margin:0 0 6px 0; color:var(--text);">${s.name}</h3>
-              <p class="text-muted" style="font-size:0.85rem; margin:0 0 16px 0; line-height:1.45;">
-                Comprehensive ${s.name} board prep: ${unitsCount} core syllabus units, ${notesCount} high-yield revision chapters, and official model paper.
-              </p>
-
-              <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;">
-                <span class="info-pill" style="font-size:0.75rem;">📊 Theory: ${s.portion?.totalMarks || 80} Marks</span>
-                <span class="info-pill" style="font-size:0.75rem;">⏱️ ${s.portion?.timeAllowed || '3 Hours'}</span>
-                <span class="info-pill" style="font-size:0.75rem;">📖 ${notesCount} Revision Chapters</span>
-                <span class="info-pill" style="font-size:0.75rem;">📝 ${sampleQsCount} Solved Model Qs</span>
-              </div>
-              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
-                ${s.officialPdfs?.sqp ? `<a href="${s.officialPdfs.sqp.localUrl}" download class="btn btn-sm" style="background:rgba(59,130,246,0.18); color:#60a5fa; border:1px solid rgba(59,130,246,0.35); font-size:0.75rem; padding:4px 8px; text-decoration:none;" title="Download Official SQP">📄 SQP (${s.officialPdfs.sqp.filesize})</a>` : ''}
-                ${s.officialPdfs?.ms ? `<a href="${s.officialPdfs.ms.localUrl}" download class="btn btn-sm" style="background:rgba(16,185,129,0.18); color:#34d399; border:1px solid rgba(16,185,129,0.35); font-size:0.75rem; padding:4px 8px; text-decoration:none;" title="Download Official Marking Scheme">🔑 MS (${s.officialPdfs.ms.filesize})</a>` : ''}
-                ${s.officialPdfs?.questionBank ? `<a href="${s.officialPdfs.questionBank.localUrl}" download class="btn btn-sm" style="background:rgba(234,179,8,0.18); color:#facc15; border:1px solid rgba(234,179,8,0.35); font-size:0.75rem; padding:4px 8px; text-decoration:none;" title="Download Official Question Bank">📚 QB (${s.officialPdfs.questionBank.filesize})</a>` : ''}
-              </div>
-            </div>
-
-            <div style="display:flex; gap:8px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
-              <button class="btn btn-primary btn-sm" style="flex:1; min-width:115px; font-weight:700;" onclick="openBoardSubjectModal('${s.id}', 'portion')">
-                📖 Study Guide
-              </button>
-              <button class="btn btn-ghost btn-sm" style="font-weight:700; border:1px solid var(--border);" onclick="openBoardSubjectModal('${s.id}', 'official')">
-                📁 Official PDFs
-              </button>
-              <a href="exam.html?cls=Class+10&subject=${encodeURIComponent(s.name.split(' ')[0])}&pt=Class+Test" class="btn btn-sm" style="background:linear-gradient(135deg,#eab308,#f97316); color:#000; font-weight:800; border:none; text-decoration:none; display:inline-flex; align-items:center; gap:4px; padding:6px 12px;">
-                ⚡ Mock Test
-              </a>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function openBoardSubjectModal(subId, initialTab = 'portion') {
-      if (!class10BoardHubData || !class10BoardHubData.subjects[subId]) {
-        toast('⚠️ Subject details loading...', 'info');
-        return;
-      }
-      currentBsmSubject = class10BoardHubData.subjects[subId];
-      currentBsmTab = initialTab;
-
-      document.getElementById('bsm-icon').textContent = currentBsmSubject.icon || '📚';
-      document.getElementById('bsm-title').textContent = `${currentBsmSubject.name} (Code: ${currentBsmSubject.code})`;
-      document.getElementById('bsm-badge').textContent = `CBSE Board Exam 2025-2026 • ${currentBsmSubject.portion?.totalMarks || 80} Marks`;
-
-      switchBsmTab(initialTab);
-      document.getElementById('board-subject-modal').classList.remove('hidden');
-    }
-
-    function closeBoardSubjectModal() {
-      document.getElementById('board-subject-modal').classList.add('hidden');
-    }
-
-    function switchBsmTab(tabName) {
-      currentBsmTab = tabName;
-      ['portion', 'notes', 'strategy', 'paper', 'official', 'mock'].forEach(t => {
-        const btn = document.getElementById('bsm-tab-' + t);
-        if (btn) {
-          if (t === tabName) btn.classList.add('active');
-          else btn.classList.remove('active');
-        }
-      });
-
-      const body = document.getElementById('bsm-body');
-      if (!body || !currentBsmSubject) return;
-
-      if (tabName === 'portion') {
-        const units = currentBsmSubject.portion?.units || [];
-        const pattern = currentBsmSubject.portion?.paperPattern || [];
-        body.innerHTML = `
-          <div style="margin-bottom:18px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
-              <h3 style="font-size:1.15rem; font-weight:800; margin:0; color:#facc15;">📌 Official CBSE Syllabus Units &amp; Marks Distribution</h3>
-              <span class="info-pill" style="font-size:0.8rem; font-weight:700;">Theory: ${currentBsmSubject.portion?.totalMarks || 80} Marks • Internal: ${currentBsmSubject.portion?.internalAssessment || 20} Marks</span>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr style="background:var(--surface2);">
-                    <th style="width:25%;">Unit / Topic</th>
-                    <th style="width:55%;">Chapters &amp; Concepts Included</th>
-                    <th style="width:20%; text-align:center;">Marks Weightage</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${units.map(u => `
-                    <tr>
-                      <td><strong style="color:var(--text);">${u.unit}</strong></td>
-                      <td style="font-size:0.9rem; color:var(--text-muted);">${u.chapters}</td>
-                      <td style="text-align:center;"><strong style="color:#facc15; font-size:1rem;">${u.weightage}</strong></td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px;">
-            <h4 style="font-size:1rem; font-weight:800; margin:0 0 10px 0; color:var(--accent);">📋 Question Paper Design &amp; Section-Wise Pattern (3 Hours)</h4>
-            <ul style="margin:0; padding-left:20px; font-size:0.9rem; line-height:1.7; color:var(--text-muted);">
-              ${pattern.map(p => `<li>${p}</li>`).join('')}
-            </ul>
-          </div>
-        `;
-      } else if (tabName === 'notes') {
-        const chapters = currentBsmSubject.notes || [];
-        body.innerHTML = `
-          <div>
-            <div style="margin-bottom:14px;">
-              <h3 style="font-size:1.15rem; font-weight:800; margin:0 0 4px 0; color:#60a5fa;">📖 High-Yield Chapter Revision Notes &amp; Core Concepts</h3>
-              <p class="text-muted" style="font-size:0.85rem; margin:0;">NCERT-aligned core definitions, fundamental formulas, and high-frequency exam points.</p>
-            </div>
-            ${chapters.map((ch, idx) => `
-              <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; margin-bottom:16px;">
-                <h4 style="font-size:1.05rem; font-weight:800; margin:0 0 10px 0; color:#facc15; display:flex; align-items:center; gap:6px;">
-                  <span>🔖</span> ${ch.chapter}
-                </h4>
-                <div>
-                  ${ch.points.map(pt => `
-                    <div class="hub-point-item">
-                      ${pt}
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        `;
-      } else if (tabName === 'strategy') {
-        const strategies = currentBsmSubject.strategy || [];
-        body.innerHTML = `
-          <div>
-            <div style="margin-bottom:16px;">
-              <h3 style="font-size:1.15rem; font-weight:800; margin:0 0 4px 0; color:#34d399;">🎯 Topper's Board Exam Strategy &amp; Score Booster Guide</h3>
-              <p class="text-muted" style="font-size:0.85rem; margin:0;">Follow these proven presentation, time-allocation, and step-marking tips to maximize your score.</p>
-            </div>
-            <div style="display:flex; flex-direction:column; gap:12px;">
-              ${strategies.map((st, i) => `
-                <div style="background:var(--surface2); border-left:4px solid #34d399; padding:16px; border-radius:4px;">
-                  <div style="font-weight:800; font-size:1rem; margin-bottom:6px; color:#34d399;">
-                    Rule #${i + 1}: ${st.split(':')[0] || 'Examination Rule'}
-                  </div>
-                  <p style="margin:0; font-size:0.92rem; line-height:1.6; color:var(--text-muted);">
-                    ${st.includes(':') ? st.split(':').slice(1).join(':') : st}
-                  </p>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      } else if (tabName === 'paper') {
-        const paper = currentBsmSubject.samplePaper;
-        if (!paper) {
-          body.innerHTML = '<p class="text-muted text-center" style="padding:20px;">Sample paper being updated.</p>';
-          return;
-        }
-        body.innerHTML = `
-          <div>
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:16px; background:linear-gradient(135deg,rgba(99,102,241,0.15),rgba(168,85,247,0.15)); padding:12px 16px; border-radius:var(--radius-sm); border:1px solid rgba(99,102,241,0.3);">
-              <div>
-                <h3 style="font-size:1.1rem; font-weight:800; margin:0; color:var(--text);">${paper.title}</h3>
-                <span style="font-size:0.8rem; color:var(--text-muted);">Maximum Marks: ${paper.maxMarks} • Time Allowed: ${paper.time}</span>
-              </div>
-              <span class="hub-badge" style="background:#10b981; color:#fff;">Complete Step-by-Step Solutions</span>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:14px;">
-              ${(paper.questions || []).map((qObj, idx) => `
-                <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px;">
-                  <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                    <span class="info-pill" style="font-size:0.75rem; background:rgba(99,102,241,0.15); color:var(--primary-light);">${qObj.section || `Question ${idx + 1}`}</span>
-                  </div>
-                  <div style="font-weight:700; font-size:0.95rem; margin-bottom:10px; line-height:1.5;">${qObj.q}</div>
-                  <div style="background:rgba(15,23,42,0.6); border-left:3px solid #10b981; padding:12px 14px; border-radius:4px; font-size:0.9rem; line-height:1.6; color:#a7f3d0; white-space:pre-wrap;">
-                    <strong style="color:#34d399; display:block; margin-bottom:4px;">💡 Step-by-Step Model Answer &amp; Marking Scheme:</strong>
-                    ${qObj.solution}
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      } else if (tabName === 'official') {
-        const pdfs = currentBsmSubject.officialPdfs || {};
-        const subjectName = currentBsmSubject.name;
-        const subShort = subjectName.split(' ')[0];
-
-        body.innerHTML = `
-          <div>
-            <div style="margin-bottom:16px; background:linear-gradient(135deg,rgba(239,68,68,0.12),rgba(249,115,22,0.12)); padding:14px 18px; border-radius:var(--radius-sm); border:1px solid rgba(239,68,68,0.3);">
-              <h3 style="font-size:1.15rem; font-weight:800; margin:0 0 4px 0; color:#f87171;">📁 Official CBSE Academic Downloads for ${subjectName}</h3>
-              <p class="text-muted" style="font-size:0.85rem; margin:0;">Session 2024-2025 (Latest 2026 Board Examination) • Authentic CBSE Academic repository files available for offline download and instant in-browser viewing.</p>
-            </div>
-
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
-              ${pdfs.sqp ? `
-                <div style="background:var(--surface2); border:1px solid rgba(59,130,246,0.35); border-radius:var(--radius-sm); padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
-                  <div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                      <span class="hub-badge" style="background:rgba(59,130,246,0.2); color:#60a5fa;">Sample Paper (SQP)</span>
-                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${pdfs.sqp.filesize}</span>
-                    </div>
-                    <h4 style="font-size:1.05rem; font-weight:800; margin:0 0 8px 0; color:var(--text);">${pdfs.sqp.title}</h4>
-                    <p class="text-muted" style="font-size:0.84rem; line-height:1.5; margin-bottom:16px;">Official question paper blueprint with Section A through E, competency-based questions, and mark distributions.</p>
-                  </div>
-                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <a href="${pdfs.sqp.localUrl}" download class="btn btn-primary btn-sm" style="flex:1; text-align:center; font-weight:700;">⬇️ Download PDF</a>
-                    <a href="${pdfs.sqp.localUrl}" target="_blank" class="btn btn-ghost btn-sm" style="border:1px solid var(--border); font-weight:700;">👁️ View Online</a>
-                  </div>
-                </div>
-              ` : ''}
-
-              ${pdfs.ms ? `
-                <div style="background:var(--surface2); border:1px solid rgba(16,185,129,0.35); border-radius:var(--radius-sm); padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
-                  <div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                      <span class="hub-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">Marking Scheme (MS)</span>
-                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${pdfs.ms.filesize}</span>
-                    </div>
-                    <h4 style="font-size:1.05rem; font-weight:800; margin:0 0 8px 0; color:var(--text);">${pdfs.ms.title}</h4>
-                    <p class="text-muted" style="font-size:0.84rem; line-height:1.5; margin-bottom:16px;">Step-by-step model solutions, value points, partial marks allocation, and answer keys straight from CBSE evaluators.</p>
-                  </div>
-                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <a href="${pdfs.ms.localUrl}" download class="btn btn-success btn-sm" style="flex:1; text-align:center; font-weight:700; background:linear-gradient(135deg,#059669,#10b981);">⬇️ Download MS</a>
-                    <a href="${pdfs.ms.localUrl}" target="_blank" class="btn btn-ghost btn-sm" style="border:1px solid var(--border); font-weight:700;">👁️ View Online</a>
-                  </div>
-                </div>
-              ` : ''}
-
-              ${pdfs.basicSqp ? `
-                <div style="background:var(--surface2); border:1px solid rgba(99,102,241,0.35); border-radius:var(--radius-sm); padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
-                  <div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                      <span class="hub-badge" style="background:rgba(99,102,241,0.2); color:#a5b4fc;">Basic Maths (SQP)</span>
-                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${pdfs.basicSqp.filesize}</span>
-                    </div>
-                    <h4 style="font-size:1.05rem; font-weight:800; margin:0 0 8px 0; color:var(--text);">${pdfs.basicSqp.title}</h4>
-                    <p class="text-muted" style="font-size:0.84rem; line-height:1.5; margin-bottom:16px;">Official sample paper for CBSE Class 10 Basic Mathematics (Code 241).</p>
-                  </div>
-                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <a href="${pdfs.basicSqp.localUrl}" download class="btn btn-primary btn-sm" style="flex:1; text-align:center; font-weight:700;">⬇️ Download PDF</a>
-                    <a href="${pdfs.basicSqp.localUrl}" target="_blank" class="btn btn-ghost btn-sm" style="border:1px solid var(--border); font-weight:700;">👁️ View</a>
-                  </div>
-                </div>
-              ` : ''}
-
-              ${pdfs.basicMs ? `
-                <div style="background:var(--surface2); border:1px solid rgba(16,185,129,0.35); border-radius:var(--radius-sm); padding:18px; display:flex; flex-direction:column; justify-content:space-between;">
-                  <div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                      <span class="hub-badge" style="background:rgba(16,185,129,0.2); color:#34d399;">Basic Maths (MS)</span>
-                      <span style="font-size:0.8rem; font-weight:700; color:var(--text-muted);">${pdfs.basicMs.filesize}</span>
-                    </div>
-                    <h4 style="font-size:1.05rem; font-weight:800; margin:0 0 8px 0; color:var(--text);">${pdfs.basicMs.title}</h4>
-                    <p class="text-muted" style="font-size:0.84rem; line-height:1.5; margin-bottom:16px;">Official step-by-step solutions for Basic Mathematics (Code 241).</p>
-                  </div>
-                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <a href="${pdfs.basicMs.localUrl}" download class="btn btn-success btn-sm" style="flex:1; text-align:center; font-weight:700; background:linear-gradient(135deg,#059669,#10b981);">⬇️ Download MS</a>
-                    <a href="${pdfs.basicMs.localUrl}" target="_blank" class="btn btn-ghost btn-sm" style="border:1px solid var(--border); font-weight:700;">👁️ View</a>
-                  </div>
-                </div>
-              ` : ''}
-
-              ${pdfs.questionBank ? `
-                <div style="background:var(--surface2); border:1px solid rgba(234,179,8,0.4); border-radius:var(--radius-sm); padding:18px; display:flex; flex-direction:column; justify-content:space-between; grid-column:1/-1;">
-                  <div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                      <span class="hub-badge" style="background:rgba(234,179,8,0.2); color:#facc15;">📚 Official CBSE Board Question Bank</span>
-                      <span style="font-size:0.8rem; font-weight:700; color:#facc15;">${pdfs.questionBank.filesize}</span>
-                    </div>
-                    <h4 style="font-size:1.15rem; font-weight:900; margin:0 0 8px 0; color:#facc15;">${pdfs.questionBank.title}</h4>
-                    <p class="text-muted" style="font-size:0.88rem; line-height:1.6; margin-bottom:16px;">
-                      Full official publication by CBSE containing hundreds of competency-based questions, case-study questions, objective questions, and chapter-wise detailed marking solutions.
-                    </p>
-                  </div>
-                  <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <a href="${pdfs.questionBank.localUrl}" download class="btn btn-primary" style="background:linear-gradient(135deg,#eab308,#f97316); color:#000; font-weight:800; border:none; padding:10px 18px;">
-                      ⬇️ Download Complete Question Bank (${pdfs.questionBank.filesize})
-                    </a>
-                    <a href="${pdfs.questionBank.localUrl}" target="_blank" class="btn btn-ghost" style="border:1px solid var(--border); font-weight:700; padding:10px 16px;">
-                      👁️ Open in New Tab
-                    </a>
-                  </div>
-                </div>
-              ` : ''}
-            </div>
-
-            <div style="margin-top:20px; text-align:center; padding:16px; background:var(--surface2); border-radius:var(--radius-sm); border:1px dashed var(--border);">
-              <p class="text-muted" style="font-size:0.85rem; margin:0 0 10px 0;">Want to test your preparation under real exam conditions?</p>
-              <a href="exam.html?cls=Class+10&subject=${encodeURIComponent(subShort)}&pt=Class+Test" class="btn btn-primary" style="background:linear-gradient(135deg,#6366f1,#8b5cf6); font-weight:800; padding:10px 22px;">
-                🚀 Take Online Interactive Mock Test for ${subjectName} →
-              </a>
-            </div>
-          </div>
-        `;
-      } else if (tabName === 'mock') {
-        const subjectName = currentBsmSubject.name;
-        const subShort = subjectName.split(' ')[0];
-
-        body.innerHTML = `
-          <div>
-            <div style="background:linear-gradient(135deg,rgba(99,102,241,0.18),rgba(168,85,247,0.18)); border:1px solid rgba(99,102,241,0.4); border-radius:var(--radius-sm); padding:24px; text-align:center; margin-bottom:20px;">
-              <div style="font-size:3rem; margin-bottom:10px;">⚡</div>
-              <h3 style="font-size:1.4rem; font-weight:900; margin:0 0 8px 0; color:var(--text);">Class 10th ${subjectName} Interactive Mock Test</h3>
-              <p class="text-muted" style="max-width:650px; margin:0 auto 18px; font-size:0.92rem; line-height:1.6;">
-                15 authentic CBSE Board questions (MCQs &amp; Assertion-Reasoning) testing core conceptual understanding, application, and formula accuracy.
-              </p>
-              <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:22px;">
-                <span class="info-pill" style="font-size:0.85rem; font-weight:700;">⏱️ Duration: 30 Minutes</span>
-                <span class="info-pill" style="font-size:0.85rem; font-weight:700;">📊 Total Questions: 15 MCQs</span>
-                <span class="info-pill" style="font-size:0.85rem; font-weight:700;">🎯 Immediate AI Evaluation &amp; Report</span>
-                <span class="info-pill" style="font-size:0.85rem; font-weight:700;">🔑 Full Step-by-Step Explanations</span>
-              </div>
-              <a href="exam.html?cls=Class+10&subject=${encodeURIComponent(subShort)}&pt=Class+Test" class="btn btn-primary btn-lg" style="background:linear-gradient(135deg,#eab308,#f97316); color:#000; font-weight:900; border:none; padding:14px 32px; font-size:1.05rem; box-shadow:0 6px 20px rgba(234,179,8,0.35);">
-                🚀 Start Interactive Mock Test Now →
-              </a>
-            </div>
-
-            <div style="background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px;">
-              <h4 style="font-size:1rem; font-weight:800; margin:0 0 10px 0; color:#34d399;">💡 Exam Instructions &amp; Scoring System</h4>
-              <ul style="margin:0; padding-left:20px; font-size:0.88rem; line-height:1.7; color:var(--text-muted);">
-                <li>Each correct answer awards <strong>1 Mark</strong>. No negative marking for incorrect attempts.</li>
-                <li>You can freely navigate between questions and review or change your answers before final submission.</li>
-                <li>Timer counts down continuously. If time expires, your answers are automatically submitted.</li>
-                <li>Upon submission, your comprehensive evaluation scorecard, percentage, CBSE grade (A1-E), and detailed answer solutions are instantly presented!</li>
-              </ul>
-            </div>
-          </div>
-        `;
+function switchStudentPT(pt) {
+  activeStudentPT = pt;
+  ['PT-1', 'PT-2', 'PT-3', 'PT-4', 'Class-Test', 'Answer-Key', 'all'].forEach(p => {
+    const el = document.getElementById('pt-tab-' + p);
+    if (el) {
+      if ((pt === 'Class Test' && p === 'Class-Test') || (pt === 'Answer Key' && p === 'Answer-Key') || (p === pt)) {
+        el.classList.add('active');
+      } else {
+        el.classList.remove('active');
       }
     }
+  });
 
-    function printBoardModalContent() {
-      if (!currentBsmSubject) return;
-      const printWindow = window.open('', '_blank');
-      const units = currentBsmSubject.portion?.units || [];
-      const notes = currentBsmSubject.notes || [];
-      const strategy = currentBsmSubject.strategy || [];
-      const paper = currentBsmSubject.samplePaper;
+  const titleEl  = document.getElementById('pt-banner-title');
+  const descEl   = document.getElementById('pt-banner-desc');
+  const examBtn  = document.getElementById('pt-start-exam-btn');
+  const mBtn     = document.getElementById('pt-marksheet-btn');
+  const resTitle = document.getElementById('pt-results-title');
 
-      printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>${currentBsmSubject.name} - Class 10 Board Exam Study Guide</title>
-          <style>
-            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 24px; color: #1e293b; line-height: 1.6; }
-            h1 { color: #1e3a8a; border-bottom: 2px solid #1e3a8a; padding-bottom: 8px; margin-bottom: 4px; font-size: 20pt; }
-            h2 { color: #0f172a; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-top: 22px; font-size: 14pt; }
-            h3 { color: #334155; margin-top: 14px; font-size: 12pt; }
-            table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10pt; }
-            th, td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
-            th { background: #f1f5f9; color: #1e293b; }
-            .box { background: #f8fafc; border-left: 4px solid #3b82f6; padding: 10px 14px; margin-bottom: 10px; font-size: 10pt; }
-            .solution { background: #f0fdf4; border-left: 3px solid #16a34a; padding: 8px 12px; margin-top: 6px; font-size: 9.5pt; color: #14532d; }
-            @media print { body { padding: 0; } }
-          </style>
-        </head>
-        <body>
-          <h1>OXFORD CONVENT SCHOOL SASARAM</h1>
-          <p><strong>CBSE Class 10th Board Exam Hub — ${currentBsmSubject.name} (Code: ${currentBsmSubject.code})</strong></p>
-          <p style="color:#64748b; font-size:9pt;">Theory: ${currentBsmSubject.portion?.totalMarks || 80} Marks • Time: ${currentBsmSubject.portion?.timeAllowed || '3 Hours'} • Academic Session 2025-2026</p>
-
-          <h2>1. Syllabus Units &amp; Marks Distribution</h2>
-          <table>
-            <thead><tr><th>Unit</th><th>Chapters</th><th>Weightage</th></tr></thead>
-            <tbody>
-              ${units.map(u => `<tr><td><strong>${u.unit}</strong></td><td>${u.chapters}</td><td>${u.weightage}</td></tr>`).join('')}
-            </tbody>
-          </table>
-
-          <h2>2. High-Yield Chapter Revision Notes</h2>
-          ${notes.map(ch => `
-            <h3>${ch.chapter}</h3>
-            ${ch.points.map(pt => `<div class="box">${pt}</div>`).join('')}
-          `).join('')}
-
-          <h2>3. Topper Exam Presentation Strategy</h2>
-          ${strategy.map((st, i) => `<div class="box"><strong>Strategy #${i + 1}:</strong> ${st}</div>`).join('')}
-
-          ${paper ? `
-            <h2>4. Official Model Sample Paper &amp; Solutions</h2>
-            ${(paper.questions || []).map((q, i) => `
-              <div style="margin-bottom:12px; page-break-inside:avoid;">
-                <strong>${q.section || `Q${i + 1}`}:</strong> ${q.q}
-                <div class="solution"><strong>Solution:</strong><br>${q.solution}</div>
-              </div>
-            `).join('')}
-          ` : ''}
-        </body>
-        </html>
-      `);
-      printWindow.document.close();
-      setTimeout(() => {
-        printWindow.focus();
-        printWindow.print();
-      }, 400);
+  if (pt === 'Answer Key') {
+    if (titleEl) titleEl.textContent = '🔑 Released Answer Keys & Solutions (All Sets)';
+    if (descEl) descEl.textContent = 'Apne exam dete hi Answer Sheet release ho chuki hai. Check your responses, correct answers, and marks for PT-1, PT-2, PT-3, PT-4 & Class Tests.';
+    if (examBtn) { examBtn.href = 'exam.html'; examBtn.textContent = '📝 Appear in Exam →'; }
+    if (mBtn) {
+      mBtn.textContent = '📄 View Published Marksheet';
+      mBtn.setAttribute('onclick', 'viewA4Result()');
     }
-
-    // ─── CLASS 1 TO 12TH STUDY NOTES & GUIDES ────────────────────────────────
-    async function loadStudyMaterials() {
-      const filterSelect = document.getElementById('notes-class-filter');
-      const cls = filterSelect?.value || currentStudent?.class || 'Class 10';
-      if (filterSelect && !filterSelect.value) filterSelect.value = cls;
-
-      const wrap = document.getElementById('study-notes-grid');
-      if (!wrap) return;
-      wrap.innerHTML = '<div class="spinner" style="margin:40px auto;"></div>';
-
-      try {
-        const res = await fetch('/api/study-materials?cls=' + encodeURIComponent(cls));
-        const data = await res.json();
-        cachedStudyMaterials = data.materials || [];
-        renderStudyNotesCards(cachedStudyMaterials, cls);
-      } catch (e) {
-        wrap.innerHTML = '<p class="text-danger text-center" style="padding:20px;">Error loading study materials.</p>';
-      }
+    if (resTitle) resTitle.textContent = '🔑 Released Answer Sheets (PT-1 to PT-4 & Class Tests)';
+  } else if (pt === 'Class Test') {
+    if (titleEl) titleEl.textContent = '📝 Class Test (Subject-Wise & Instant AI Result)';
+    if (descEl) descEl.textContent = 'Appear in your subject class test. One-word answers are auto-evaluated by AI and your subject scorecard is generated immediately without waiting!';
+    if (examBtn) { examBtn.href = 'exam.html?pt=Class+Test'; examBtn.textContent = '📝 Start Class Test Now →'; }
+    if (mBtn) {
+      mBtn.textContent = '📄 View Subject Marksheet';
+      mBtn.setAttribute('onclick', 'openLatestClassTestMarksheet()');
     }
-
-    function filterStudyNotes() {
-      loadStudyMaterials();
+    if (resTitle) resTitle.textContent = '📝 Class Test History & Instant AI Results';
+  } else if (pt === 'all') {
+    if (titleEl) titleEl.textContent = 'All Examinations & Tests Archive';
+    if (descEl) descEl.textContent = 'Complete examination archive across Periodic Tests (PT-1 to PT-4) and Subject Class Tests.';
+    if (examBtn) { examBtn.href = 'exam.html'; examBtn.textContent = '📝 Start Online Exam →'; }
+    if (mBtn) {
+      mBtn.textContent = '📄 Official Marksheet (All Subjects)';
+      mBtn.setAttribute('onclick', 'viewA4Result()');
     }
-
-    function renderStudyNotesCards(materials, cls) {
-      const wrap = document.getElementById('study-notes-grid');
-      if (!materials || materials.length === 0) {
-        wrap.innerHTML = `
-          <div class="empty-state" style="grid-column: 1 / -1;">
-            <div class="empty-icon">📚</div>
-            <h3>Study Materials for ${cls} Loading Soon</h3>
-            <p>Our faculty is currently uploading latest digital guide books for this class.</p>
-          </div>
-        `;
-        return;
-      }
-
-      const subjectIcons = {
-        'Mathematics': '📐',
-        'Science': '🔬',
-        'General Science': '🔬',
-        'Physics': '⚡',
-        'Chemistry': '🧪',
-        'Biology': '🧬',
-        'Social Studies': '🌏',
-        'Social Science': '🌍',
-        'English': '📖',
-        'English Core': '📖',
-        'English Language & Literature': '📖',
-        'Hindi': '🇮🇳',
-        'Hindi Course-A': '🇮🇳',
-        'Environmental Studies (EVS)': '🌿',
-        'Computer': '💻',
-        'Computer Science': '💻',
-        'Information Technology': '💻'
-      };
-
-      wrap.innerHTML = materials.map((m, idx) => {
-        const icon = subjectIcons[m.subject] || '📚';
-        return `
-          <div class="hub-card animate-in" style="animation-delay:${idx * 0.05}s;">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
-                <div style="font-size:2.4rem;">${icon}</div>
-                <span class="hub-badge" style="background:rgba(59,130,246,0.2); color:#60a5fa; border:1px solid rgba(59,130,246,0.35);">
-                  ${m.type || 'Study Notes'}
-                </span>
-              </div>
-              <h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0; color:var(--text);">${m.title}</h3>
-              <p class="text-muted" style="font-size:0.85rem; margin:0 0 14px 0;">
-                Subject: <strong style="color:var(--accent);">${m.subject}</strong> • Enrolled Syllabus Edition (${cls})
-              </p>
-              <div style="display:flex; gap:8px; margin-bottom:16px;">
-                <span class="info-pill" style="font-size:0.75rem;">📄 ~${m.pages || 50} Pages Comprehensive</span>
-                <span class="info-pill" style="font-size:0.75rem; background:rgba(34,197,94,0.15); color:#4ade80;">Verified Syllabus</span>
-              </div>
-            </div>
-
-            <div style="display:flex; gap:8px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
-              <button class="btn btn-primary btn-sm" style="flex:1; font-weight:700;" onclick="openNotesReader(${idx})">
-                📖 Read Notes Online
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
+    if (resTitle) resTitle.textContent = '📋 All Exams History & Evaluation Status';
+  } else {
+    const ptNum = pt.replace('PT-', '');
+    if (titleEl) titleEl.textContent = `Periodic Test - ${ptNum} (${pt}) Portal`;
+    if (descEl) descEl.textContent = `Take exam specifically for ${pt}, review your subject-wise marks, or download your official ${pt} consolidated marksheet.`;
+    if (examBtn) { examBtn.href = `exam.html?pt=${pt}`; examBtn.textContent = `📝 Start ${pt} Exam Now →`; }
+    if (mBtn) {
+      mBtn.textContent = `📄 Official Marksheet (All Subjects)`;
+      mBtn.setAttribute('onclick', `viewA4Result('', '${pt}')`);
     }
+    if (resTitle) resTitle.textContent = `📋 ${pt} Exam History & Evaluation Status`;
+  }
 
-    function openNotesReader(idx) {
-      const item = cachedStudyMaterials[idx];
-      if (!item) return;
+  loadMyResults();
+}
 
-      document.getElementById('nvm-title').textContent = `${item.subject} — ${item.title}`;
-      document.getElementById('nvm-subtitle').textContent = `Oxford Convent School Academic Library • ${item.type} • Verified Syllabus`;
+let studentExamResults = [];
 
-      const body = document.getElementById('nvm-body');
-      body.innerHTML = `
-        <div style="background:var(--surface2); padding:16px; border-radius:var(--radius-sm); margin-bottom:16px; border-left:4px solid var(--accent);">
-          <h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0; color:var(--text);">${item.title}</h3>
-          <p style="margin:0; font-size:0.88rem; color:var(--text-muted);">
-            Course Reference: <strong>${item.subject}</strong> | Type: <strong>${item.type}</strong> | Expected Document Volume: ~${item.pages} Pages
-          </p>
-        </div>
+async function loadMyResults() {
+  const token = localStorage.getItem('studentToken');
+  const yearFilter = document.getElementById('student-year-filter')?.value || 'all';
+  const wrap = document.getElementById('my-results-table');
+  wrap.innerHTML = '<div class="spinner"></div>';
 
-        <div style="font-size:0.95rem; line-height:1.7; color:var(--text);">
-          <h4 style="font-size:1rem; font-weight:800; color:#facc15; margin-bottom:8px;">📌 Core Syllabus Overview &amp; Learning Objectives:</h4>
-          <ul style="color:var(--text-muted); margin-bottom:18px;">
-            <li>Comprehensive chapter definitions, formulas, and verified NCERT textbook solutions.</li>
-            <li>Important questions with step-by-step model explanations for academic examinations.</li>
-            <li>Handwritten-style revision bullet points curated by senior Oxford Convent School teachers.</li>
-          </ul>
+  try {
+    const isAnswerKeyView = (activeStudentPT === 'Answer Key');
+    const params = new URLSearchParams();
+    if (yearFilter && yearFilter !== 'all') params.set('year', yearFilter);
+    if (activeStudentPT && activeStudentPT !== 'all' && !isAnswerKeyView) params.set('examType', activeStudentPT);
 
-          <div style="background:rgba(15,23,42,0.6); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border);">
-            <h4 style="font-size:1rem; font-weight:800; color:#60a5fa; margin:0 0 8px 0;">⚡ Quick Revision Checklist:</h4>
-            <p style="font-size:0.9rem; color:var(--text-muted); margin:0 0 10px 0;">
-              Use this digital guide to revise definitions, practice textbook examples, and review previous years question trends before appearing in Class Tests.
-            </p>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <a href="exam.html?pt=Class+Test" class="btn btn-primary btn-sm" style="font-weight:700;">📝 Practice Class Test for ${item.subject} →</a>
-            </div>
-          </div>
-        </div>
-      `;
+    const url = `/api/students/my-results?${params.toString()}`;
+    const res = await fetch(url, {
+      headers: { 'x-student-token': token }
+    });
+    const data = await res.json();
+    studentExamResults = data.results || [];
 
-      document.getElementById('notes-viewer-modal').classList.remove('hidden');
-    }
-
-    function closeNotesViewerModal() {
-      document.getElementById('notes-viewer-modal').classList.add('hidden');
-    }
-
-    function printNotesModalContent() {
-      const content = document.getElementById('nvm-body')?.innerHTML;
-      const title = document.getElementById('nvm-title')?.textContent || 'Study Notes';
-      if (!content) return;
-
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>${title}</title>
-          <style>
-            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 24px; color: #1e293b; line-height: 1.6; }
-            h1 { color: #1e3a8a; border-bottom: 2px solid #1e3a8a; padding-bottom: 6px; font-size: 18pt; }
-            h2 { color: #0f172a; font-size: 13pt; margin-top: 14px; }
-            p { font-size: 10pt; color: #334155; }
-            ul { font-size: 10pt; color: #334155; }
-          </style>
-        </head>
-        <body>
-          <h1>OXFORD CONVENT SCHOOL SASARAM</h1>
-          <h2>${title}</h2>
-          <div>${content}</div>
-        </body>
-        </html>
-      `);
-      printWindow.document.close();
-      setTimeout(() => {
-        printWindow.focus();
-        printWindow.print();
-      }, 400);
-    }
-
-    // ─── CBSE OFFICIAL DOWNLOADS & REPOSITORY ────────────────────────────────
-    let cachedCbseMaterials = [];
-    let currentCbseFilter = 'all';
-
-    async function loadCbseMaterials() {
-      const grid = document.getElementById('cbse-downloads-grid');
-      if (!grid) return;
-      if (cachedCbseMaterials.length > 0) {
-        renderCbseMaterials(cachedCbseMaterials, currentCbseFilter);
-        return;
-      }
-
-      grid.innerHTML = '<div class="spinner" style="margin:40px auto;"></div>';
-      try {
-        const res = await fetch('/api/cbse-materials');
-        const data = await res.json();
-        if (data.success && data.materials) {
-          cachedCbseMaterials = data.materials;
-          renderCbseMaterials(cachedCbseMaterials, currentCbseFilter);
-        } else {
-          grid.innerHTML = '<p class="text-danger text-center" style="padding:20px;">Could not load CBSE materials repository.</p>';
-        }
-      } catch (err) {
-        grid.innerHTML = '<p class="text-danger text-center" style="padding:20px;">Failed to connect to CBSE materials service.</p>';
-      }
-    }
-
-    function filterCbseMaterials(category, btnEl) {
-      currentCbseFilter = category;
-      document.querySelectorAll('.cbse-filter-btn').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
-      renderCbseMaterials(cachedCbseMaterials, currentCbseFilter);
-    }
-
-    function renderCbseMaterials(materials, filter) {
-      const grid = document.getElementById('cbse-downloads-grid');
-      if (!grid) return;
-
-      let list = [...materials];
-      if (filter && filter !== 'all') {
-        const fLower = filter.toLowerCase();
-        list = list.filter(m => 
-          m.category.toLowerCase().includes(fLower) || 
-          m.subject.toLowerCase().includes(fLower)
-        );
-      }
-
-      if (list.length === 0) {
-        grid.innerHTML = '<p class="text-muted text-center" style="padding:30px; grid-column:1/-1;">No materials found for the selected category filter.</p>';
-        return;
-      }
-
-      const categoryColors = {
-        'Sample Question Paper (SQP)': { bg: 'rgba(59,130,246,0.18)', color: '#60a5fa', border: 'rgba(59,130,246,0.35)', icon: '📄' },
-        'Marking Scheme (MS)': { bg: 'rgba(16,185,129,0.18)', color: '#34d399', border: 'rgba(16,185,129,0.35)', icon: '🔑' },
-        'Official Question Bank': { bg: 'rgba(234,179,8,0.18)', color: '#facc15', border: 'rgba(234,179,8,0.35)', icon: '📚' }
-      };
-
-      grid.innerHTML = list.map(item => {
-        const catStyle = categoryColors[item.category] || { bg: 'rgba(168,85,247,0.18)', color: '#c084fc', border: 'rgba(168,85,247,0.35)', icon: '📑' };
-        const subName = item.subject.split(' ')[0];
-
-        return `
-          <div class="hub-card animate-in">
-            <div>
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
-                <span class="hub-badge" style="background:${catStyle.bg}; color:${catStyle.color}; border:1px solid ${catStyle.border}; font-size:0.75rem;">
-                  ${catStyle.icon} ${item.category}
-                </span>
-                <span class="info-pill" style="font-size:0.75rem; font-weight:800; background:rgba(255,255,255,0.08);">
-                  💾 ${item.sizeFormatted}
-                </span>
-              </div>
-
-              <h3 style="font-size:1.15rem; font-weight:800; margin:0 0 6px 0; color:var(--text); line-height:1.4;">
-                ${item.subject}
-              </h3>
-              <p class="text-muted" style="font-size:0.83rem; margin:0 0 14px 0; line-height:1.5;">
-                ${item.description}
-              </p>
-
-              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
-                <span class="info-pill" style="font-size:0.72rem;">📅 ${item.year}</span>
-                <span class="info-pill" style="font-size:0.72rem; color:#34d399;">✓ Official CBSE Academic</span>
-              </div>
-            </div>
-
-            <div>
-              <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
-                <a href="${item.url}" download="${item.filename}" class="btn btn-primary btn-sm" style="flex:1; text-align:center; font-weight:700;" title="Download PDF to device">
-                  ⬇️ Download PDF
-                </a>
-                <a href="${item.url}" target="_blank" class="btn btn-ghost btn-sm" style="border:1px solid var(--border); font-weight:700;" title="View PDF directly in browser">
-                  👁️ View Online
-                </a>
-              </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px; font-size:0.78rem;">
-                <a href="${item.officialUrl}" target="_blank" style="color:var(--text-muted); text-decoration:none;" title="Official CBSE Academic Mirror Link">
-                  🌐 CBSE Portal Mirror
-                </a>
-                <a href="exam.html?cls=Class+10&subject=${encodeURIComponent(subName)}&pt=Class+Test" style="color:#facc15; font-weight:800; text-decoration:none;" title="Start mock test for this subject">
-                  ⚡ Take Mock Test →
-                </a>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    let studentExamResults = [];
-
-    async function loadMyResults() {
-      const token = localStorage.getItem('studentToken');
-      const yearFilter = document.getElementById('student-year-filter')?.value || 'all';
-      const wrap = document.getElementById('my-results-table');
-      wrap.innerHTML = '<div class="spinner"></div>';
-
-      try {
-        const isAnswerKeyView = (activeStudentPT === 'Answer Key');
-        const params = new URLSearchParams();
-        if (yearFilter && yearFilter !== 'all') params.set('year', yearFilter);
-        if (activeStudentPT && activeStudentPT !== 'all' && !isAnswerKeyView) params.set('examType', activeStudentPT);
-
-        const url = `/api/students/my-results?${params.toString()}`;
-        const res = await fetch(url, {
-          headers: { 'x-student-token': token }
-        });
-        const data = await res.json();
-        studentExamResults = data.results || [];
-
-        if (studentExamResults.length === 0) {
-          wrap.innerHTML = `
+    if (studentExamResults.length === 0) {
+      wrap.innerHTML = `
         <div class="empty-state">
           <div class="empty-icon">${isAnswerKeyView ? '🔑' : '📝'}</div>
           <h3>${isAnswerKeyView ? 'No Answer Sheets Released Yet' : `No Exam History Found for ${activeStudentPT === 'all' ? 'Any Test' : activeStudentPT}`}</h3>
           <p>${yearFilter !== 'all' ? `No submissions found for Session "${yearFilter}".` : `Take an exam above. Answer sheet will release immediately upon submission!`}</p>
         </div>
       `;
-          return;
-        }
+      return;
+    }
 
-        const rows = studentExamResults.map((r, i) => {
-          const pct = r.total > 0 ? Math.round((r.score / r.total) * 100) : 0;
-          const dt = new Date(r.submittedAt).toLocaleDateString('en-IN');
-          const isClassTest = (r.examType === 'Class Test' || r.examType === 'CT');
-          const isPublished = isClassTest ? true : !!r.resultUnlocked;
-          const sessionLabel = r.session || r.year || '2025-2026';
+    const rows = studentExamResults.map((r, i) => {
+      const pct = r.total > 0 ? Math.round((r.score / r.total) * 100) : 0;
+      const dt = new Date(r.submittedAt).toLocaleDateString('en-IN');
+      const isClassTest = (r.examType === 'Class Test' || r.examType === 'CT');
+      const isPublished = isClassTest ? true : !!r.resultUnlocked;
+      const sessionLabel = r.session || r.year || '2025-2026';
+      
+      const ptBadge = isClassTest
+        ? `<span style="background:rgba(168,85,247,0.18);color:#c084fc;border:1px solid rgba(168,85,247,0.35);padding:3px 9px;border-radius:4px;font-size:0.8rem;font-weight:800;">📝 Class Test</span>`
+        : `<span style="background:rgba(234,179,8,0.15);color:#f59e0b;border:1px solid rgba(234,179,8,0.3);padding:2px 8px;border-radius:4px;font-size:0.8rem;font-weight:700;">${r.examType || 'PT-1'}</span>`;
 
-          const ptBadge = isClassTest
-            ? `<span style="background:rgba(168,85,247,0.18);color:#c084fc;border:1px solid rgba(168,85,247,0.35);padding:3px 9px;border-radius:4px;font-size:0.8rem;font-weight:800;">📝 Class Test</span>`
-            : `<span style="background:rgba(234,179,8,0.15);color:#f59e0b;border:1px solid rgba(234,179,8,0.3);padding:2px 8px;border-radius:4px;font-size:0.8rem;font-weight:700;">${r.examType || 'PT-1'}</span>`;
+      const evalMode = isClassTest
+        ? `<span style="background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.3);padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:700;">🤖 AI Instant</span>`
+        : `<span style="background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.25);padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600;">👨‍🏫 Teacher Graded</span>`;
 
-          const evalMode = isClassTest
-            ? `<span style="background:rgba(168,85,247,0.15);color:#c084fc;border:1px solid rgba(168,85,247,0.3);padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:700;">🤖 AI Instant</span>`
-            : `<span style="background:rgba(59,130,246,0.12);color:#60a5fa;border:1px solid rgba(59,130,246,0.25);padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:600;">👨‍🏫 Teacher Graded</span>`;
+      const statusBadge = isClassTest
+        ? `<span class="status-badge badge-published" style="background:rgba(168,85,247,0.15);color:#c084fc;border-color:rgba(168,85,247,0.3);">⚡ Instant Release</span>`
+        : (isPublished 
+          ? `<span class="status-badge badge-published">✅ Published by Teacher</span>` 
+          : `<span class="status-badge badge-pending">⏳ Marksheet Pending Release</span>`);
 
-          const statusBadge = isClassTest
-            ? `<span class="status-badge badge-published" style="background:rgba(168,85,247,0.15);color:#c084fc;border-color:rgba(168,85,247,0.3);">⚡ Instant Release</span>`
-            : (isPublished
-              ? `<span class="status-badge badge-published">✅ Published by Teacher</span>`
-              : `<span class="status-badge badge-pending">⏳ Marksheet Pending Release</span>`);
+      const ansKeyBtn = `<button class="btn btn-sm" onclick="viewAnswersheet('${r.id}')" style="padding:5px 9px; font-size:0.78rem; background:linear-gradient(135deg,#059669,#10b981); color:#fff; font-weight:700; white-space:nowrap; border:none; border-radius:4px;" title="Exam khtm hote hi Answer Sheet release">🔑 Answer Sheet</button>`;
 
-          const ansKeyBtn = `<button class="btn btn-sm" onclick="viewAnswersheet('${r.id}')" style="padding:5px 9px; font-size:0.78rem; background:linear-gradient(135deg,#059669,#10b981); color:#fff; font-weight:700; white-space:nowrap; border:none; border-radius:4px;" title="Exam khtm hote hi Answer Sheet release">🔑 Answer Sheet</button>`;
+      const marksheetAction = isClassTest
+        ? `<button class="btn btn-sm" onclick="viewClassTestMarksheet('${r.id}')" style="padding:5px 9px; font-size:0.78rem; background:#7c3aed; color:#fff; font-weight:700; white-space:nowrap; border:none; border-radius:4px;">📄 Subject Marksheet</button>`
+        : (isPublished
+          ? `<button class="btn btn-success btn-sm" onclick="viewA4Result('${r.session || r.year || ''}', '${r.examType || 'PT-1'}')" style="padding:5px 8px; font-size:0.78rem; white-space:nowrap;">📄 ${r.examType || 'PT-1'} Marksheet</button>`
+          : `<span style="background:rgba(234,179,8,0.12); color:#f59e0b; border:1px solid rgba(234,179,8,0.3); padding:4px 7px; border-radius:4px; font-size:0.74rem; font-weight:600; white-space:nowrap;" title="PT-1 se PT-4 ka marksheet Teacher/Admin publish karenge">🔒 Marksheet Pending</span>`);
 
-          const marksheetAction = isClassTest
-            ? `<button class="btn btn-sm" onclick="viewClassTestMarksheet('${r.id}')" style="padding:5px 9px; font-size:0.78rem; background:#7c3aed; color:#fff; font-weight:700; white-space:nowrap; border:none; border-radius:4px;">📄 Subject Marksheet</button>`
-            : (isPublished
-              ? `<button class="btn btn-success btn-sm" onclick="viewA4Result('${r.session || r.year || ''}', '${r.examType || 'PT-1'}')" style="padding:5px 8px; font-size:0.78rem; white-space:nowrap;">📄 ${r.examType || 'PT-1'} Marksheet</button>`
-              : `<span style="background:rgba(234,179,8,0.12); color:#f59e0b; border:1px solid rgba(234,179,8,0.3); padding:4px 7px; border-radius:4px; font-size:0.74rem; font-weight:600; white-space:nowrap;" title="PT-1 se PT-4 ka marksheet Teacher/Admin publish karenge">🔒 Marksheet Pending</span>`);
-
-          return `
+      return `
         <tr>
           <td><strong>${i + 1}</strong></td>
           <td>${ptBadge}</td>
@@ -1908,7 +803,7 @@
           <td>${statusBadge}</td>
           <td>
             ${(isPublished || isClassTest)
-              ? `<strong style="color:var(--primary-light); font-size:1.05rem;">${r.score} / ${r.total} (${pct}%)</strong>`
+              ? `<strong style="color:var(--primary-light); font-size:1.05rem;">${r.score} / ${r.total} (${pct}%)</strong>` 
               : `<span class="text-muted" style="font-size:0.85rem;" title="Official marksheet publish hone par number final hoga">Official score on publish</span>`}
           </td>
           <td>
@@ -1919,9 +814,9 @@
           </td>
         </tr>
       `;
-        }).join('');
+    }).join('');
 
-        wrap.innerHTML = `
+    wrap.innerHTML = `
       <div class="table-wrap">
         <table>
           <thead>
@@ -1942,61 +837,61 @@
         </table>
       </div>
     `;
-      } catch (e) {
-        wrap.innerHTML = '<p class="text-muted text-center" style="padding:20px;">Error loading results.</p>';
-      }
+  } catch (e) {
+    wrap.innerHTML = '<p class="text-muted text-center" style="padding:20px;">Error loading results.</p>';
+  }
+}
+
+function openLatestClassTestMarksheet() {
+  const ct = studentExamResults.find(r => r.examType === 'Class Test' || r.examType === 'CT');
+  if (ct) {
+    viewClassTestMarksheet(ct.id);
+  } else {
+    viewA4Result('', 'Class Test');
+  }
+}
+
+async function viewClassTestMarksheet(resultId) {
+  const r = studentExamResults.find(x => x.id === resultId);
+  const modal = document.getElementById('a4-result-modal');
+  const sheet = document.getElementById('printable-a4-sheet');
+  sheet.innerHTML = '<div class="spinner" style="margin:40px auto;"></div>';
+  modal.classList.remove('hidden');
+
+  try {
+    const params = new URLSearchParams({
+      name: currentStudent.name,
+      cls: currentStudent.class,
+      session: r?.session || r?.year || '',
+      examType: 'Class Test'
+    });
+    if (r?.subject) params.set('subject', r.subject);
+
+    const res = await fetch(`/api/students/cumulative-marksheet?${params.toString()}`, {
+      headers: { 'x-student-token': localStorage.getItem('studentToken') }
+    });
+    const data = await res.json();
+    if (!data.success || !data.marksheet) {
+      sheet.innerHTML = `<p class="text-danger" style="padding:20px; text-align:center;">Failed to load marksheet: ${data.message || 'Unknown error'}</p>`;
+      return;
     }
+    sheet.innerHTML = generateA4MarksheetHTML(data.marksheet);
+  } catch(e) {
+    sheet.innerHTML = '<p class="text-danger" style="padding:20px; text-align:center;">Error generating Class Test scorecard.</p>';
+  }
+}
 
-    function openLatestClassTestMarksheet() {
-      const ct = studentExamResults.find(r => r.examType === 'Class Test' || r.examType === 'CT');
-      if (ct) {
-        viewClassTestMarksheet(ct.id);
-      } else {
-        viewA4Result('', 'Class Test');
-      }
-    }
+function viewAnswersheet(id) {
+  const r = studentExamResults.find(x => x.id === id);
+  if (!r) return;
 
-    async function viewClassTestMarksheet(resultId) {
-      const r = studentExamResults.find(x => x.id === resultId);
-      const modal = document.getElementById('a4-result-modal');
-      const sheet = document.getElementById('printable-a4-sheet');
-      sheet.innerHTML = '<div class="spinner" style="margin:40px auto;"></div>';
-      modal.classList.remove('hidden');
+  const pct = r.total > 0 ? Math.round((r.score / r.total) * 100) : 0;
+  const grade = getGrade(pct);
+  const dt = new Date(r.submittedAt).toLocaleString('en-IN');
 
-      try {
-        const params = new URLSearchParams({
-          name: currentStudent.name,
-          cls: currentStudent.class,
-          session: r?.session || r?.year || '',
-          examType: 'Class Test'
-        });
-        if (r?.subject) params.set('subject', r.subject);
+  document.getElementById('ans-modal-subtitle').textContent = `${r.studentName} • Class ${r.class} • [${r.examType || 'PT-1'}] ${r.subject} • Submitted: ${dt}`;
 
-        const res = await fetch(`/api/students/cumulative-marksheet?${params.toString()}`, {
-          headers: { 'x-student-token': localStorage.getItem('studentToken') }
-        });
-        const data = await res.json();
-        if (!data.success || !data.marksheet) {
-          sheet.innerHTML = `<p class="text-danger" style="padding:20px; text-align:center;">Failed to load marksheet: ${data.message || 'Unknown error'}</p>`;
-          return;
-        }
-        sheet.innerHTML = generateA4MarksheetHTML(data.marksheet);
-      } catch (e) {
-        sheet.innerHTML = '<p class="text-danger" style="padding:20px; text-align:center;">Error generating Class Test scorecard.</p>';
-      }
-    }
-
-    function viewAnswersheet(id) {
-      const r = studentExamResults.find(x => x.id === id);
-      if (!r) return;
-
-      const pct = r.total > 0 ? Math.round((r.score / r.total) * 100) : 0;
-      const grade = getGrade(pct);
-      const dt = new Date(r.submittedAt).toLocaleString('en-IN');
-
-      document.getElementById('ans-modal-subtitle').textContent = `${r.studentName} • Class ${r.class} • [${r.examType || 'PT-1'}] ${r.subject} • Submitted: ${dt}`;
-
-      let html = `
+  let html = `
     <div class="grid grid-3 gap-3 text-center mb-4">
       <div style="background:var(--surface2); padding:12px; border-radius:var(--radius-sm);">
         <div style="font-size:1.6rem; font-weight:800; color:var(--primary-light);">${r.score} / ${r.total}</div>
@@ -2014,14 +909,14 @@
     <div style="max-height:420px; overflow-y:auto; padding-right:4px;">
   `;
 
-      if (r.answers && r.answers.length > 0) {
-        r.answers.forEach((a, i) => {
-          if (a.type === 'owa') {
-            const studentAns = a.userAnswer || '<em style="color:var(--text-muted)">Not Answered</em>';
-            const marksAwarded = a.owaMarksAwarded !== undefined ? a.owaMarksAwarded : (a.isCorrect ? a.marks : 0);
-            const maxMarks = a.marks || 2;
-            const expectedAns = a.correctAnswer || a.expectedAnswer || '';
-            html += `
+  if (r.answers && r.answers.length > 0) {
+    r.answers.forEach((a, i) => {
+      if (a.type === 'owa') {
+        const studentAns = a.userAnswer || '<em style="color:var(--text-muted)">Not Answered</em>';
+        const marksAwarded = a.owaMarksAwarded !== undefined ? a.owaMarksAwarded : (a.isCorrect ? a.marks : 0);
+        const maxMarks = a.marks || 2;
+        const expectedAns = a.correctAnswer || a.expectedAnswer || '';
+        html += `
           <div style="background:var(--surface2); border-left:4px solid ${isPassed ? 'var(--success)' : '#c084fc'}; padding:14px; border-radius:4px; margin-bottom:12px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
               <span style="font-weight:700; font-size:0.95rem;">Q${i + 1}: ${a.qText}</span>
@@ -2044,23 +939,23 @@
             </div>
           </div>
         `;
-          } else {
-            const isCorrect = a.isCorrect || (a.type === 'tf'
-              ? String(a.userAnswer) === String(a.correctAnswer)
-              : String(a.userAnswer) === String(a.correctAnswer));
+      } else {
+        const isCorrect = a.isCorrect || (a.type === 'tf'
+          ? String(a.userAnswer) === String(a.correctAnswer)
+          : String(a.userAnswer) === String(a.correctAnswer));
 
-            const userDisp = a.type === 'tf'
-              ? (a.userAnswer || 'Not Answered')
-              : (a.options?.[a.userAnswer] || (a.userAnswer !== undefined ? `Option ${a.userAnswer + 1}` : 'Not Answered'));
+        const userDisp = a.type === 'tf' 
+          ? (a.userAnswer || 'Not Answered') 
+          : (a.options?.[a.userAnswer] || (a.userAnswer !== undefined ? `Option ${a.userAnswer + 1}` : 'Not Answered'));
 
-            const corrDisp = a.type === 'tf'
-              ? a.correctAnswer
-              : (a.options?.[a.correctAnswer] || a.correctAnswer);
+        const corrDisp = a.type === 'tf' 
+          ? a.correctAnswer 
+          : (a.options?.[a.correctAnswer] || a.correctAnswer);
 
-            const marksVal = isCorrect ? (a.marks || 1) : 0;
-            const maxMarks = a.marks || 1;
+        const marksVal = isCorrect ? (a.marks || 1) : 0;
+        const maxMarks = a.marks || 1;
 
-            html += `
+        html += `
           <div style="background:var(--surface2); border-left:4px solid ${isCorrect ? 'var(--success)' : 'var(--danger)'}; padding:14px; border-radius:4px; margin-bottom:12px;">
             <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
               <span style="font-weight:700; font-size:0.95rem;">Q${i + 1}: ${a.qText}</span>
@@ -2078,107 +973,107 @@
             </div>
           </div>
         `;
-          }
-        });
-      } else {
-        html += `<p class="text-muted text-center" style="padding:20px;">No detailed questions recorded for this test.</p>`;
       }
+    });
+  } else {
+    html += `<p class="text-muted text-center" style="padding:20px;">No detailed questions recorded for this test.</p>`;
+  }
 
-      html += '</div>';
-      document.getElementById('ans-modal-body').innerHTML = html;
-      document.getElementById('answersheet-modal').classList.remove('hidden');
+  html += '</div>';
+  document.getElementById('ans-modal-body').innerHTML = html;
+  document.getElementById('answersheet-modal').classList.remove('hidden');
+}
+
+function closeAnswersheetModal() {
+  document.getElementById('answersheet-modal').classList.add('hidden');
+}
+
+async function viewA4Result(session, ptOverride) {
+  const modal = document.getElementById('a4-result-modal');
+  const sheet = document.getElementById('printable-a4-sheet');
+  sheet.innerHTML = '<div class="spinner" style="margin:40px auto;"></div>';
+  modal.classList.remove('hidden');
+
+  try {
+    const sName = currentStudent?.name || '';
+    const sCls = currentStudent?.class || '';
+    const targetSession = session || document.getElementById('student-year-filter')?.value || '';
+    const targetPT = ptOverride || (activeStudentPT !== 'all' ? activeStudentPT : 'PT-1');
+    const params = new URLSearchParams();
+    if (sName) params.set('name', sName);
+    if (sCls) params.set('cls', sCls);
+    if (targetSession && targetSession !== 'all') params.set('session', targetSession);
+    if (targetPT) params.set('examType', targetPT);
+
+    const res = await fetch(`/api/students/cumulative-marksheet?${params.toString()}`, {
+      headers: { 'x-student-token': localStorage.getItem('studentToken') }
+    });
+    const data = await res.json();
+    if (!data.success || !data.marksheet) {
+      sheet.innerHTML = `<p class="text-danger" style="padding:20px; text-align:center;">Failed to load marksheet: ${data.message || 'Unknown error'}</p>`;
+      return;
     }
+    sheet.innerHTML = generateA4MarksheetHTML(data.marksheet);
+  } catch (e) {
+    sheet.innerHTML = '<p class="text-danger" style="padding:20px; text-align:center;">Error loading marksheet.</p>';
+  }
+}
 
-    function closeAnswersheetModal() {
-      document.getElementById('answersheet-modal').classList.add('hidden');
-    }
+function closeA4ResultModal() {
+  document.getElementById('a4-result-modal').classList.add('hidden');
+}
 
-    async function viewA4Result(session, ptOverride) {
-      const modal = document.getElementById('a4-result-modal');
-      const sheet = document.getElementById('printable-a4-sheet');
-      sheet.innerHTML = '<div class="spinner" style="margin:40px auto;"></div>';
-      modal.classList.remove('hidden');
+function downloadA4ResultPDF() {
+  const element = document.getElementById('printable-a4-sheet');
+  if (!element || !element.innerHTML.trim()) {
+    toast('⚠️ Marksheet load ho rahi hai, kripya thoda wait karein', 'error');
+    return;
+  }
+  toast('⏳ Generating Marksheet PDF download...', 'info');
+  const studentName = currentStudent?.name ? currentStudent.name.replace(/[^a-zA-Z0-9]/g, '_') : 'Student';
+  const opt = {
+    margin:       [6, 6, 6, 6],
+    filename:     `Marksheet_${studentName}_Oxford_Convent.pdf`,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, logging: false },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  if (window.html2pdf) {
+    html2pdf().set(opt).from(element).save().then(() => {
+      toast('✅ Marksheet PDF downloaded successfully!', 'success');
+    }).catch(err => {
+      console.error(err);
+      printA4ResultSheet();
+    });
+  } else {
+    printA4ResultSheet();
+  }
+}
 
-      try {
-        const sName = currentStudent?.name || '';
-        const sCls = currentStudent?.class || '';
-        const targetSession = session || document.getElementById('student-year-filter')?.value || '';
-        const targetPT = ptOverride || (activeStudentPT !== 'all' ? activeStudentPT : 'PT-1');
-        const params = new URLSearchParams();
-        if (sName) params.set('name', sName);
-        if (sCls) params.set('cls', sCls);
-        if (targetSession && targetSession !== 'all') params.set('session', targetSession);
-        if (targetPT) params.set('examType', targetPT);
+function printA4ResultSheet() {
+  const sheet = document.getElementById('printable-a4-sheet');
+  if (!sheet || !sheet.innerHTML.trim()) {
+    toast('⚠️ Marksheet load ho rahi hai, kripya thoda wait karein', 'error');
+    return;
+  }
+  const printContent = sheet.innerHTML;
 
-        const res = await fetch(`/api/students/cumulative-marksheet?${params.toString()}`, {
-          headers: { 'x-student-token': localStorage.getItem('studentToken') }
-        });
-        const data = await res.json();
-        if (!data.success || !data.marksheet) {
-          sheet.innerHTML = `<p class="text-danger" style="padding:20px; text-align:center;">Failed to load marksheet: ${data.message || 'Unknown error'}</p>`;
-          return;
-        }
-        sheet.innerHTML = generateA4MarksheetHTML(data.marksheet);
-      } catch (e) {
-        sheet.innerHTML = '<p class="text-danger" style="padding:20px; text-align:center;">Error loading marksheet.</p>';
-      }
-    }
+  let printFrame = document.getElementById('print-helper-iframe');
+  if (printFrame) printFrame.remove();
 
-    function closeA4ResultModal() {
-      document.getElementById('a4-result-modal').classList.add('hidden');
-    }
+  printFrame = document.createElement('iframe');
+  printFrame.id = 'print-helper-iframe';
+  printFrame.style.position = 'fixed';
+  printFrame.style.right = '0';
+  printFrame.style.bottom = '0';
+  printFrame.style.width = '0';
+  printFrame.style.height = '0';
+  printFrame.style.border = '0';
+  document.body.appendChild(printFrame);
 
-    function downloadA4ResultPDF() {
-      const element = document.getElementById('printable-a4-sheet');
-      if (!element || !element.innerHTML.trim()) {
-        toast('⚠️ Marksheet load ho rahi hai, kripya thoda wait karein', 'error');
-        return;
-      }
-      toast('⏳ Generating Marksheet PDF download...', 'info');
-      const studentName = currentStudent?.name ? currentStudent.name.replace(/[^a-zA-Z0-9]/g, '_') : 'Student';
-      const opt = {
-        margin: [6, 6, 6, 6],
-        filename: `Marksheet_${studentName}_Oxford_Convent.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-      if (window.html2pdf) {
-        html2pdf().set(opt).from(element).save().then(() => {
-          toast('✅ Marksheet PDF downloaded successfully!', 'success');
-        }).catch(err => {
-          console.error(err);
-          printA4ResultSheet();
-        });
-      } else {
-        printA4ResultSheet();
-      }
-    }
-
-    function printA4ResultSheet() {
-      const sheet = document.getElementById('printable-a4-sheet');
-      if (!sheet || !sheet.innerHTML.trim()) {
-        toast('⚠️ Marksheet load ho rahi hai, kripya thoda wait karein', 'error');
-        return;
-      }
-      const printContent = sheet.innerHTML;
-
-      let printFrame = document.getElementById('print-helper-iframe');
-      if (printFrame) printFrame.remove();
-
-      printFrame = document.createElement('iframe');
-      printFrame.id = 'print-helper-iframe';
-      printFrame.style.position = 'fixed';
-      printFrame.style.right = '0';
-      printFrame.style.bottom = '0';
-      printFrame.style.width = '0';
-      printFrame.style.height = '0';
-      printFrame.style.border = '0';
-      document.body.appendChild(printFrame);
-
-      const doc = printFrame.contentWindow.document;
-      doc.open();
-      doc.write(`
+  const doc = printFrame.contentWindow.document;
+  doc.open();
+  doc.write(`
     <!DOCTYPE html>
     <html>
     <head>
@@ -2198,48 +1093,48 @@
     </body>
     </html>
   `);
-      doc.close();
+  doc.close();
 
-      setTimeout(() => {
-        try {
-          printFrame.contentWindow.focus();
-          printFrame.contentWindow.print();
-        } catch (e) {
-          window.print();
-        }
-      }, 450);
+  setTimeout(() => {
+    try {
+      printFrame.contentWindow.focus();
+      printFrame.contentWindow.print();
+    } catch (e) {
+      window.print();
     }
+  }, 450);
+}
 
-    function generateA4MarksheetHTML(m) {
-      const std = m.student;
-      const totals = m.totals;
-      const isPass = totals.status === 'PASSED';
-      const photoHtml = (std.photo || currentStudent?.photo)
-        ? `<img src="${std.photo || currentStudent?.photo}" alt="Student Photo">`
-        : `<div style="font-size:2.4rem; color:#94a3b8;">👤</div>`;
+function generateA4MarksheetHTML(m) {
+  const std = m.student;
+  const totals = m.totals;
+  const isPass = totals.status === 'PASSED';
+  const photoHtml = (std.photo || currentStudent?.photo)
+    ? `<img src="${std.photo || currentStudent?.photo}" alt="Student Photo">`
+    : `<div style="font-size:2.4rem; color:#94a3b8;">👤</div>`;
 
-      const isSingle = !!m.isSingleSubject;
-      const reportTitle = isSingle
-        ? `OFFICIAL CLASS TEST SCORECARD — ${m.subject ? m.subject.toUpperCase() : 'SUBJECT EVALUATION'}`
-        : `OFFICIAL STUDENT EXAMINATION MARKS CARD — ${m.examTypeLabel || 'PERIODIC TEST'}`;
+  const isSingle = !!m.isSingleSubject;
+  const reportTitle = isSingle
+    ? `OFFICIAL CLASS TEST SCORECARD — ${m.subject ? m.subject.toUpperCase() : 'SUBJECT EVALUATION'}`
+    : `OFFICIAL STUDENT EXAMINATION MARKS CARD — ${m.examTypeLabel || 'PERIODIC TEST'}`;
 
-      const examTypeLabel = isSingle
-        ? `Class Test Assessment (Instant AI Graded)`
-        : `${m.examTypeLabel || 'Periodic Test'} (CBSE Pattern)`;
+  const examTypeLabel = isSingle
+    ? `Class Test Assessment (Instant AI Graded)`
+    : `${m.examTypeLabel || 'Periodic Test'} (CBSE Pattern)`;
 
-      const totalSubsLabel = isSingle
-        ? `1 Subject (${m.subject || 'Class Test'})`
-        : `${m.subjects.length} Subjects Listed`;
+  const totalSubsLabel = isSingle
+    ? `1 Subject (${m.subject || 'Class Test'})`
+    : `${m.subjects.length} Subjects Listed`;
 
-      const officialRemark = isSingle
-        ? (isPass
-          ? `Student demonstrated good subject understanding in this Class Test (${m.subject || ''}). Assessment evaluated successfully.`
-          : `Needs revision in this subject (${m.subject || ''}). Please consult subject teacher.`)
-        : (isPass
-          ? 'The student has demonstrated satisfactory subject knowledge across all papers and successfully passed the examination.'
-          : (totals.status === 'COMPARTMENT' ? 'Eligible for Compartmental Examination in failed subject.' : 'Needs improvement in subject concepts. Please consult subject teachers.'));
+  const officialRemark = isSingle
+    ? (isPass 
+      ? `Student demonstrated good subject understanding in this Class Test (${m.subject || ''}). Assessment evaluated successfully.`
+      : `Needs revision in this subject (${m.subject || ''}). Please consult subject teacher.`)
+    : (isPass 
+      ? 'The student has demonstrated satisfactory subject knowledge across all papers and successfully passed the examination.' 
+      : (totals.status === 'COMPARTMENT' ? 'Eligible for Compartmental Examination in failed subject.' : 'Needs improvement in subject concepts. Please consult subject teachers.'));
 
-      return `
+  return `
     <div class="a4-marksheet-border">
       <div class="a4-watermark">OXFORD CONVENT</div>
 
@@ -2276,7 +1171,7 @@
           </tr>
           <tr>
             <td class="label">Exam Date:</td>
-            <td class="value"><strong style="color:#1e3a8a;">${m.examDate ? new Date(m.examDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : (m.submittedAt ? new Date(m.submittedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }))}</strong></td>
+            <td class="value"><strong style="color:#1e3a8a;">${m.examDate ? new Date(m.examDate).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : (m.submittedAt ? new Date(m.submittedAt).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) : new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }))}</strong></td>
             <td class="label">Reg. / Exam ID:</td>
             <td class="value"><strong>${std.id ? std.id.slice(-8).toUpperCase() : 'OCS-REG'}</strong></td>
           </tr>
@@ -2322,21 +1217,21 @@
         </thead>
         <tbody>
           ${m.subjects.map(s => {
-        const securedDisplay = s.status === 'NOT_APPEARED'
-          ? '<span style="color:#94a3b8; font-size:8.5pt;">Not Appeared</span>'
-          : (s.status === 'UNDER_EVALUATION'
-            ? '<span style="color:#d97706; font-size:8.5pt;">Under Evaluation</span>'
-            : `<strong style="color:${s.status === 'PASS' ? '#1e3a8a' : '#dc2626'}; font-size:10.5pt;">${s.securedMarks}</strong>`);
+            const securedDisplay = s.status === 'NOT_APPEARED' 
+              ? '<span style="color:#94a3b8; font-size:8.5pt;">Not Appeared</span>'
+              : (s.status === 'UNDER_EVALUATION'
+                ? '<span style="color:#d97706; font-size:8.5pt;">Under Evaluation</span>'
+                : `<strong style="color:${s.status==='PASS'?'#1e3a8a':'#dc2626'}; font-size:10.5pt;">${s.securedMarks}</strong>`);
+            
+            const statusBadge = s.status === 'PASS'
+              ? `<span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:3px; font-weight:700; font-size:8pt;">PASS (${s.grade})</span>`
+              : (s.status === 'FAIL'
+                ? `<span style="background:#fee2e2; color:#b91c1c; padding:2px 6px; border-radius:3px; font-weight:700; font-size:8pt;">FAIL (${s.grade})</span>`
+                : (s.status === 'UNDER_EVALUATION'
+                  ? `<span style="background:#fef3c7; color:#92400e; padding:2px 6px; border-radius:3px; font-weight:600; font-size:8pt;">Evaluating</span>`
+                  : `<span style="color:#94a3b8; font-size:8pt;">--</span>`));
 
-        const statusBadge = s.status === 'PASS'
-          ? `<span style="background:#dcfce7; color:#15803d; padding:2px 6px; border-radius:3px; font-weight:700; font-size:8pt;">PASS (${s.grade})</span>`
-          : (s.status === 'FAIL'
-            ? `<span style="background:#fee2e2; color:#b91c1c; padding:2px 6px; border-radius:3px; font-weight:700; font-size:8pt;">FAIL (${s.grade})</span>`
-            : (s.status === 'UNDER_EVALUATION'
-              ? `<span style="background:#fef3c7; color:#92400e; padding:2px 6px; border-radius:3px; font-weight:600; font-size:8pt;">Evaluating</span>`
-              : `<span style="color:#94a3b8; font-size:8pt;">--</span>`));
-
-        return `
+            return `
               <tr>
                 <td style="text-align:center;">${s.sn}</td>
                 <td><strong>${s.subject}</strong></td>
@@ -2346,13 +1241,13 @@
                 <td style="text-align:center;">${statusBadge}</td>
               </tr>
             `;
-      }).join('')}
+          }).join('')}
           <tr style="background:#f8fafc; font-weight:800; border-top:2px solid #1e3a8a;">
             <td colspan="2" style="text-align:right; font-size:10pt;">${isSingle ? 'TEST TOTAL:' : 'GRAND TOTAL:'}</td>
             <td style="text-align:center; font-size:10pt;">${totals.maxMarks}</td>
             <td style="text-align:center; font-size:10pt;">${totals.passMarks}</td>
             <td style="text-align:center; color:#1e3a8a; font-size:11pt;">${totals.securedMarks}</td>
-            <td style="text-align:center; font-size:9.5pt; color:${totals.status === 'PASSED' ? '#16a34a' : '#dc2626'};">${totals.status} (${totals.percentage}%)</td>
+            <td style="text-align:center; font-size:9.5pt; color:${totals.status==='PASSED'?'#16a34a':'#dc2626'};">${totals.status} (${totals.percentage}%)</td>
           </tr>
         </tbody>
       </table>
@@ -2382,264 +1277,132 @@
       </div>
     </div>
   `;
-    }
+}
 
-    function getGrade(pct) {
-      if (pct >= 90) return 'A+';
-      if (pct >= 80) return 'A';
-      if (pct >= 70) return 'B';
-      if (pct >= 60) return 'C';
-      if (pct >= 40) return 'D';
-      return 'F';
-    }
+function getGrade(pct) {
+  if (pct >= 90) return 'A+';
+  if (pct >= 80) return 'A';
+  if (pct >= 70) return 'B';
+  if (pct >= 60) return 'C';
+  if (pct >= 40) return 'D';
+  return 'F';
+}
 
-    function studentLogout() {
-      localStorage.removeItem('studentToken');
-      sessionStorage.removeItem('studentProfile');
-      window.location.href = '/?logged_out=1';
-    }
+function studentLogout() {
+  localStorage.removeItem('studentToken');
+  sessionStorage.removeItem('studentProfile');
+  window.location.href = '/?logged_out=1';
+}
 
-    function toast(msg, type = 'info') {
-      const c = document.getElementById('toast-container');
-      const el = document.createElement('div');
-      el.className = `toast toast-${type}`;
-      el.innerHTML = msg;
-      c.appendChild(el);
-      setTimeout(() => { el.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => el.remove(), 300); }, 3500);
-    }
-  </script>
+function toast(msg, type = 'info') {
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.innerHTML = msg;
+  c.appendChild(el);
+  setTimeout(() => { el.style.animation = 'fadeOut 0.3s ease forwards'; setTimeout(() => el.remove(), 300); }, 3500);
+}
+</script>
 
-  <!-- ═══════════════════════════════════════════════════════════ CHATBOT WIDGET -->
-  <style>
-    #chatbot-fab {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 12px;
-    }
+<!-- ═══════════════════════════════════════════════════════════ CHATBOT WIDGET -->
+<style>
+#chatbot-fab { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; align-items:flex-end; gap:12px; }
+#chatbot-toggle-btn { background:linear-gradient(135deg,#6c63ff,#4facfe); color:#fff; border:none; border-radius:50px; padding:14px 20px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 18px rgba(108,99,255,0.45); display:flex; align-items:center; gap:8px; transition:transform 0.2s,box-shadow 0.2s; }
+#chatbot-toggle-btn:hover { transform:translateY(-2px); box-shadow:0 6px 22px rgba(108,99,255,0.55); }
+#chatbot-box { width:340px; max-height:480px; background:#fff; border-radius:18px; box-shadow:0 8px 40px rgba(0,0,0,0.18); display:flex; flex-direction:column; overflow:hidden; border:1.5px solid #e0e0e0; }
+#chatbot-header { background:linear-gradient(135deg,#6c63ff,#4facfe); color:#fff; padding:14px 18px; font-weight:700; font-size:15px; display:flex; justify-content:space-between; align-items:center; }
+#chatbot-close { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; line-height:1; }
+#chatbot-messages { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; min-height:200px; max-height:310px; background:#f7f8fc; }
+.cb-msg { max-width:82%; padding:10px 14px; border-radius:14px; font-size:14px; line-height:1.55; word-break:break-word; }
+.cb-msg.bot { background:#ede9ff; color:#2d2355; align-self:flex-start; border-bottom-left-radius:4px; }
+.cb-msg.user { background:#6c63ff; color:#fff; align-self:flex-end; border-bottom-right-radius:4px; }
+.cb-msg.typing { opacity:0.6; font-style:italic; }
+#chatbot-input-row { display:flex; gap:8px; padding:12px 14px; border-top:1px solid #e8e8f0; background:#fff; }
+#chatbot-input { flex:1; border:1.5px solid #d0d0e8; border-radius:10px; padding:10px 12px; font-size:14px; outline:none; resize:none; height:40px; font-family:inherit; }
+#chatbot-input:focus { border-color:#6c63ff; }
+#chatbot-send { background:#6c63ff; color:#fff; border:none; border-radius:10px; padding:0 16px; font-size:18px; cursor:pointer; transition:background 0.2s; }
+#chatbot-send:hover { background:#4c3dcc; }
+.chatbot-hidden { display:none !important; }
+</style>
 
-    #chatbot-toggle-btn {
-      background: linear-gradient(135deg, #6c63ff, #4facfe);
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      padding: 14px 20px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 4px 18px rgba(108, 99, 255, 0.45);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    #chatbot-toggle-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 22px rgba(108, 99, 255, 0.55);
-    }
-
-    #chatbot-box {
-      width: 340px;
-      max-height: 480px;
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border: 1.5px solid #e0e0e0;
-    }
-
-    #chatbot-header {
-      background: linear-gradient(135deg, #6c63ff, #4facfe);
-      color: #fff;
-      padding: 14px 18px;
-      font-weight: 700;
-      font-size: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    #chatbot-close {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    #chatbot-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-height: 200px;
-      max-height: 310px;
-      background: #f7f8fc;
-    }
-
-    .cb-msg {
-      max-width: 82%;
-      padding: 10px 14px;
-      border-radius: 14px;
-      font-size: 14px;
-      line-height: 1.55;
-      word-break: break-word;
-    }
-
-    .cb-msg.bot {
-      background: #ede9ff;
-      color: #2d2355;
-      align-self: flex-start;
-      border-bottom-left-radius: 4px;
-    }
-
-    .cb-msg.user {
-      background: #6c63ff;
-      color: #fff;
-      align-self: flex-end;
-      border-bottom-right-radius: 4px;
-    }
-
-    .cb-msg.typing {
-      opacity: 0.6;
-      font-style: italic;
-    }
-
-    #chatbot-input-row {
-      display: flex;
-      gap: 8px;
-      padding: 12px 14px;
-      border-top: 1px solid #e8e8f0;
-      background: #fff;
-    }
-
-    #chatbot-input {
-      flex: 1;
-      border: 1.5px solid #d0d0e8;
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 14px;
-      outline: none;
-      resize: none;
-      height: 40px;
-      font-family: inherit;
-    }
-
-    #chatbot-input:focus {
-      border-color: #6c63ff;
-    }
-
-    #chatbot-send {
-      background: #6c63ff;
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 0 16px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    #chatbot-send:hover {
-      background: #4c3dcc;
-    }
-
-    .chatbot-hidden {
-      display: none !important;
-    }
-  </style>
-
-  <div id="chatbot-fab">
-    <div id="chatbot-box" class="chatbot-hidden">
-      <div id="chatbot-header">
-        🌸 AI Nandu Tutor
-        <button id="chatbot-close" onclick="toggleChat()">✕</button>
-      </div>
-      <div id="chatbot-messages">
-        <div class="cb-msg bot">👋 <b>Main hoon tumhari dost Nandu! My boss created me specially for you all. Koi bhi
-            study doubt ya question ho, bejhijhak poocho. Main hamesha tumhare sath hun</b> 📚💕✨
-        </div>
-      </div>
-      <div id="chatbot-input-row">
-        <textarea id="chatbot-input" placeholder="Apna doubt likho…" rows="1" onkeydown="cbKeyDown(event)"></textarea>
-        <button id="chatbot-send" onclick="sendChatMessage()">➤</button>
-      </div>
+<div id="chatbot-fab">
+  <div id="chatbot-box" class="chatbot-hidden">
+    <div id="chatbot-header">
+      🤖 Ai Nandu Tutor
+      <button id="chatbot-close" onclick="toggleChat()">✕</button>
     </div>
-    <button id="chatbot-toggle-btn" onclick="toggleChat()">🌸 AI Nandu Tutor</button>
+    <div id="chatbot-messages">
+      <div class="cb-msg bot">👋 <b>My name is Nandu. My boss created me specially for you all. You can ask me any questions or clear up any doubts you might have.</b> 📚✨</div>
+    </div>
+    <div id="chatbot-input-row">
+      <textarea id="chatbot-input" placeholder="Apna doubt likho…" rows="1" onkeydown="cbKeyDown(event)"></textarea>
+      <button id="chatbot-send" onclick="sendChatMessage()">➤</button>
+    </div>
   </div>
+  <button id="chatbot-toggle-btn" onclick="toggleChat()">🤖 Ask Tutor</button>
+</div>
 
-  <script>
-    (function () {
-      var chatOpen = false;
-      var chatHistory = [];
+<script>
+(function() {
+  var chatOpen = false;
+  var chatHistory = [];
 
-      window.toggleChat = function () {
-        chatOpen = !chatOpen;
-        var box = document.getElementById('chatbot-box');
-        if (chatOpen) { box.classList.remove('chatbot-hidden'); document.getElementById('chatbot-input').focus(); }
-        else { box.classList.add('chatbot-hidden'); }
-      };
+  window.toggleChat = function() {
+    chatOpen = !chatOpen;
+    var box = document.getElementById('chatbot-box');
+    if (chatOpen) { box.classList.remove('chatbot-hidden'); document.getElementById('chatbot-input').focus(); }
+    else { box.classList.add('chatbot-hidden'); }
+  };
 
-      window.cbKeyDown = function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
-      };
+  window.cbKeyDown = function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+  };
 
-      window.sendChatMessage = function () {
-        var input = document.getElementById('chatbot-input');
-        var msg = (input.value || '').trim();
-        if (!msg) return;
-        input.value = '';
-        appendCbMsg('user', msg);
-        chatHistory.push({ sender: 'user', text: msg });
+  window.sendChatMessage = function() {
+    var input = document.getElementById('chatbot-input');
+    var msg = (input.value || '').trim();
+    if (!msg) return;
+    input.value = '';
+    appendCbMsg('user', msg);
+    chatHistory.push({ sender: 'user', text: msg });
 
-        // Get student context
-        var cls = (window.currentStudent && window.currentStudent.class) || '';
-        var subj = '';
+    // Get student context
+    var cls = (window.currentStudent && window.currentStudent.class) || '';
+    var subj = '';
 
-        var typingId = 'cb-typing-' + Date.now();
-        appendCbMsg('bot', '…', typingId, true);
+    var typingId = 'cb-typing-' + Date.now();
+    appendCbMsg('bot', '…', typingId, true);
 
-        fetch('/api/chatbot', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: msg, studentClass: cls, subject: subj, history: chatHistory.slice(-6) })
-        })
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            var el = document.getElementById(typingId);
-            if (el) el.remove();
-            var reply = data.reply || "Sorry, kuch problem hua. Dobara try karein!";
-            chatHistory.push({ sender: 'bot', text: reply });
-            appendCbMsg('bot', reply);
-          })
-          .catch(function () {
-            var el = document.getElementById(typingId);
-            if (el) el.remove();
-            appendCbMsg('bot', "Network error. Dobara try karein!");
-          });
-      };
+    fetch('/api/chatbot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg, studentClass: cls, subject: subj, history: chatHistory.slice(-6) })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var el = document.getElementById(typingId);
+      if (el) el.remove();
+      var reply = data.reply || "Sorry, kuch problem hua. Dobara try karein!";
+      chatHistory.push({ sender: 'bot', text: reply });
+      appendCbMsg('bot', reply);
+    })
+    .catch(function() {
+      var el = document.getElementById(typingId);
+      if (el) el.remove();
+      appendCbMsg('bot', "Network error. Dobara try karein!");
+    });
+  };
 
-      function appendCbMsg(sender, text, id, isTyping) {
-        var msgs = document.getElementById('chatbot-messages');
-        var div = document.createElement('div');
-        div.className = 'cb-msg ' + sender + (isTyping ? ' typing' : '');
-        if (id) div.id = id;
-        div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/\n/g, '<br>');
-        msgs.appendChild(div);
-        msgs.scrollTop = msgs.scrollHeight;
-      }
-    })();
-  </script>
+  function appendCbMsg(sender, text, id, isTyping) {
+    var msgs = document.getElementById('chatbot-messages');
+    var div = document.createElement('div');
+    div.className = 'cb-msg ' + sender + (isTyping ? ' typing' : '');
+    if (id) div.id = id;
+    div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+})();
+</script>
 </body>
-
 </html>
