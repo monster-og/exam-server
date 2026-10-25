@@ -148,38 +148,42 @@ function isSchoolOrIntermediate(cls) {
 }
 
 app.post('/api/students/register', (req, res) => {
-  const { name, cls, mobile, email, password, fatherName, section, rollNumber, rollNo, photo } = req.body;
-  if (!name || !cls || !mobile || !email || !password) {
-    return res.status(400).json({ success: false, message: 'All registration fields are required!' });
+  const { name, cls, classNumber, mobile, phone, email, password, fatherName, section, rollNumber, rollNo, photo } = req.body;
+  const targetClass = String(cls || classNumber || '').trim();
+  const targetMobile = String(mobile || phone || '').trim();
+  const finalRoll = (rollNumber || rollNo || '').toString().trim();
+  const targetEmail = (email || `std_${finalRoll || Date.now()}@oxfordconvent.com`).toLowerCase().trim();
+
+  if (!name || !targetClass || !password) {
+    return res.status(400).json({ success: false, message: 'Name, Class, and Password are required!' });
   }
 
   const students = readJSON(STUDENTS_FILE, []);
-  const cleanEmail = email.toLowerCase().trim();
-  const existing = students.find(s => s.email.toLowerCase() === cleanEmail);
-  if (existing) {
-    return res.status(400).json({ success: false, message: 'This email is already registered! Please login instead.' });
+  if (email) {
+    const existing = students.find(s => s.email && s.email.toLowerCase() === targetEmail);
+    if (existing) {
+      return res.status(400).json({ success: false, message: 'This email is already registered! Please login instead.' });
+    }
   }
 
-  const cleanClass = String(cls).trim();
-  const finalRoll = (rollNumber || rollNo || '').toString().trim();
   const newStudent = {
     id: `std_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
     name: name.trim(),
     fatherName: fatherName ? fatherName.trim() : '',
-    class: cleanClass,
-    section: isSchoolOrIntermediate(cleanClass) && section ? section.trim().toUpperCase() : '',
+    class: targetClass,
+    section: (typeof isSchoolOrIntermediate === 'function' && isSchoolOrIntermediate(targetClass) && section) ? section.trim().toUpperCase() : (section ? section.trim().toUpperCase() : 'A'),
     rollNumber: finalRoll,
-    mobile: mobile.trim(),
-    email: cleanEmail,
+    mobile: targetMobile,
+    email: targetEmail,
     photo: photo || '',
-    password: password.trim(),
+    password: String(password).trim(),
     registeredAt: new Date().toISOString()
   };
 
   students.push(newStudent);
   writeJSON(STUDENTS_FILE, students);
 
-  const token = Buffer.from(`student:${newStudent.id}:${cleanEmail}`).toString('base64');
+  const token = Buffer.from(`student:${newStudent.id}:${targetEmail}`).toString('base64');
   const safeProfile = {
     id: newStudent.id,
     name: newStudent.name,
@@ -196,24 +200,34 @@ app.post('/api/students/register', (req, res) => {
 });
 
 app.post('/api/students/login', (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ success: false, message: 'Email and password are required!' });
+  const { email, password, rollNumber, classNumber, cls } = req.body;
+  const inputClass = String(classNumber || cls || '').trim();
+  const inputRoll = String(rollNumber || '').trim();
+  const inputEmail = String(email || '').toLowerCase().trim();
+  const cleanPass = String(password || '').trim();
+
+  if (!cleanPass || (!inputEmail && !inputRoll)) {
+    return res.status(400).json({ success: false, message: 'Roll number (or Email) and password are required!' });
   }
 
   const students = readJSON(STUDENTS_FILE, []);
-  const cleanEmail = String(email).toLowerCase().trim();
-  const cleanPass = String(password).trim();
-  const student = students.find(s => 
-    s.email && s.email.toLowerCase().trim() === cleanEmail && 
-    String(s.password).trim() === cleanPass
-  );
+  const student = students.find(s => {
+    const passMatch = String(s.password).trim() === cleanPass;
+    if (!passMatch) return false;
+
+    if (inputEmail && s.email && s.email.toLowerCase().trim() === inputEmail) return true;
+    if (inputRoll && String(s.rollNumber || '').trim() === inputRoll) {
+      if (!inputClass) return true;
+      return String(s.class || '').toLowerCase().trim() === inputClass.toLowerCase();
+    }
+    return false;
+  });
 
   if (!student) {
-    return res.status(401).json({ success: false, message: 'Invalid email or password!' });
+    return res.status(401).json({ success: false, message: 'Invalid credentials! Please check your details.' });
   }
 
-  const token = Buffer.from(`student:${student.id}:${cleanEmail}`).toString('base64');
+  const token = Buffer.from(`student:${student.id}:${student.email || student.rollNumber}`).toString('base64');
   const safeProfile = {
     id: student.id,
     name: student.name,
@@ -221,8 +235,8 @@ app.post('/api/students/login', (req, res) => {
     class: student.class,
     section: student.section || '',
     rollNumber: student.rollNumber || '',
-    mobile: student.mobile,
-    email: student.email,
+    mobile: student.mobile || '',
+    email: student.email || '',
     photo: student.photo || ''
   };
 
@@ -427,9 +441,32 @@ app.delete('/api/students/:id', verifyAdmin, (req, res) => {
 
 // ─── QUESTIONS ────────────────────────────────────────────────────────────────
 app.get('/api/questions', (req, res) => {
-  const { cls, subject, examType } = req.query;
+  const cls = req.query.cls || req.query.class;
+  const { subject, examType } = req.query;
   const all = readJSON(QUESTIONS_FILE, {});
   const et = examType || 'PT-1';
+
+  // If asking for all papers of a class
+  if (!subject && cls) {
+    const classPapers = [];
+    for (const [key, val] of Object.entries(all)) {
+      if (key.startsWith(`${cls}_`)) {
+        const parts = key.split('_');
+        const sub = parts[1];
+        const paperType = parts[2] || 'PT-1';
+        classPapers.push({
+          subject: sub,
+          class: cls,
+          examType: paperType,
+          questions: Array.isArray(val) ? val : (val.questions || []),
+          timeLimit: val.timeLimit || 30,
+          session: val.session || '2025-2026',
+        });
+      }
+    }
+    return res.json({ success: true, questions: classPapers });
+  }
+
   const keyWithPT = `${cls}_${subject}_${et}`;
   const keyLegacy = `${cls}_${subject}`;
   let entry = all[keyWithPT] || all[keyLegacy];
@@ -447,12 +484,14 @@ app.get('/api/questions', (req, res) => {
     }
   }
 
-  if (!entry) return res.json({ questions: [], session: null, year: null, examType: et });
+  if (!entry) return res.json({ success: true, questions: [], session: null, year: null, examType: et });
   if (Array.isArray(entry)) {
-    return res.json({ questions: entry, session: null, year: null, examType: et });
+    return res.json({ success: true, questions: entry, session: null, year: null, examType: et });
   }
   return res.json({ 
+    success: true,
     questions: entry.questions || [], 
+    timeLimit: entry.timeLimit || 30,
     session: entry.session || null, 
     year: entry.year || null,
     examType: entry.examType || et
@@ -547,7 +586,8 @@ app.get('/api/subjects', (req, res) => {
 
 // ─── CONSOLIDATED ALL-SUBJECTS MARKSHEET ──────────────────────────────────────
 app.get('/api/students/cumulative-marksheet', (req, res) => {
-  let { name, cls, year, session, examType } = req.query;
+  let { name, cls: rawCls, class: rawClass, year, session, examType } = req.query;
+  let cls = rawCls || rawClass;
 
   const studentToken = req.headers['x-student-token'];
   if (studentToken) {
@@ -856,9 +896,10 @@ app.get('/api/students/cumulative-marksheet', (req, res) => {
 });
 
 app.post('/api/questions', verifyTeacherOrAdmin, (req, res) => {
-  const { cls, subject, questions, timeLimit, session, year, examType } = req.body;
+  const { cls: rawCls, class: rawClass, classNumber, subject, questions, timeLimit, session, year, examType } = req.body;
+  const cls = rawCls || rawClass || classNumber;
   if (!cls || !subject || !Array.isArray(questions)) {
-    return res.status(400).json({ message: 'Invalid data' });
+    return res.status(400).json({ message: 'Invalid data: cls/class, subject, and questions array are required' });
   }
 
   const et = examType || 'PT-1';
@@ -920,7 +961,8 @@ app.post('/api/chatbot', async (req, res) => {
 
 // ─── RESULTS ─────────────────────────────────────────────────────────────────
 app.post('/api/results', async (req, res) => {
-  const { studentName, cls, subject, answers, score: incomingScore, total: incomingTotal, session: reqSession, year: reqYear, examType } = req.body;
+  const { studentName, cls: rawCls, classNumber, subject, answers, score: incomingScore, total: incomingTotal, session: reqSession, year: reqYear, examType } = req.body;
+  const cls = rawCls || classNumber;
   if (!studentName || !cls || !subject) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
@@ -1054,7 +1096,8 @@ app.get('/api/results/dates-summary', verifyTeacherOrAdmin, (req, res) => {
 });
 
 app.get('/api/results', verifyTeacherOrAdmin, (req, res) => {
-  const { cls, subject, year, session, examType, date } = req.query;
+  const { cls: rawCls, class: rawClass, subject, year, session, examType, date } = req.query;
+  const cls = rawCls || rawClass;
   let results = readJSON(RESULTS_FILE, []);
   if (cls) results = results.filter(r => String(r.class) === String(cls));
   if (subject) results = results.filter(r => r.subject.toLowerCase().includes(subject.toLowerCase()));
@@ -1166,10 +1209,10 @@ app.patch('/api/results/:id/owa-marks-bulk', verifyTeacherOrAdmin, (req, res) =>
 });
 
 app.get('/api/results/check', (req, res) => {
-  let { name, cls, subject, year, session, examType } = req.query;
+  let { name, cls: rawCls, class: rawClass, subject, year, session, examType, rollNumber } = req.query;
+  let cls = rawCls || rawClass;
 
   // ── SECURITY: Agar student token hai to naam/class sirf token se lo ──
-  // Query params se naam/class change karke dusre ka result nahi dekh sakta
   const studentToken = req.headers['x-student-token'];
   if (studentToken) {
     const studentFromToken = decodeStudentToken(studentToken);
@@ -1177,11 +1220,21 @@ app.get('/api/results/check', (req, res) => {
       name = studentFromToken.name;  // override with real name
       cls  = String(studentFromToken.class); // override with real class
     } else {
-      return res.status(401).json({ found: false, message: 'Invalid student session. Please login again.' });
+      return res.status(401).json({ success: false, found: false, message: 'Invalid student session. Please login again.' });
     }
   }
 
-  if (!name || !cls) return res.status(400).json({ message: 'Student Name and Class are required' });
+  // Lookup by roll number if name not provided
+  const students = readJSON(STUDENTS_FILE, []);
+  if (!name && rollNumber) {
+    const match = students.find(s => String(s.rollNumber || '').trim() === String(rollNumber).trim());
+    if (match) {
+      name = match.name;
+      if (!cls) cls = String(match.class);
+    }
+  }
+
+  if (!name || !cls) return res.status(400).json({ success: false, message: 'Student Name and Class are required' });
   const results = readJSON(RESULTS_FILE, []);
   let found = results.filter(r =>
     r.studentName.toLowerCase() === name.toLowerCase().trim() &&
@@ -1201,11 +1254,10 @@ app.get('/api/results/check', (req, res) => {
     });
   }
 
-  if (found.length === 0) return res.json({ found: false, message: 'No exam record found' });
+  if (found.length === 0) return res.json({ success: true, found: false, results: [], message: 'No exam record found' });
   const unlocked = found.filter(r => r.resultUnlocked);
-  if (unlocked.length === 0) return res.json({ found: true, unlocked: false, message: 'Your result is under evaluation. Please check back later.' });
+  if (unlocked.length === 0) return res.json({ success: true, found: true, unlocked: false, results: [], message: 'Your result is under evaluation. Please check back later.' });
   
-  const students = readJSON(STUDENTS_FILE, []);
   const safe = unlocked.map(r => {
     const std = students.find(s => s.name.toLowerCase() === r.studentName.toLowerCase() && String(s.class) === String(r.class));
     return {
@@ -1226,7 +1278,7 @@ app.get('/api/results/check', (req, res) => {
       answers: r.answers || []
     };
   });
-  res.json({ found: true, unlocked: true, results: safe });
+  res.json({ success: true, found: true, unlocked: true, results: safe });
 });
 
 app.delete('/api/results', verifyAdmin, (req, res) => {
@@ -1328,6 +1380,12 @@ app.post('/api/email/send', verifyAdmin, async (req, res) => {
   }
 });
 
+// Catch-all API 404 handler (Express 5 compatible)
+app.use('/api', (req, res) => {
+  console.warn(`⚠️ [404 NOT FOUND] ${req.method} ${req.originalUrl}`);
+  res.status(404).json({ success: false, message: `API route not found: ${req.method} ${req.originalUrl}` });
+});
+
 // ─── START (High-Capacity Multi-Computer & Zero-Password Cloudflare Tunnel) ───
 const server = app.listen(PORT, '0.0.0.0', async () => {
   const localIps = getLocalIpAddresses();
@@ -1352,17 +1410,23 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
   console.log('👑  Admin Password            : ' + (process.env.ADMIN_PASSWORD || 'Principal@2011') + ' (or admin123)');
   console.log('================================================================');
 
-  try {
-    const tunnel = await startTunnel({ url: `http://127.0.0.1:${PORT}`, port: PORT });
-    const cloudflareUrl = await tunnel.getURL();
-    console.log('\n================================================================');
-    console.log('🚀  WORLDWIDE DIRECT ACCESS (ANY MOBILE DATA / HOME / NO PASSWORD)');
-    console.log('================================================================');
-    console.log(`🔗  Direct Link : ${cloudflareUrl}`);
-    console.log('👉  Share this link with ANY student or teacher on any network!');
-    console.log('================================================================\n');
-  } catch (err) {
-    console.log('ℹ️  Tunnel active over local network & public IP: ' + err.message);
+  if (process.env.ENABLE_TUNNEL === 'true') {
+    try {
+      const tunnel = await startTunnel({ url: `http://127.0.0.1:${PORT}`, port: PORT });
+      const cloudflareUrl = await tunnel.getURL();
+      console.log('\n================================================================');
+      console.log('🚀  WORLDWIDE DIRECT ACCESS (ANY MOBILE DATA / HOME / NO PASSWORD)');
+      console.log('================================================================');
+      console.log(`🔗  Direct Link : ${cloudflareUrl}`);
+      console.log('👉  Share this link with ANY student or teacher on any network!');
+      console.log('================================================================\n');
+    } catch (err) {
+      console.log('ℹ️  Tunnel active over local network & public IP: ' + err.message);
+    }
+  } else {
+    console.log('\n💡  Instant Local & School LAN Mode Active!');
+    console.log(`🔗  Access at http://localhost:${PORT} or http://${localIps[0] || '127.0.0.1'}:${PORT}`);
+    console.log('💡  (To enable Cloudflare WAN internet tunnel, set ENABLE_TUNNEL=true in .env)\n');
   }
 });
 

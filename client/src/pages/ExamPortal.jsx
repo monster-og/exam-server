@@ -109,7 +109,7 @@ export default function ExamPortal({ setActivePage, selectedExam, setSelectedExa
       let loadedQuestions = [];
       let durationMinutes = 30;
 
-      if (res.success && res.questions) {
+      if (res && res.questions) {
         if (Array.isArray(res.questions)) {
           // If returned as an array of question papers or items
           if (res.questions[0] && res.questions[0].questions) {

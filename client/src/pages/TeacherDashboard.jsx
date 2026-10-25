@@ -97,8 +97,10 @@ export default function TeacherDashboard({ setActivePage }) {
   const loadSubmissions = async () => {
     setLoadingSubs(true);
     try {
-      const res = await api.getResults({ class: targetClass });
-      if (res.success && res.results) {
+      const res = await api.getResults({ class: targetClass, cls: targetClass });
+      if (Array.isArray(res)) {
+        setSubmissions(res);
+      } else if (res && res.results && Array.isArray(res.results)) {
         setSubmissions(res.results);
       } else {
         setSubmissions([]);
@@ -114,11 +116,8 @@ export default function TeacherDashboard({ setActivePage }) {
     setLoadingRoster(true);
     try {
       const res = await api.getAllStudents();
-      if (res.success && res.students) {
-        setRoster(res.students.filter((s) => s.class === targetClass));
-      } else {
-        setRoster([]);
-      }
+      const studentList = Array.isArray(res) ? res : (res?.students || []);
+      setRoster(studentList.filter((s) => s.class === targetClass));
     } catch (err) {
       console.error(err);
     } finally {
@@ -182,6 +181,8 @@ export default function TeacherDashboard({ setActivePage }) {
     try {
       showToast('Saving question paper to server...', 'info', 2000);
       const res = await api.saveQuestions({
+        cls: targetClass,
+        class: targetClass,
         classNumber: targetClass,
         subject: targetSubject,
         examType: examType,

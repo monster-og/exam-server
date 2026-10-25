@@ -44,12 +44,12 @@ async function request(endpoint, options = {}) {
     if (contentType.includes('application/json')) {
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.message || `Request failed with status ${res.status}`);
+        throw new Error(data.message || data.error || `Request to ${endpoint} failed with status ${res.status}`);
       }
       return data;
     } else {
       if (!res.ok) {
-        throw new Error(`Request failed with status ${res.status}`);
+        throw new Error(`Request to ${endpoint} failed with status ${res.status}`);
       }
       return res;
     }

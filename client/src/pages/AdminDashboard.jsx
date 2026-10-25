@@ -51,7 +51,9 @@ export default function AdminDashboard({ setActivePage }) {
     setLoadingResults(true);
     try {
       const res = await api.getResults();
-      if (res.success && res.results) {
+      if (Array.isArray(res)) {
+        setResults(res);
+      } else if (res && res.results && Array.isArray(res.results)) {
         setResults(res.results);
       } else {
         setResults([]);
@@ -67,7 +69,9 @@ export default function AdminDashboard({ setActivePage }) {
     setLoadingStudents(true);
     try {
       const res = await api.getAllStudents();
-      if (res.success && res.students) {
+      if (Array.isArray(res)) {
+        setStudents(res);
+      } else if (res && res.students && Array.isArray(res.students)) {
         setStudents(res.students);
       } else {
         setStudents([]);
