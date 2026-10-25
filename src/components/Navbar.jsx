@@ -8,10 +8,11 @@ import {
   LogOut, 
   UserCheck, 
   Search,
-  School
+  School,
+  Bot
 } from 'lucide-react';
 
-export default function Navbar({ activePage, setActivePage }) {
+export default function Navbar({ activePage, setActivePage, openNandu }) {
   const { role, user, logout } = useAuth();
 
   return (
@@ -186,6 +187,23 @@ export default function Navbar({ activePage, setActivePage }) {
               </button>
             </>
           )}
+
+          {/* 🤖 Universal AI Tutor Nandu Button */}
+          <button
+            className="btn btn-ghost"
+            style={{
+              padding: '8px 14px',
+              fontSize: '0.86rem',
+              color: '#38bdf8',
+              border: '1px solid rgba(56, 189, 248, 0.35)',
+              background: 'rgba(56, 189, 248, 0.08)',
+              fontWeight: 700,
+            }}
+            onClick={openNandu}
+            title="Ask Nandu — AI Doubt Solver"
+          >
+            <Bot size={16} color="#38bdf8" /> AI Tutor (Nandu)
+          </button>
 
           {/* User Profile Pill & Logout */}
           {role && (

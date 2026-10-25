@@ -8,12 +8,14 @@ import ExamPortal from './pages/ExamPortal';
 import TeacherDashboard from './pages/TeacherDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import CheckResultPage from './pages/CheckResultPage';
-import { School, Heart } from 'lucide-react';
+import NanduAiTutorModal from './components/NanduAiTutorModal';
+import { School, Heart, Bot } from 'lucide-react';
 
 function MainApp() {
-  const { role, loading } = useAuth();
+  const { role, user, loading } = useAuth();
   const [activePage, setActivePage] = useState('auth');
   const [selectedExam, setSelectedExam] = useState(null);
+  const [isNanduOpen, setIsNanduOpen] = useState(false);
 
   // Sync active page with authentication role
   useEffect(() => {
@@ -61,8 +63,8 @@ function MainApp() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Navbar activePage={activePage} setActivePage={setActivePage} />
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', position: 'relative' }}>
+      <Navbar activePage={activePage} setActivePage={setActivePage} openNandu={() => setIsNanduOpen(true)} />
 
       <main style={{ flex: 1 }}>
         {activePage === 'auth' && <AuthPage setActivePage={setActivePage} />}
@@ -71,6 +73,7 @@ function MainApp() {
           <StudentDashboard
             setActivePage={setActivePage}
             setSelectedExam={setSelectedExam}
+            openNandu={() => setIsNanduOpen(true)}
           />
         )}
 
@@ -88,6 +91,58 @@ function MainApp() {
 
         {activePage === 'check-result' && <CheckResultPage setActivePage={setActivePage} />}
       </main>
+
+      {/* 🤖 Floating Nandu AI Tutor Launcher Button */}
+      <button
+        onClick={() => setIsNanduOpen(true)}
+        className="nandu-fab-btn"
+        title="Ask Nandu — AI Doubt Solver"
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          zIndex: 998,
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          padding: '12px 20px',
+          background: 'linear-gradient(135deg, #4f46e5, #06b6d4)',
+          color: '#fff',
+          border: '1px solid rgba(255, 255, 255, 0.35)',
+          borderRadius: '50px',
+          boxShadow: '0 10px 30px rgba(79, 70, 229, 0.6), 0 0 20px rgba(6, 182, 212, 0.5)',
+          cursor: 'pointer',
+          fontWeight: 800,
+          fontSize: '0.92rem',
+          transition: 'all 0.25s ease',
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = 'translateY(-3px) scale(1.03)')}
+        onMouseLeave={(e) => (e.currentTarget.style.transform = 'translateY(0) scale(1)')}
+      >
+        <span style={{ position: 'relative', display: 'flex' }}>
+          <Bot size={22} color="#fff" />
+          <span
+            style={{
+              position: 'absolute',
+              top: '-3px',
+              right: '-3px',
+              width: '9px',
+              height: '9px',
+              borderRadius: '50%',
+              background: '#10b981',
+              boxShadow: '0 0 8px #10b981',
+            }}
+          />
+        </span>
+        <span>Ask Nandu (AI Tutor)</span>
+      </button>
+
+      {/* 🤖 Nandu AI Tutor Modal */}
+      <NanduAiTutorModal
+        isOpen={isNanduOpen}
+        onClose={() => setIsNanduOpen(false)}
+        studentClass={user?.class || 'Class 10'}
+      />
 
       {/* Footer */}
       <footer

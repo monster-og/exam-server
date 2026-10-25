@@ -17,7 +17,8 @@ import {
   Edit3, 
   Sparkles,
   Phone,
-  Hash
+  Hash,
+  Bot
 } from 'lucide-react';
 
 const PT_TABS = [
@@ -29,7 +30,7 @@ const PT_TABS = [
   { id: 'Class Test', label: '📝 Class Tests' },
 ];
 
-export default function StudentDashboard({ setActivePage, setSelectedExam }) {
+export default function StudentDashboard({ setActivePage, setSelectedExam, openNandu }) {
   const { user, updateStudent } = useAuth();
   const { showToast } = useToast();
 
@@ -251,6 +252,75 @@ export default function StudentDashboard({ setActivePage, setSelectedExam }) {
             <Play size={15} /> Take Live Exam
           </button>
         </div>
+      </div>
+
+      {/* ── 🤖 Nandu AI Tutor Feature Banner ── */}
+      <div
+        className="glass-card"
+        style={{
+          padding: '20px 24px',
+          marginBottom: '26px',
+          background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.22), rgba(6, 182, 212, 0.16), rgba(16, 185, 129, 0.12))',
+          border: '1px solid rgba(6, 182, 212, 0.4)',
+          boxShadow: '0 8px 30px rgba(6, 182, 212, 0.12)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '16px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div
+            style={{
+              width: '54px',
+              height: '54px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #4f46e5, #06b6d4)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.85rem',
+              boxShadow: '0 0 20px rgba(6, 182, 212, 0.5)',
+              border: '1px solid rgba(255, 255, 255, 0.35)',
+              flexShrink: 0,
+            }}
+          >
+            🤖
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 900, color: '#fff', margin: 0 }}>
+                Got Doubts in Any Subject? Ask Nandu AI Tutor!
+              </h3>
+              <span className="badge badge-accent" style={{ background: 'rgba(6, 182, 212, 0.25)', color: '#67e8f9', border: '1px solid rgba(6, 182, 212, 0.4)' }}>
+                24/7 Academic Solver
+              </span>
+            </div>
+            <p style={{ margin: '4px 0 0 0', fontSize: '0.88rem', color: 'rgba(255, 255, 255, 0.8)' }}>
+              Instant step-by-step solutions for <strong>Mathematics, Science, English, SST & Computer</strong> with Hinglish & English explanations.
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={openNandu}
+          className="btn btn-primary"
+          style={{
+            padding: '11px 22px',
+            fontSize: '0.92rem',
+            fontWeight: 800,
+            background: 'linear-gradient(135deg, #4f46e5, #06b6d4)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 4px 18px rgba(79, 70, 229, 0.45)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            cursor: 'pointer',
+          }}
+        >
+          <Bot size={18} /> Ask Nandu Now
+        </button>
       </div>
 
       {/* ── Key Stats KPI Row ── */}
